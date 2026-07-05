@@ -10,54 +10,19 @@
     "semantic_hash": "029f4905006c1fffd96bc863e2d98d3e"
   },
   "/Users/fusion/Code/GitRepos/Fallow/package.json": {
-    "mtime": 1783196698.317037,
-    "ast_hash": "33c47a88c88566312382521da53feec5",
-    "semantic_hash": "33c47a88c88566312382521da53feec5"
-  },
-  "/Users/fusion/Code/GitRepos/Fallow/src/App.tsx": {
-    "mtime": 1783251485.319145,
-    "ast_hash": "2bd6b2e946d388c93241b6fde03a6a25",
-    "semantic_hash": "2bd6b2e946d388c93241b6fde03a6a25"
-  },
-  "/Users/fusion/Code/GitRepos/Fallow/src/lib/stellar.ts": {
-    "mtime": 1783251392.3081648,
-    "ast_hash": "3201d45007295a59c4e12ad30efef945",
-    "semantic_hash": "3201d45007295a59c4e12ad30efef945"
-  },
-  "/Users/fusion/Code/GitRepos/Fallow/src/main.tsx": {
-    "mtime": 1783196639.9356902,
-    "ast_hash": "787e5a07efeb2bf6209d5937195f2f68",
-    "semantic_hash": "787e5a07efeb2bf6209d5937195f2f68"
-  },
-  "/Users/fusion/Code/GitRepos/Fallow/tsconfig.app.json": {
-    "mtime": 1783196639.936044,
-    "ast_hash": "5f2dafd737dea8a4ddcbb10f5113ac5a",
-    "semantic_hash": "5f2dafd737dea8a4ddcbb10f5113ac5a"
+    "mtime": 1783281213.8552003,
+    "ast_hash": "907e9ec15ac04560b344b50eb50b0130",
+    "semantic_hash": "907e9ec15ac04560b344b50eb50b0130"
   },
   "/Users/fusion/Code/GitRepos/Fallow/tsconfig.json": {
-    "mtime": 1783196639.9363575,
-    "ast_hash": "a3d39fa780ebff65444de257f291ce6c",
-    "semantic_hash": "a3d39fa780ebff65444de257f291ce6c"
-  },
-  "/Users/fusion/Code/GitRepos/Fallow/tsconfig.node.json": {
-    "mtime": 1783196639.9366567,
-    "ast_hash": "f9cb81ddcea69ffdab672fc8c48dca66",
-    "semantic_hash": "f9cb81ddcea69ffdab672fc8c48dca66"
-  },
-  "/Users/fusion/Code/GitRepos/Fallow/vite.config.ts": {
-    "mtime": 1783196639.9369676,
-    "ast_hash": "88439104b3c207f17d33ef3160e3b080",
-    "semantic_hash": "88439104b3c207f17d33ef3160e3b080"
+    "mtime": 1783252799.9792366,
+    "ast_hash": "4ac210cd2a2a02a56f5f11c0928604e6",
+    "semantic_hash": "4ac210cd2a2a02a56f5f11c0928604e6"
   },
   "/Users/fusion/Code/GitRepos/Fallow/README.md": {
-    "mtime": 1783250030.2050307,
-    "ast_hash": "f7f57ecb8cf9180ca53a586a65420989",
-    "semantic_hash": "f7f57ecb8cf9180ca53a586a65420989"
-  },
-  "/Users/fusion/Code/GitRepos/Fallow/index.html": {
-    "mtime": 1783196853.892371,
-    "ast_hash": "b25567fd05a3095ba75feedaa06c25df",
-    "semantic_hash": "b25567fd05a3095ba75feedaa06c25df"
+    "mtime": 1783283857.6218057,
+    "ast_hash": "4aa03324923c162b5c0dfb2a6358391a",
+    "semantic_hash": "4aa03324923c162b5c0dfb2a6358391a"
   },
   "/Users/fusion/Code/GitRepos/Fallow/public/favicon.svg": {
     "mtime": 1783196869.6940062,
@@ -69,34 +34,79 @@
     "ast_hash": "3b4fcfcf393eca4d264dca4a4663bc37",
     "semantic_hash": "3b4fcfcf393eca4d264dca4a4663bc37"
   },
-  "/Users/fusion/Code/GitRepos/Fallow/src/assets/hero.png": {
-    "mtime": 1783196639.9340453,
-    "ast_hash": "aead493361b27e7510691c5d7072dfc1",
-    "semantic_hash": "aead493361b27e7510691c5d7072dfc1"
-  },
-  "/Users/fusion/Code/GitRepos/Fallow/src/assets/vite.svg": {
-    "mtime": 1783196639.9349957,
-    "ast_hash": "9960a24288958394ac50e57ff638b036",
-    "semantic_hash": "9960a24288958394ac50e57ff638b036"
-  },
   "/Users/fusion/Code/GitRepos/Fallow/.claude/skills/verify-dapp/SKILL.md": {
-    "mtime": 1783197246.7626421,
-    "ast_hash": "181dab7f04ef7fcfb12454ccf36a4f4d",
-    "semantic_hash": "181dab7f04ef7fcfb12454ccf36a4f4d"
+    "mtime": 1783283896.0844352,
+    "ast_hash": "a970165d4943b2e13710568e67304f94",
+    "semantic_hash": "a970165d4943b2e13710568e67304f94"
   },
-  "/Users/fusion/Code/GitRepos/Fallow/src/Admin.tsx": {
-    "mtime": 1783251477.1527555,
-    "ast_hash": "7c1e397b9b7fe692d7731440f80d2633",
-    "semantic_hash": "7c1e397b9b7fe692d7731440f80d2633"
+  "/Users/fusion/Code/GitRepos/Fallow/contract/crowdfund/src/lib.rs": {
+    "mtime": 1783283407.7242436,
+    "ast_hash": "050d185b8e65199d0147173625e4347e",
+    "semantic_hash": "050d185b8e65199d0147173625e4347e"
   },
-  "/Users/fusion/Code/GitRepos/Fallow/src/TipJar.tsx": {
-    "mtime": 1783251520.9446697,
-    "ast_hash": "bec207420ba5428a14fae3a7405f57bc",
-    "semantic_hash": "bec207420ba5428a14fae3a7405f57bc"
+  "/Users/fusion/Code/GitRepos/Fallow/contract/crowdfund/src/test.rs": {
+    "mtime": 1783283435.6060545,
+    "ast_hash": "5fb77341c47429426edc1db0cc6f54cf",
+    "semantic_hash": "5fb77341c47429426edc1db0cc6f54cf"
   },
-  "/Users/fusion/Code/GitRepos/Fallow/src/config.ts": {
-    "mtime": 1783251402.3984995,
-    "ast_hash": "8d3b8600b2e346735e6fbd059ed0765c",
-    "semantic_hash": "8d3b8600b2e346735e6fbd059ed0765c"
+  "/Users/fusion/Code/GitRepos/Fallow/next.config.ts": {
+    "mtime": 1783281685.4586098,
+    "ast_hash": "ef3946015c8f80c3f927a23c70a84bad",
+    "semantic_hash": "ef3946015c8f80c3f927a23c70a84bad"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/src/app/layout.tsx": {
+    "mtime": 1783281679.8689516,
+    "ast_hash": "2c0c300bf851abf2e2ec0b191bcfb869",
+    "semantic_hash": "2c0c300bf851abf2e2ec0b191bcfb869"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/src/app/page.tsx": {
+    "mtime": 1783281674.4507616,
+    "ast_hash": "cc77b418420b33afc423c0ccb3a25795",
+    "semantic_hash": "cc77b418420b33afc423c0ccb3a25795"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/src/components/Campaign.tsx": {
+    "mtime": 1783283674.3936548,
+    "ast_hash": "682dd942075f02521b4c68b54fe5b2c7",
+    "semantic_hash": "682dd942075f02521b4c68b54fe5b2c7"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/src/css.d.ts": {
+    "mtime": 1783253047.5401554,
+    "ast_hash": "fb8214c6467938c43691a41c63101314",
+    "semantic_hash": "fb8214c6467938c43691a41c63101314"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/src/lib/config.ts": {
+    "mtime": 1783283520.333991,
+    "ast_hash": "20a6f94de19c26ec411712f77385611f",
+    "semantic_hash": "20a6f94de19c26ec411712f77385611f"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/src/lib/soroban.ts": {
+    "mtime": 1783283575.926285,
+    "ast_hash": "f1acca70695b783657dd679618c2b2cd",
+    "semantic_hash": "f1acca70695b783657dd679618c2b2cd"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/src/lib/wallet.ts": {
+    "mtime": 1783281903.2984447,
+    "ast_hash": "8a798fadb27e7fed7df9c5216a1355be",
+    "semantic_hash": "8a798fadb27e7fed7df9c5216a1355be"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/screenshots/Balance.png": {
+    "mtime": 1783270272.8558655,
+    "ast_hash": "0bfec518f160ce85bc93b2ba376fb79a",
+    "semantic_hash": "0bfec518f160ce85bc93b2ba376fb79a"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/screenshots/BeforeWalletConneted.png": {
+    "mtime": 1783270413.4266818,
+    "ast_hash": "55ad9e644e8f5180b18a0501816e7b9e",
+    "semantic_hash": "55ad9e644e8f5180b18a0501816e7b9e"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/screenshots/StellarExpart.png": {
+    "mtime": 1783270495.1674316,
+    "ast_hash": "b0072f28949a5b8346ebdd08ffaa839c",
+    "semantic_hash": "b0072f28949a5b8346ebdd08ffaa839c"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/screenshots/SuccessfulTnx.png": {
+    "mtime": 1783270466.0550704,
+    "ast_hash": "050c109c5e2cd68e39631ce7febaa8af",
+    "semantic_hash": "050c109c5e2cd68e39631ce7febaa8af"
   }
 }
