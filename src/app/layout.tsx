@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Fallow — Stellar Testnet Tip Jar",
-  description: "Buy Himanshu some tea on the Stellar testnet.",
+  title: "Fallow — Stellar Crowdfunding",
+  description:
+    "Back an open-source campaign with real testnet XLM, escrowed by a Soroban smart contract.",
   icons: { icon: "/favicon.svg" },
 };
 

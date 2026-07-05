@@ -1,31 +1,43 @@
 ---
 name: verify-dapp
-description: Verify the Fallow dApp still works after changes — typecheck + production build, lint, and a dev-server smoke test. Use after any change to src/ or config files, or when the user asks to check that nothing is broken.
+description: Verify the Fallow crowdfunding dApp still works after changes — contract tests, frontend typecheck/build, lint, and a live Soroban RPC read. Use after any change to contract/, src/, or config, or when the user asks to check that nothing is broken.
 ---
 
-Run the full local verification for this repo, in order. Stop and report at the first failure.
+Run verification in order. Stop and report at the first failure.
 
-1. **Build (typecheck + bundle):**
+1. **Contract tests** (only if `contract/` changed):
+   ```sh
+   cd contract && cargo test && stellar contract build
+   ```
+   5 unit tests should pass and the WASM should build to `target/wasm32v1-none/release/crowdfund.wasm`.
+
+2. **Frontend build (typecheck + bundle):**
    ```sh
    npm run build
    ```
-   This runs `next build`, which type-checks (fails on TS errors) and produces the production output. oxlint runs separately (below); Next's own ESLint step is disabled in `next.config.ts`.
+   Runs `next build` (fails on TS errors). oxlint runs separately; Next's ESLint step is disabled in `next.config.ts`. The `/` route is client-only (`ssr:false`) because it uses wallet extensions.
 
-2. **Lint:**
+3. **Lint:**
    ```sh
    npm run lint
    ```
-   oxlint with the repo's `.oxlintrc.json`. The `only-export-components` warning on `src/app/layout.tsx` is a known false positive (Next requires exporting `metadata` beside the layout) — ignore it.
+   The `only-export-components` warning on `src/app/layout.tsx` is a known false positive (Next requires exporting `metadata`) — ignore it.
 
-3. **Runtime smoke test:** start the production server (`npm run build` first, then `npm run start`) in the background on a free port, poll it until it responds, then check routes. Middleware only runs under `next start`/`next dev`, so this also exercises the admin gate:
+4. **Live RPC read** — confirm the frontend's read path still works against the deployed contract:
    ```sh
-   npm run start -- -p 3010 > /tmp/fallow-next.log 2>&1 & PID=$!
-   for i in $(seq 1 40); do curl -sf http://localhost:3010 > /dev/null && break; sleep 0.5; done
-   curl -s http://localhost:3010/ | grep -q 'Recent supporters' && echo "tip page OK"
-   curl -s -o /dev/null -w "admin redirect=%{http_code}\n" http://localhost:3010/admin  # expect 307 -> /login
-   kill $PID
+   node --input-type=module -e "
+   import { Account, BASE_FEE, Contract, Networks, TransactionBuilder, scValToNative, rpc } from '@stellar/stellar-sdk';
+   const CONTRACT='CAPBMALOG2MXQZLPWQIVCI65DG74ELN6OG4D7RR7HTYFTZWFA3YBHBDH';
+   const ADMIN='GDMFYJCUB23Q7ID26S3KGTRAR2LAQUNDKOQ2IZOAKVRWJ3THTNSHECSQ';
+   const server = new rpc.Server('https://soroban-testnet.stellar.org');
+   const tx = new TransactionBuilder(new Account(ADMIN,'0'), { fee: BASE_FEE, networkPassphrase: Networks.TESTNET })
+     .addOperation(new Contract(CONTRACT).call('get_campaign')).setTimeout(30).build();
+   const sim = await server.simulateTransaction(tx);
+   console.log(rpc.Api.isSimulationError(sim) ? 'ERROR' : scValToNative(sim.result.retval));
+   "
    ```
+   Should print the campaign struct (goal/raised/donors/admin/deadline).
 
-Wallet-dependent flows (Freighter connect, signing, sending XLM) cannot be verified headlessly — Freighter is a browser extension. If the change touches `src/lib/stellar.ts` or the transaction flow in `src/components/TipJar.tsx`, remind the user to manually test connect → balance → send in a browser with Freighter on Testnet. The admin password gate lives in `src/middleware.ts` + `src/app/api/login`.
+Wallet-dependent flows (multi-wallet connect, signing, contributing, withdraw/refund) cannot be verified headlessly — wallets are browser extensions. If the change touches `src/lib/soroban.ts`, `src/lib/wallet.ts`, or `src/components/Campaign.tsx`, remind the user to manually test connect → contribute → tx status → live activity in a browser with a wallet on Testnet.
 
 Report each step's result plainly: what passed, what failed (with the error output), and whether manual wallet testing is needed.
