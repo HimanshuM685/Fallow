@@ -66,20 +66,32 @@ npm run start
 
 ## Screenshots
 
-### Wallet connected
+> All screenshots are on the **Stellar testnet** — no real funds involved.
 
-<!-- TODO: replace with your screenshot -->
-![Wallet connected](docs/screenshots/wallet-connected.png)
+### Wallet connected & balance displayed
 
-### Balance displayed
+The header shows the connected account `GBVGGK…L4XMXS` with a **Disconnect** button and the live **499.05 XLM** balance fetched from Horizon.
 
-<!-- TODO: replace with your screenshot -->
-![Balance displayed](docs/screenshots/balance.png)
+![Wallet connected with balance displayed](docs/screenshots/wallet-and-balance.png)
 
-### Successful testnet transaction
+### Successful testnet transaction — result shown to the user
 
-<!-- TODO: replace with your screenshot -->
-![Successful transaction](docs/screenshots/transaction-success.png)
+After signing in Freighter, the app shows a **"Tea sent! 🍵"** confirmation with the transaction hash and a stellar.expert link, and the new supporter appears under **Recent supporters**.
+
+![Successful transaction with result shown to the user](docs/screenshots/transaction-success.png)
+
+### On-chain confirmation (stellar.expert)
+
+The same transaction on [stellar.expert](https://stellar.expert/explorer/testnet) — **Status: Successful**, network **testnet**, memo **"Test User"**, 10 XLM transferred.
+
+![Transaction confirmed on stellar.expert](docs/screenshots/stellar-expert.png)
+
+<details>
+<summary>Landing page (before connecting)</summary>
+
+![Landing page before wallet is connected](docs/screenshots/landing.png)
+
+</details>
 
 ## Project Structure
 
