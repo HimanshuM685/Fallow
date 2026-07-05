@@ -1,7 +1,7 @@
-// Soroban RPC layer for the crowdfunding contract.
+// Soroban RPC layer for the crowdfunding factory.
 // Reads go through transaction *simulation* (no fees, no signature); writes are
 // prepared (simulated + auth/footprint assembled), signed by the connected
-// wallet, submitted, and then polled to a final status.
+// wallet, submitted, and polled to a final status.
 
 import {
   Account,
@@ -13,11 +13,12 @@ import {
   nativeToScVal,
   scValToNative,
   rpc,
+  xdr,
 } from "@stellar/stellar-sdk";
 import {
-  ADMIN_ADDRESS,
   CONTRACT_ID,
   NATIVE_SAC_ID,
+  READ_SOURCE_ADDRESS,
   SOROBAN_RPC_URL,
   STROOPS_PER_XLM,
 } from "./config";
@@ -27,30 +28,29 @@ const server = new rpc.Server(SOROBAN_RPC_URL);
 const contract = new Contract(CONTRACT_ID);
 const sac = new Contract(NATIVE_SAC_ID);
 
-/** Signs an XDR string and returns the signed XDR. Provided by the wallet kit. */
 export type SignFn = (xdr: string) => Promise<{ signedTxXdr: string }>;
-
-/** Lifecycle a write goes through, surfaced to the UI. */
 export type TxPhase = "building" | "signing" | "pending" | "success" | "error";
 
-export interface CampaignState {
-  admin: string;
-  token: string;
+export interface Campaign {
+  id: number;
+  creator: string;
+  title: string;
   goalStroops: bigint;
   raisedStroops: bigint;
   deadline: number; // unix seconds
-  donors: number;
+  withdrawn: boolean;
 }
 
 export interface ActivityEvent {
   id: string;
-  kind: string; // contrib | reached | withdrawn | refund | init
+  kind: string; // created | contrib | reached | withdrawn | refund
+  campaignId: number | null;
   from: string | null;
-  amount: bigint | null; // stroops
-  raised: bigint | null; // stroops
+  amount: bigint | null;
+  raised: bigint | null;
   ledger: number;
   txHash: string;
-  at: string; // ISO timestamp
+  at: string;
 }
 
 // ---------- unit + formatting helpers ----------
@@ -75,24 +75,24 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 /** Fund a testnet account with test XLM via Friendbot. */
 export async function fundWithFriendbot(address: string): Promise<void> {
   const res = await fetch(`https://friendbot.stellar.org/?addr=${encodeURIComponent(address)}`);
-  if (!res.ok) {
-    // 400 usually means the account already exists — not a real failure.
-    if (res.status === 400) return;
+  if (!res.ok && res.status !== 400) {
     throw new Error(`Friendbot funding failed (${res.status})`);
   }
 }
 
 const addressScVal = (addr: string) => new Address(addr).toScVal();
+const u32ScVal = (n: number) => nativeToScVal(n, { type: "u32" });
+const u64ScVal = (n: number) => nativeToScVal(BigInt(n), { type: "u64" });
 const i128ScVal = (stroops: bigint) => nativeToScVal(stroops, { type: "i128" });
+const stringScVal = (s: string) => nativeToScVal(s, { type: "string" });
 
 // ---------- reads (simulation only) ----------
 
-// Any existing account works as the simulation source; sequence is ignored.
 async function simulateCall(
   target: Contract,
   method: string,
-  args: ReturnType<typeof addressScVal>[] = [],
-  source: string = ADMIN_ADDRESS,
+  args: xdr.ScVal[] = [],
+  source: string = READ_SOURCE_ADDRESS,
 ): Promise<unknown> {
   const account = new Account(source, "0");
   const tx = new TransactionBuilder(account, {
@@ -109,30 +109,50 @@ async function simulateCall(
   return scValToNative(sim.result.retval);
 }
 
-export async function getCampaign(): Promise<CampaignState> {
-  const c = (await simulateCall(contract, "get_campaign")) as {
-    admin: string;
-    token: string;
-    goal: bigint;
-    raised: bigint;
-    deadline: bigint;
-    donors: number;
-  };
+interface RawCampaign {
+  id: number;
+  creator: string;
+  title: string;
+  goal: bigint;
+  raised: bigint;
+  deadline: bigint;
+  withdrawn: boolean;
+}
+
+function mapCampaign(c: RawCampaign): Campaign {
   return {
-    admin: c.admin,
-    token: c.token,
+    id: Number(c.id),
+    creator: c.creator,
+    title: c.title,
     goalStroops: BigInt(c.goal),
     raisedStroops: BigInt(c.raised),
     deadline: Number(c.deadline),
-    donors: Number(c.donors),
+    withdrawn: c.withdrawn,
   };
 }
 
-export async function getContribution(who: string): Promise<bigint> {
+export async function getCampaignCount(): Promise<number> {
+  return Number((await simulateCall(contract, "get_campaign_count")) as number);
+}
+
+export async function getCampaigns(start = 0, limit = 50): Promise<Campaign[]> {
+  const raw = (await simulateCall(contract, "get_campaigns", [
+    u32ScVal(start),
+    u32ScVal(limit),
+  ])) as RawCampaign[];
+  return raw.map(mapCampaign);
+}
+
+export async function getCampaign(id: number): Promise<Campaign> {
+  const c = (await simulateCall(contract, "get_campaign", [u32ScVal(id)])) as RawCampaign;
+  return mapCampaign(c);
+}
+
+export async function getContribution(id: number, who: string): Promise<bigint> {
   const v = (await simulateCall(
     contract,
     "get_contribution",
-    [addressScVal(who)],
+    [u32ScVal(id), addressScVal(who)],
     who,
   )) as bigint;
   return BigInt(v ?? 0);
@@ -140,12 +160,7 @@ export async function getContribution(who: string): Promise<bigint> {
 
 /** Reads the native XLM balance of a classic account via the native SAC. */
 export async function getXlmBalance(address: string): Promise<bigint> {
-  const v = (await simulateCall(
-    sac,
-    "balance",
-    [addressScVal(address)],
-    address,
-  )) as bigint;
+  const v = (await simulateCall(sac, "balance", [addressScVal(address)], address)) as bigint;
   return BigInt(v ?? 0);
 }
 
@@ -159,7 +174,7 @@ interface WriteArgs {
 
 async function invoke(
   method: string,
-  args: ReturnType<typeof addressScVal>[],
+  args: xdr.ScVal[],
   { address, sign, onPhase }: WriteArgs,
 ): Promise<{ hash: string; returnValue: unknown }> {
   onPhase?.("building");
@@ -172,7 +187,6 @@ async function invoke(
     .setTimeout(180)
     .build();
 
-  // Simulate + attach Soroban auth and the ledger footprint.
   const prepared = await server.prepareTransaction(built);
 
   onPhase?.("signing");
@@ -199,46 +213,50 @@ async function pollTransaction(hash: string): Promise<unknown> {
     if (res.status === rpc.Api.GetTransactionStatus.FAILED) {
       throw new Error("Transaction failed on-chain");
     }
-    await sleep(1500); // NOT_FOUND → still settling
+    await sleep(1500);
   }
   throw new Error("Timed out waiting for confirmation");
 }
 
-export function contribute(amountStroops: bigint, w: WriteArgs) {
-  return invoke("contribute", [addressScVal(w.address), i128ScVal(amountStroops)], w);
+export async function createCampaign(
+  title: string,
+  goalStroops: bigint,
+  deadline: number,
+  w: WriteArgs,
+): Promise<{ hash: string; campaignId: number }> {
+  const { hash, returnValue } = await invoke(
+    "create_campaign",
+    [addressScVal(w.address), stringScVal(title), i128ScVal(goalStroops), u64ScVal(deadline)],
+    w,
+  );
+  return { hash, campaignId: Number(returnValue) };
 }
 
-export function withdraw(w: WriteArgs) {
-  return invoke("withdraw", [], w);
+export function contribute(id: number, amountStroops: bigint, w: WriteArgs) {
+  return invoke("contribute", [u32ScVal(id), addressScVal(w.address), i128ScVal(amountStroops)], w);
 }
 
-export function refund(w: WriteArgs) {
-  return invoke("refund", [addressScVal(w.address)], w);
+export function withdraw(id: number, w: WriteArgs) {
+  return invoke("withdraw", [u32ScVal(id)], w);
+}
+
+export function refund(id: number, w: WriteArgs) {
+  return invoke("refund", [u32ScVal(id), addressScVal(w.address)], w);
 }
 
 // ---------- events (real-time via polling) ----------
 
-interface EventFilterResult {
-  events: ActivityEvent[];
-  latestLedger: number;
-}
-
-/**
- * Fetch contract events since `startLedger` (defaults to a recent window).
- * Soroban RPC has no push/websocket — the UI polls this on an interval.
- */
-export async function getEvents(startLedger?: number): Promise<EventFilterResult> {
+export async function getEvents(): Promise<{ events: ActivityEvent[]; latestLedger: number }> {
   const latest = await server.getLatestLedger();
   const filters = [{ type: "contract" as const, contractIds: [CONTRACT_ID] }];
 
-  let start = startLedger && startLedger > 0 ? startLedger : Math.max(1, latest.sequence - 8000);
+  let start = Math.max(1, latest.sequence - 8000);
   let res;
   try {
-    res = await server.getEvents({ startLedger: start, filters, limit: 100 });
+    res = await server.getEvents({ startLedger: start, filters, limit: 200 });
   } catch {
-    // startLedger fell outside the RPC retention window — retry near the tip.
     start = Math.max(1, latest.sequence - 240);
-    res = await server.getEvents({ startLedger: start, filters, limit: 100 });
+    res = await server.getEvents({ startLedger: start, filters, limit: 200 });
   }
 
   const events = res.events
@@ -251,6 +269,7 @@ function parseEvent(ev: rpc.Api.EventResponse): ActivityEvent | null {
   try {
     const topics = ev.topic.map((t) => scValToNative(t));
     const kind = String(topics[0]);
+    const campaignId = topics[1] !== undefined ? Number(topics[1]) : null;
     const value = scValToNative(ev.value);
 
     let from: string | null = null;
@@ -258,23 +277,24 @@ function parseEvent(ev: rpc.Api.EventResponse): ActivityEvent | null {
     let raised: bigint | null = null;
 
     if (kind === "contrib") {
-      from = String(topics[1]);
+      from = topics[2] ? String(topics[2]) : null;
       amount = BigInt(value[0]);
       raised = BigInt(value[1]);
+    } else if (kind === "created") {
+      from = topics[2] ? String(topics[2]) : null;
     } else if (kind === "refund") {
-      from = String(topics[1]);
+      from = topics[2] ? String(topics[2]) : null;
       amount = BigInt(value);
     } else if (kind === "withdrawn") {
       amount = BigInt(value);
     } else if (kind === "reached") {
       raised = BigInt(value);
-    } else if (kind === "init") {
-      from = topics[1] ? String(topics[1]) : null;
     }
 
     return {
       id: ev.id,
       kind,
+      campaignId,
       from,
       amount,
       raised,
@@ -296,9 +316,7 @@ export function describeError(err: unknown): { kind: ErrorKind; message: string 
     err instanceof Error ? err.message : typeof err === "string" ? err : JSON.stringify(err);
   const msg = (raw || "").toLowerCase();
 
-  if (
-    /not installed|not available|no wallet|unavailable|can't find|cannot find|extension/.test(msg)
-  ) {
+  if (/not installed|not available|no wallet|unavailable|can't find|cannot find|extension/.test(msg)) {
     return {
       kind: "wallet-not-found",
       message: "Wallet not found. Is the extension installed and unlocked?",
@@ -307,14 +325,10 @@ export function describeError(err: unknown): { kind: ErrorKind; message: string 
   if (/reject|denied|declined|cancel|user closed|closed the modal|not allowed/.test(msg)) {
     return { kind: "rejected", message: "Request rejected in your wallet." };
   }
-  if (
-    /insufficient|underfunded|not enough|txinsufficientbalance|balance is too low|#10|trustline/.test(
-      msg,
-    )
-  ) {
+  if (/insufficient|underfunded|not enough|txinsufficientbalance|balance is too low|#10|trustline/.test(msg)) {
     return {
       kind: "insufficient",
-      message: "Insufficient testnet XLM balance for this contribution.",
+      message: "Insufficient testnet XLM balance for this transaction.",
     };
   }
   return { kind: "unknown", message: raw || "Something went wrong." };

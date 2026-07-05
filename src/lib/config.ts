@@ -1,19 +1,20 @@
-// Deployed Soroban crowdfunding contract (Stellar testnet).
-// Redeploy with `contract/` + `stellar contract deploy` and drop the new id here
-// (or set the matching NEXT_PUBLIC_* env var) to point the frontend elsewhere.
+// Deployed Soroban crowdfunding *factory* (Stellar testnet).
+// Anyone can create a campaign or contribute — there is no privileged admin.
+// Redeploy from `contract/` and drop the new id here (or set NEXT_PUBLIC_*).
 
 export const CONTRACT_ID =
   process.env.NEXT_PUBLIC_CONTRACT_ID ??
-  "CAPBMALOG2MXQZLPWQIVCI65DG74ELN6OG4D7RR7HTYFTZWFA3YBHBDH";
+  "CDAVG46KQE4IGGSP4Q2CJ4WSL3CAAFUF73CH4MYR3N4G75JYNH2NR46B";
 
-// Native XLM Stellar Asset Contract on testnet (the token the campaign collects).
+// Native XLM Stellar Asset Contract on testnet (the token campaigns collect).
 export const NATIVE_SAC_ID =
   process.env.NEXT_PUBLIC_NATIVE_SAC_ID ??
   "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC";
 
-// Contract admin — the only address allowed to withdraw once the goal is met.
-export const ADMIN_ADDRESS =
-  process.env.NEXT_PUBLIC_ADMIN_ADDRESS ??
+// A funded account used only as the *source* for read-only simulations
+// (no signature, no privileges). Any existing testnet account works.
+export const READ_SOURCE_ADDRESS =
+  process.env.NEXT_PUBLIC_READ_SOURCE ??
   "GDMFYJCUB23Q7ID26S3KGTRAR2LAQUNDKOQ2IZOAKVRWJ3THTNSHECSQ";
 
 export const SOROBAN_RPC_URL =
@@ -30,13 +31,12 @@ export const EXPLORER_CONTRACT = (id: string) =>
 export const EXPLORER_ACCOUNT = (addr: string) =>
   `https://stellar.expert/explorer/testnet/account/${addr}`;
 
-// On-page campaign copy (generic open-source fund — edit freely).
-export const CAMPAIGN = {
-  title: "Fund an open-source Stellar toolkit",
-  tagline: "Help ship a free, MIT-licensed developer kit for building on Stellar.",
-  blurb:
-    "Every contribution is real testnet XLM held in escrow by the smart contract. " +
-    "If we hit the goal, the maintainer can withdraw to keep building. If we fall " +
-    "short by the deadline, you can refund yourself — trustlessly, on-chain.",
-  presets: [25, 100, 250], // XLM quick-pick buttons
+export const APP = {
+  name: "Fallow",
+  tagline: "Community crowdfunding on Stellar. Start a campaign or back one — funds are escrowed on-chain.",
+  // quick-pick contribution amounts (XLM)
+  contributePresets: [10, 50, 100],
+  // create-form defaults
+  defaultDurationDays: 30,
+  titleMaxLength: 40,
 };

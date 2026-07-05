@@ -1,28 +1,29 @@
-# ◎ Fallow — Stellar Crowdfunding dApp
+# ◎ Fallow — Stellar Crowdfunding
 
-A crowdfunding dApp built for **Level 2 – Yellow Belt** of the Stellar frontend challenge. Back an open-source campaign with **real testnet XLM** that is held in **escrow by a Soroban smart contract**, and watch the funding progress update in real time. Connect **any** Stellar wallet (Freighter, xBull, Albedo, Lobstr, Rabet, Hana) via StellarWalletsKit.
+A crowdfunding dApp built for **Level 2 – Yellow Belt** of the Stellar frontend challenge. It's a **campaign factory**: connect **any** Stellar wallet and either **start a campaign** or **contribute** to an existing one. Contributions are real testnet XLM held in **escrow by a Soroban smart contract**, and progress updates in real time.
 
-> Level 1 (the tip-jar) lives in this repo's git history; `main` is now the Level 2 crowdfunding app.
+**There is no privileged admin.** Whoever creates a campaign is its owner and sole beneficiary — they (and only they) can withdraw once the goal is met. Backers can refund themselves if a campaign's deadline passes without reaching its goal. The account that deployed the contract has no special powers.
+
+> Level 1 (a single-creator tip jar) lives in this repo's git history; `main` is now the Level 2 crowdfunding factory.
 
 ## What it does
 
 - 🔌 **Multi-wallet** connect via StellarWalletsKit — Freighter, xBull, Albedo, Lobstr, Rabet, Hana.
-- 📜 **Soroban smart contract** deployed on testnet holds contributions in escrow.
-- 💸 **Contribute** real testnet XLM — the contract pulls funds in via the native asset contract and records your pledge.
-- 📊 **Live progress bar** — raised / goal / backers / time-left, polled from contract state.
-- 📡 **Real-time activity feed** — contract events (`contribute` / `goal_reached` / `withdrawn` / `refund`) streamed by polling Soroban RPC's `getEvents`.
-- ⏳ **Transaction status tracking** — every action shows building → signing → pending → success/fail, with a stellar.expert link on success.
-- 🧯 **Error handling** — three headline categories are caught and shown distinctly: **wallet not found**, **request rejected**, **insufficient balance** (plus a generic fallback).
-- 🏦 **Escrow rules on-chain** — the admin can `withdraw` once the goal is met; backers can `refund` themselves if the deadline passes unmet.
+- 🏗️ **Anyone can create a campaign** (title, goal, duration) — the creator becomes its owner.
+- 💸 **Contribute** real testnet XLM to any campaign; the contract escrows the funds.
+- 📊 **Live progress** — each campaign shows raised / goal / % / time-left, polled from contract state.
+- 📡 **Real-time activity feed** — contract events (`created` / `contrib` / `reached` / `withdrawn` / `refund`) streamed by polling Soroban RPC's `getEvents`.
+- ⏳ **Transaction status tracking** — every action shows building → signing → pending → success/fail, with a stellar.expert link.
+- 🧯 **Error handling** — three headline categories caught and shown distinctly: **wallet not found**, **request rejected**, **insufficient balance** (plus a generic fallback).
+- 🏦 **Escrow rules on-chain** — creator `withdraw` once the goal is met; backer `refund` after a failed deadline.
 
 ## Deployed contract (testnet)
 
 | | |
 |---|---|
-| Contract ID | [`CAPBMALOG2MXQZLPWQIVCI65DG74ELN6OG4D7RR7HTYFTZWFA3YBHBDH`](https://stellar.expert/explorer/testnet/contract/CAPBMALOG2MXQZLPWQIVCI65DG74ELN6OG4D7RR7HTYFTZWFA3YBHBDH) |
-| Admin | `GDMFYJCUB23Q7ID26S3KGTRAR2LAQUNDKOQ2IZOAKVRWJ3THTNSHECSQ` |
+| Contract ID | [`CDAVG46KQE4IGGSP4Q2CJ4WSL3CAAFUF73CH4MYR3N4G75JYNH2NR46B`](https://stellar.expert/explorer/testnet/contract/CDAVG46KQE4IGGSP4Q2CJ4WSL3CAAFUF73CH4MYR3N4G75JYNH2NR46B) |
 | Token collected | Native XLM SAC `CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC` |
-| Goal | 1,000 XLM |
+| Admin | none — each campaign is owned by its creator |
 | Network | Stellar Testnet |
 
 ## Tech Stack
@@ -34,7 +35,36 @@ A crowdfunding dApp built for **Level 2 – Yellow Belt** of the Stellar fronten
 | Wallets | `@creit.tech/stellar-wallets-kit` (StellarWalletsKit) |
 | Chain access | `@stellar/stellar-sdk` **Soroban RPC** (simulate / prepare / send / getEvents) |
 
-**Horizon vs Soroban RPC:** Level 1 talked to **Horizon** (the classic API for payments & balances). Smart-contract calls go through **Soroban RPC** (`soroban-testnet.stellar.org`) instead — a separate endpoint used to *simulate* reads, *prepare* (assemble auth + footprint) and *send* writes, and stream contract *events*. Soroban has no websockets, so "real-time" here means polling `getEvents` + contract state on a 5s interval.
+**Horizon vs Soroban RPC:** Level 1 talked to **Horizon** (the classic API for payments & balances). Smart-contract calls go through **Soroban RPC** (`soroban-testnet.stellar.org`) instead — used to *simulate* reads, *prepare* (assemble auth + footprint) and *send* writes, and stream contract *events*. Soroban has no websockets, so "real-time" here means polling `getEvents` + contract state on a 5s interval.
+
+## The smart contract
+
+Rust source is in [`contract/crowdfund/`](contract/crowdfund/src/lib.rs). Functions:
+
+| Function | Who | Effect |
+|---|---|---|
+| `initialize(token)` | anyone, once | records the token the factory collects (native XLM SAC) |
+| `create_campaign(creator, title, goal, deadline)` → id | anyone | creates a campaign owned by `creator`; emits `created` |
+| `contribute(id, from, amount)` | anyone | escrows `amount` into campaign `id`; emits `contrib` (+ `reached` when the goal is crossed) |
+| `withdraw(id)` | campaign creator | sends the campaign's escrow to its creator — only once the goal is met |
+| `refund(id, from)` | backer | returns a backer's contribution — only after the deadline if the goal was missed |
+| `get_campaigns(start, limit)` / `get_campaign(id)` / `get_campaign_count()` / `get_contribution(id, who)` | anyone (read) | campaign list / one campaign / count / a backer's total |
+
+### Build, test & deploy it yourself
+
+```sh
+cd contract
+cargo test                       # 7 unit tests
+stellar contract build           # -> target/wasm32v1-none/release/crowdfund.wasm
+
+stellar keys generate deployer --network testnet --fund
+CID=$(stellar contract deploy --wasm target/wasm32v1-none/release/crowdfund.wasm \
+  --source deployer --network testnet)
+TOKEN=$(stellar contract id asset --asset native --network testnet)
+stellar contract invoke --id "$CID" --source deployer --network testnet -- initialize --token "$TOKEN"
+```
+
+The deployer gets **no special powers** — it only uploads the code and records the token. Put the new `$CID` in `src/lib/config.ts` (or set `NEXT_PUBLIC_CONTRACT_ID`).
 
 ## Getting Started
 
@@ -54,7 +84,7 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:3000 in a browser with a Stellar wallet installed. Use **"Need test XLM?"** (Friendbot) to fund a fresh account, then contribute.
+Open http://localhost:3000 in a browser with a Stellar wallet installed.
 
 ### Build for production
 
@@ -63,61 +93,31 @@ npm run build
 npm run start
 ```
 
-## The smart contract
-
-Rust source is in [`contract/crowdfund/`](contract/crowdfund/src/lib.rs). Functions:
-
-| Function | Who | Effect |
-|---|---|---|
-| `initialize(admin, token, goal, deadline)` | deployer, once | configures the campaign |
-| `contribute(from, amount)` | anyone | transfers `amount` into escrow, records the pledge, emits `contrib` (and `reached` when the goal is crossed) |
-| `withdraw()` | admin | sends all escrowed funds to the admin — only once the goal is met |
-| `refund(from)` | backer | returns a backer's contribution — only after the deadline if the goal was missed |
-| `get_campaign()` / `get_contribution(who)` | anyone (read) | current totals / a single backer's total |
-
-### Build, test & deploy it yourself
-
-```sh
-cd contract
-cargo test                       # 5 unit tests (contribute / withdraw / refund / deadline)
-stellar contract build           # -> target/wasm32v1-none/release/crowdfund.wasm
-
-# fund a deployer, deploy, and initialize
-stellar keys generate deployer --network testnet --fund
-CID=$(stellar contract deploy --wasm target/wasm32v1-none/release/crowdfund.wasm \
-  --source deployer --network testnet)
-TOKEN=$(stellar contract id asset --asset native --network testnet)
-stellar contract invoke --id "$CID" --source deployer --network testnet -- \
-  initialize --admin "$(stellar keys address deployer)" --token "$TOKEN" \
-  --goal 10000000000 --deadline "$(date -v+30d +%s)"
-```
-
-Then put the new `$CID` in `src/lib/config.ts` (or set `NEXT_PUBLIC_CONTRACT_ID`).
-
 ## How to use
 
 1. **Connect wallet** → pick any wallet in the StellarWalletsKit modal.
-2. If your account is unfunded, click **Need test XLM?** to fund it via Friendbot.
-3. Pick a preset (25 / 100 / 250) or enter a custom amount and click **Contribute** — watch the status go building → signing → pending → success.
-4. The progress bar, backer count, and **Live activity** feed update automatically as events land on-chain.
-5. If you're the **admin** and the goal is met, a **Withdraw** button appears. If the **deadline** passes with the goal unmet, backers see a **Refund** button.
+2. If your account is unfunded, click **Fund** (Friendbot) in the header.
+3. **Start a campaign** — give it a title, goal, and duration, then sign one transaction. You own it.
+4. Or **contribute** to any campaign: pick/enter an amount and sign — watch the status go building → signing → pending → success.
+5. Progress bars and the **Live activity** feed update automatically as events land on-chain.
+6. On your own funded campaign, a **Withdraw** button appears. On a campaign that ended below its goal, backers see a **Refund** button.
 
 ## Requirements checklist (Level 2)
 
 - ✅ **3 error types handled** — wallet not found, request rejected, insufficient balance (`describeError` in `src/lib/soroban.ts`).
 - ✅ **Contract deployed on testnet** — see contract ID above.
 - ✅ **Contract called from the frontend** — reads via simulation, writes via prepare → sign → send (`src/lib/soroban.ts`).
-- ✅ **Transaction status visible** — building / signing / pending / success / fail in the widget.
-- ✅ **Real-time event integration** — `getEvents` polling drives the live activity feed + progress.
+- ✅ **Transaction status visible** — building / signing / pending / success / fail on every action.
+- ✅ **Real-time event integration** — `getEvents` polling drives the live feed + progress.
 
 ## Screenshots
 
 > All screenshots are on the **Stellar testnet**.
 
-### Wallet connected & campaign progress
+### Browse & create campaigns (wallet connected)
 
-<!-- TODO: capture with a wallet connected — header chip + progress bar visible -->
-![Wallet connected and live progress](docs/screenshots/l2-connected.png)
+<!-- TODO: capture with a wallet connected — header chip + campaign grid + create form -->
+![Campaigns list with a wallet connected](docs/screenshots/l2-campaigns.png)
 
 ### Contribution — transaction status → success
 
@@ -126,25 +126,25 @@ Then put the new `$CID` in `src/lib/config.ts` (or set `NEXT_PUBLIC_CONTRACT_ID`
 
 ### On-chain confirmation (stellar.expert)
 
-<!-- TODO: capture the contribute tx on stellar.expert -->
-![Contribution confirmed on stellar.expert](docs/screenshots/l2-explorer.png)
+<!-- TODO: capture a contribute/create tx on stellar.expert -->
+![Transaction confirmed on stellar.expert](docs/screenshots/l2-explorer.png)
 
 ## Project structure
 
 ```
 contract/
 └── crowdfund/
-    ├── src/lib.rs          # escrow crowdfunding contract
-    └── src/test.rs         # unit tests
+    ├── src/lib.rs          # crowdfunding factory (escrow) contract
+    └── src/test.rs         # 7 unit tests
 src/
 ├── app/
 │   ├── layout.tsx          # root layout + metadata
 │   ├── globals.css         # theme tokens + all component styles
-│   └── page.tsx            # "/" → Campaign (client-only, ssr:false)
+│   └── page.tsx            # "/" → App (client-only, ssr:false)
 ├── components/
-│   └── Campaign.tsx        # UI: connect, progress, contribute, tx status, activity
+│   └── Campaign.tsx        # App shell: connect, create, browse, contribute, activity
 └── lib/
-    ├── config.ts           # contract id, SAC id, RPC url, campaign copy
+    ├── config.ts           # contract id, SAC id, RPC url, app copy
     ├── soroban.ts          # Soroban RPC: reads, writes, events, errors
     └── wallet.ts           # StellarWalletsKit multi-wallet connector
 ```

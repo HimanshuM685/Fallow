@@ -643,15 +643,229 @@ body {
   line-height: 1.6;
 }
 
+/* ---- masthead ---- */
+.masthead {
+  margin-bottom: 26px;
+}
+.masthead-title {
+  font-size: 2.1rem;
+  letter-spacing: -0.02em;
+  margin: 0 0 8px;
+}
+.masthead-tagline {
+  color: var(--muted);
+  font-size: 1.02rem;
+  max-width: 60ch;
+  margin: 0 0 18px;
+}
+.masthead-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.btn-primary.inline {
+  width: auto;
+  padding: 12px 22px;
+}
+.banner.top {
+  margin-top: 16px;
+}
+
+/* ---- two-column app layout ---- */
+.layout-2 {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 20px;
+  align-items: start;
+}
+.section-title {
+  font-size: 1.05rem;
+  margin: 0 0 14px;
+}
+.empty {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--muted);
+  text-align: center;
+  padding: 40px 26px;
+}
+.empty strong {
+  color: var(--ink);
+  font-size: 1.05rem;
+}
+
+/* ---- create panel ---- */
+.create-panel {
+  margin-bottom: 26px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+  flex: 1;
+}
+.field-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+.field input {
+  border: 1px solid var(--line);
+  background: var(--field);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 12px 14px;
+  border-radius: var(--r-field);
+  outline: none;
+}
+.field input:focus {
+  border-color: var(--accent);
+}
+.field-row {
+  display: flex;
+  gap: 12px;
+}
+.create-note {
+  margin: 12px 0 0;
+}
+
+/* ---- campaign grid + cards ---- */
+.campaign-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+.ccard {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+.ccard-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+.ccard-title {
+  font-size: 1.1rem;
+  margin: 0;
+  line-height: 1.25;
+}
+.tag {
+  flex: none;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 4px 9px;
+  border-radius: var(--r-pill);
+}
+.tag.live {
+  background: var(--tint);
+  color: var(--accent-deep);
+}
+.tag.good {
+  background: color-mix(in srgb, var(--good) 16%, var(--surface));
+  color: var(--good);
+}
+.tag.bad,
+.tag.done {
+  background: var(--field);
+  color: var(--muted);
+}
+.ccard-meta {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin: 6px 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.you {
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 700;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: var(--r-pill);
+}
+.ccard-nums {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.92rem;
+  margin-bottom: 8px;
+}
+.ccard-nums .pct {
+  font-weight: 700;
+  color: var(--accent);
+}
+.ccard-sub {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.ccard-contribute {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.presets.sm {
+  margin-bottom: 8px;
+}
+.presets.sm .preset {
+  padding: 9px 0;
+  font-size: 0.9rem;
+}
+.amount-field {
+  margin-bottom: 10px;
+}
+.btn-primary.sm,
+.btn-ghost.sm {
+  padding: 11px;
+  font-size: 0.92rem;
+}
+.ccard-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 14px;
+}
+.status.sm,
+.banner.sm {
+  margin-top: 12px;
+  padding: 9px 12px;
+  font-size: 0.82rem;
+}
+.banner.good.sm a {
+  margin-left: 4px;
+}
+
 /* ---- responsive ---- */
-@media (max-width: 760px) {
-  .layout {
+@media (max-width: 820px) {
+  .layout-2 {
     grid-template-columns: 1fr;
   }
-  .campaign-title {
-    font-size: 1.6rem;
+}
+@media (max-width: 760px) {
+  .masthead-title {
+    font-size: 1.7rem;
   }
   .chip-bal {
     display: none;
+  }
+  .field-row {
+    flex-direction: column;
+    gap: 0;
   }
 }
