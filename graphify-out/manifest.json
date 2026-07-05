@@ -1,0 +1,102 @@
+{
+  "/Users/fusion/Code/GitRepos/Fallow/.claude/settings.local.json": {
+    "mtime": 1783196666.3059351,
+    "ast_hash": "f4a6c87ca7fd61acdda4d44fad823419",
+    "semantic_hash": "f4a6c87ca7fd61acdda4d44fad823419"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/.oxlintrc.json": {
+    "mtime": 1783196639.9307914,
+    "ast_hash": "029f4905006c1fffd96bc863e2d98d3e",
+    "semantic_hash": "029f4905006c1fffd96bc863e2d98d3e"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/package.json": {
+    "mtime": 1783196698.317037,
+    "ast_hash": "33c47a88c88566312382521da53feec5",
+    "semantic_hash": "33c47a88c88566312382521da53feec5"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/src/App.tsx": {
+    "mtime": 1783251485.319145,
+    "ast_hash": "2bd6b2e946d388c93241b6fde03a6a25",
+    "semantic_hash": "2bd6b2e946d388c93241b6fde03a6a25"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/src/lib/stellar.ts": {
+    "mtime": 1783251392.3081648,
+    "ast_hash": "3201d45007295a59c4e12ad30efef945",
+    "semantic_hash": "3201d45007295a59c4e12ad30efef945"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/src/main.tsx": {
+    "mtime": 1783196639.9356902,
+    "ast_hash": "787e5a07efeb2bf6209d5937195f2f68",
+    "semantic_hash": "787e5a07efeb2bf6209d5937195f2f68"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/tsconfig.app.json": {
+    "mtime": 1783196639.936044,
+    "ast_hash": "5f2dafd737dea8a4ddcbb10f5113ac5a",
+    "semantic_hash": "5f2dafd737dea8a4ddcbb10f5113ac5a"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/tsconfig.json": {
+    "mtime": 1783196639.9363575,
+    "ast_hash": "a3d39fa780ebff65444de257f291ce6c",
+    "semantic_hash": "a3d39fa780ebff65444de257f291ce6c"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/tsconfig.node.json": {
+    "mtime": 1783196639.9366567,
+    "ast_hash": "f9cb81ddcea69ffdab672fc8c48dca66",
+    "semantic_hash": "f9cb81ddcea69ffdab672fc8c48dca66"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/vite.config.ts": {
+    "mtime": 1783196639.9369676,
+    "ast_hash": "88439104b3c207f17d33ef3160e3b080",
+    "semantic_hash": "88439104b3c207f17d33ef3160e3b080"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/README.md": {
+    "mtime": 1783250030.2050307,
+    "ast_hash": "f7f57ecb8cf9180ca53a586a65420989",
+    "semantic_hash": "f7f57ecb8cf9180ca53a586a65420989"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/index.html": {
+    "mtime": 1783196853.892371,
+    "ast_hash": "b25567fd05a3095ba75feedaa06c25df",
+    "semantic_hash": "b25567fd05a3095ba75feedaa06c25df"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/public/favicon.svg": {
+    "mtime": 1783196869.6940062,
+    "ast_hash": "57b9be68aa77353762750aa6ffa18735",
+    "semantic_hash": "57b9be68aa77353762750aa6ffa18735"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/public/icons.svg": {
+    "mtime": 1783196639.9324286,
+    "ast_hash": "3b4fcfcf393eca4d264dca4a4663bc37",
+    "semantic_hash": "3b4fcfcf393eca4d264dca4a4663bc37"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/src/assets/hero.png": {
+    "mtime": 1783196639.9340453,
+    "ast_hash": "aead493361b27e7510691c5d7072dfc1",
+    "semantic_hash": "aead493361b27e7510691c5d7072dfc1"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/src/assets/vite.svg": {
+    "mtime": 1783196639.9349957,
+    "ast_hash": "9960a24288958394ac50e57ff638b036",
+    "semantic_hash": "9960a24288958394ac50e57ff638b036"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/.claude/skills/verify-dapp/SKILL.md": {
+    "mtime": 1783197246.7626421,
+    "ast_hash": "181dab7f04ef7fcfb12454ccf36a4f4d",
+    "semantic_hash": "181dab7f04ef7fcfb12454ccf36a4f4d"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/src/Admin.tsx": {
+    "mtime": 1783251477.1527555,
+    "ast_hash": "7c1e397b9b7fe692d7731440f80d2633",
+    "semantic_hash": "7c1e397b9b7fe692d7731440f80d2633"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/src/TipJar.tsx": {
+    "mtime": 1783251520.9446697,
+    "ast_hash": "bec207420ba5428a14fae3a7405f57bc",
+    "semantic_hash": "bec207420ba5428a14fae3a7405f57bc"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/src/config.ts": {
+    "mtime": 1783251402.3984995,
+    "ast_hash": "8d3b8600b2e346735e6fbd059ed0765c",
+    "semantic_hash": "8d3b8600b2e346735e6fbd059ed0765c"
+  }
+}
