@@ -30,6 +30,10 @@ next-env.d.ts
 .env*.local
 .vercel
 
+# Rust / Soroban contract build output
+target/
+contract/target/
+
 # Claude Code personal files
 CLAUDE.local.md
 .claude/settings.local.json
