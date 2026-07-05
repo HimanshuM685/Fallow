@@ -1,21 +1,21 @@
 #![no_std]
 
-//! Crowdfunding escrow contract.
+//! Crowdfunding factory.
 //!
-//! Donors `contribute` native XLM (via the Stellar Asset Contract) into this
-//! contract, which holds the funds. When the goal is reached the `admin` can
-//! `withdraw`. If the deadline passes without the goal being met, donors can
-//! `refund` their own contribution. State is readable through `get_campaign`
-//! and `get_contribution`; every state change emits an event so the frontend
-//! can keep a live progress bar in sync.
+//! There is **no privileged admin**. Anyone can `create_campaign` — the creator
+//! becomes that campaign's owner and sole beneficiary. Anyone can `contribute`
+//! native XLM (via the Stellar Asset Contract) to any campaign; the funds are
+//! held in escrow by this contract. A campaign's creator can `withdraw` once its
+//! goal is met, and backers can `refund` themselves if a campaign's deadline
+//! passes without reaching its goal. Every state change emits an event carrying
+//! the campaign id so the frontend can keep live progress in sync.
 
 use soroban_sdk::{
     contract, contracterror, contractimpl, contracttype, panic_with_error, symbol_short, token,
-    Address, Env,
+    Address, Env, String, Vec,
 };
 
-// Extend stored state TTL by ~30 days worth of ledgers on each write so a
-// testnet campaign doesn't get archived mid-demo (5s ledgers ≈ 17280/day).
+// Extend stored state TTL by ~30 days of ledgers on each write (5s ledgers).
 const BUMP_AMOUNT: u32 = 518_400;
 const BUMP_THRESHOLD: u32 = 60_480;
 
@@ -23,38 +23,40 @@ const BUMP_THRESHOLD: u32 = 60_480;
 #[derive(Copy, Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
 #[repr(u32)]
 pub enum Error {
-    AlreadyInitialized = 1,
-    NotInitialized = 2,
+    NotInitialized = 1,
+    AlreadyInitialized = 2,
     InvalidAmount = 3,
-    DeadlinePassed = 4,
-    GoalNotReached = 5,
-    DeadlineNotReached = 6,
-    GoalAlreadyReached = 7,
-    NothingToRefund = 8,
+    InvalidDeadline = 4,
+    CampaignNotFound = 5,
+    DeadlinePassed = 6,
+    GoalNotReached = 7,
+    DeadlineNotReached = 8,
+    GoalAlreadyReached = 9,
+    NothingToRefund = 10,
+    AlreadyWithdrawn = 11,
+    NotCreator = 12,
 }
 
 #[derive(Clone)]
 #[contracttype]
 pub enum DataKey {
-    Admin,
     Token,
-    Goal,
-    Deadline,
-    Raised,
-    Donors,
-    Contribution(Address),
+    Count,
+    Campaign(u32),
+    Contribution(u32, Address),
 }
 
-/// Read-only snapshot of the campaign, returned by `get_campaign`.
+/// A single crowdfunding campaign.
 #[derive(Clone)]
 #[contracttype]
 pub struct Campaign {
-    pub admin: Address,
-    pub token: Address,
+    pub id: u32,
+    pub creator: Address,
+    pub title: String,
     pub goal: i128,
     pub raised: i128,
-    pub deadline: u64,
-    pub donors: u32,
+    pub deadline: u64, // unix seconds
+    pub withdrawn: bool,
 }
 
 #[contract]
@@ -62,160 +64,207 @@ pub struct Crowdfund;
 
 #[contractimpl]
 impl Crowdfund {
-    /// Configure the campaign. Callable exactly once.
-    ///
-    /// * `admin`    – address allowed to withdraw once the goal is met.
-    /// * `token`    – the token contract to collect (the native XLM SAC on testnet).
-    /// * `goal`     – target amount in stroops (1 XLM = 10_000_000 stroops).
-    /// * `deadline` – unix timestamp (seconds) after which contributions stop.
-    pub fn initialize(env: Env, admin: Address, token: Address, goal: i128, deadline: u64) {
+    /// One-time setup: record which token the factory collects (the native XLM
+    /// SAC on testnet). Has no admin powers beyond this.
+    pub fn initialize(env: Env, token: Address) {
         let storage = env.storage().instance();
-        if storage.has(&DataKey::Admin) {
+        if storage.has(&DataKey::Token) {
             panic_with_error!(&env, Error::AlreadyInitialized);
         }
+        storage.set(&DataKey::Token, &token);
+        storage.set(&DataKey::Count, &0u32);
+        storage.extend_ttl(BUMP_THRESHOLD, BUMP_AMOUNT);
+    }
+
+    /// Create a campaign. The caller becomes its creator/beneficiary. Returns the
+    /// new campaign id.
+    pub fn create_campaign(
+        env: Env,
+        creator: Address,
+        title: String,
+        goal: i128,
+        deadline: u64,
+    ) -> u32 {
+        creator.require_auth();
+        Self::require_init(&env);
         if goal <= 0 {
             panic_with_error!(&env, Error::InvalidAmount);
         }
-        storage.set(&DataKey::Admin, &admin);
-        storage.set(&DataKey::Token, &token);
-        storage.set(&DataKey::Goal, &goal);
-        storage.set(&DataKey::Deadline, &deadline);
-        storage.set(&DataKey::Raised, &0i128);
-        storage.set(&DataKey::Donors, &0u32);
-        storage.extend_ttl(BUMP_THRESHOLD, BUMP_AMOUNT);
+        if deadline <= env.ledger().timestamp() {
+            panic_with_error!(&env, Error::InvalidDeadline);
+        }
+
+        let id: u32 = Self::get(&env, &DataKey::Count);
+        let campaign = Campaign {
+            id,
+            creator: creator.clone(),
+            title,
+            goal,
+            raised: 0,
+            deadline,
+            withdrawn: false,
+        };
+        let storage = env.storage();
+        storage.persistent().set(&DataKey::Campaign(id), &campaign);
+        storage
+            .persistent()
+            .extend_ttl(&DataKey::Campaign(id), BUMP_THRESHOLD, BUMP_AMOUNT);
+        storage.instance().set(&DataKey::Count, &(id + 1));
+        storage.instance().extend_ttl(BUMP_THRESHOLD, BUMP_AMOUNT);
 
         env.events()
-            .publish((symbol_short!("init"), admin), (goal, deadline));
+            .publish((symbol_short!("created"), id, creator), (goal, deadline));
+        id
     }
 
-    /// Contribute `amount` stroops to the campaign. Transfers the tokens from
-    /// `from` into this contract (requires `from`'s authorization) and records
-    /// the pledge. Returns the new total raised.
-    pub fn contribute(env: Env, from: Address, amount: i128) -> i128 {
+    /// Contribute `amount` stroops to campaign `id`. Pulls the tokens into escrow
+    /// (requires `from`'s authorization). Returns the campaign's new total.
+    pub fn contribute(env: Env, id: u32, from: Address, amount: i128) -> i128 {
         from.require_auth();
         Self::require_init(&env);
-
         if amount <= 0 {
             panic_with_error!(&env, Error::InvalidAmount);
         }
-        let deadline: u64 = Self::get(&env, &DataKey::Deadline);
-        if env.ledger().timestamp() > deadline {
+
+        let mut campaign = Self::load_campaign(&env, id);
+        if env.ledger().timestamp() > campaign.deadline {
             panic_with_error!(&env, Error::DeadlinePassed);
         }
 
-        // Pull the funds into escrow.
         let token_addr: Address = Self::get(&env, &DataKey::Token);
         let client = token::Client::new(&env, &token_addr);
         client.transfer(&from, &env.current_contract_address(), &amount);
 
-        let storage = env.storage();
-        let goal: i128 = Self::get(&env, &DataKey::Goal);
-        let prev_raised: i128 = Self::get(&env, &DataKey::Raised);
-        let raised = prev_raised + amount;
-        storage.instance().set(&DataKey::Raised, &raised);
+        let prev_raised = campaign.raised;
+        campaign.raised += amount;
+        Self::save_campaign(&env, &campaign);
 
-        // Track this donor's running total (and count first-time donors).
-        let key = DataKey::Contribution(from.clone());
-        let prev: i128 = storage.persistent().get(&key).unwrap_or(0);
-        if prev == 0 {
-            let donors: u32 = Self::get(&env, &DataKey::Donors);
-            storage.instance().set(&DataKey::Donors, &(donors + 1));
-        }
-        storage.persistent().set(&key, &(prev + amount));
-        storage
+        let key = DataKey::Contribution(id, from.clone());
+        let prev: i128 = env.storage().persistent().get(&key).unwrap_or(0);
+        env.storage().persistent().set(&key, &(prev + amount));
+        env.storage()
             .persistent()
             .extend_ttl(&key, BUMP_THRESHOLD, BUMP_AMOUNT);
-        storage.instance().extend_ttl(BUMP_THRESHOLD, BUMP_AMOUNT);
 
         env.events()
-            .publish((symbol_short!("contrib"), from), (amount, raised));
-        // Fire exactly once, on the contribution that crosses the goal.
-        if raised >= goal && prev_raised < goal {
-            env.events().publish((symbol_short!("reached"),), raised);
+            .publish((symbol_short!("contrib"), id, from), (amount, campaign.raised));
+        if campaign.raised >= campaign.goal && prev_raised < campaign.goal {
+            env.events().publish((symbol_short!("reached"), id), campaign.raised);
         }
-
-        raised
+        campaign.raised
     }
 
-    /// Withdraw all escrowed funds to the admin. Only callable by the admin,
-    /// and only once the goal has been reached.
-    pub fn withdraw(env: Env) -> i128 {
+    /// Withdraw a campaign's escrowed funds to its creator. Only the creator, and
+    /// only once the goal has been reached.
+    pub fn withdraw(env: Env, id: u32) -> i128 {
         Self::require_init(&env);
-        let admin: Address = Self::get(&env, &DataKey::Admin);
-        admin.require_auth();
+        let mut campaign = Self::load_campaign(&env, id);
+        campaign.creator.require_auth();
 
-        let goal: i128 = Self::get(&env, &DataKey::Goal);
-        let raised: i128 = Self::get(&env, &DataKey::Raised);
-        if raised < goal {
+        if campaign.withdrawn {
+            panic_with_error!(&env, Error::AlreadyWithdrawn);
+        }
+        if campaign.raised < campaign.goal {
             panic_with_error!(&env, Error::GoalNotReached);
         }
 
+        let amount = campaign.raised;
+        campaign.withdrawn = true;
+        Self::save_campaign(&env, &campaign);
+
         let token_addr: Address = Self::get(&env, &DataKey::Token);
         let client = token::Client::new(&env, &token_addr);
-        let balance = client.balance(&env.current_contract_address());
-        client.transfer(&env.current_contract_address(), &admin, &balance);
+        client.transfer(&env.current_contract_address(), &campaign.creator, &amount);
 
-        env.events().publish((symbol_short!("withdrawn"),), balance);
-        balance
+        env.events().publish((symbol_short!("withdrawn"), id), amount);
+        amount
     }
 
-    /// Refund the caller's contribution. Only allowed after the deadline has
-    /// passed and the goal was NOT reached.
-    pub fn refund(env: Env, from: Address) -> i128 {
+    /// Refund the caller's contribution to campaign `id`. Only after the deadline
+    /// has passed with the goal unmet.
+    pub fn refund(env: Env, id: u32, from: Address) -> i128 {
         from.require_auth();
         Self::require_init(&env);
 
-        let deadline: u64 = Self::get(&env, &DataKey::Deadline);
-        if env.ledger().timestamp() <= deadline {
+        let mut campaign = Self::load_campaign(&env, id);
+        if env.ledger().timestamp() <= campaign.deadline {
             panic_with_error!(&env, Error::DeadlineNotReached);
         }
-        let goal: i128 = Self::get(&env, &DataKey::Goal);
-        let raised: i128 = Self::get(&env, &DataKey::Raised);
-        if raised >= goal {
+        if campaign.raised >= campaign.goal {
             panic_with_error!(&env, Error::GoalAlreadyReached);
         }
 
-        let key = DataKey::Contribution(from.clone());
+        let key = DataKey::Contribution(id, from.clone());
         let amount: i128 = env.storage().persistent().get(&key).unwrap_or(0);
         if amount <= 0 {
             panic_with_error!(&env, Error::NothingToRefund);
         }
 
         env.storage().persistent().set(&key, &0i128);
-        env.storage().instance().set(&DataKey::Raised, &(raised - amount));
+        campaign.raised -= amount;
+        Self::save_campaign(&env, &campaign);
 
         let token_addr: Address = Self::get(&env, &DataKey::Token);
         let client = token::Client::new(&env, &token_addr);
         client.transfer(&env.current_contract_address(), &from, &amount);
 
-        env.events()
-            .publish((symbol_short!("refund"), from), amount);
+        env.events().publish((symbol_short!("refund"), id, from), amount);
         amount
     }
 
-    /// Full campaign snapshot for the frontend.
-    pub fn get_campaign(env: Env) -> Campaign {
-        Self::require_init(&env);
-        Campaign {
-            admin: Self::get(&env, &DataKey::Admin),
-            token: Self::get(&env, &DataKey::Token),
-            goal: Self::get(&env, &DataKey::Goal),
-            raised: Self::get(&env, &DataKey::Raised),
-            deadline: Self::get(&env, &DataKey::Deadline),
-            donors: Self::get(&env, &DataKey::Donors),
-        }
+    // ---- reads ----
+
+    pub fn get_campaign_count(env: Env) -> u32 {
+        env.storage().instance().get(&DataKey::Count).unwrap_or(0)
     }
 
-    /// How much a single address has contributed so far.
-    pub fn get_contribution(env: Env, who: Address) -> i128 {
+    pub fn get_campaign(env: Env, id: u32) -> Campaign {
+        Self::load_campaign(&env, id)
+    }
+
+    /// Page through campaigns, newest ids last. `limit` is capped at 50.
+    pub fn get_campaigns(env: Env, start: u32, limit: u32) -> Vec<Campaign> {
+        let count: u32 = env.storage().instance().get(&DataKey::Count).unwrap_or(0);
+        let capped = if limit > 50 { 50 } else { limit };
+        let end = core::cmp::min(start.saturating_add(capped), count);
+        let mut out = Vec::new(&env);
+        let mut i = start;
+        while i < end {
+            if let Some(c) = env.storage().persistent().get(&DataKey::Campaign(i)) {
+                out.push_back(c);
+            }
+            i += 1;
+        }
+        out
+    }
+
+    pub fn get_contribution(env: Env, id: u32, who: Address) -> i128 {
         env.storage()
             .persistent()
-            .get(&DataKey::Contribution(who))
+            .get(&DataKey::Contribution(id, who))
             .unwrap_or(0)
     }
 
+    // ---- helpers ----
+
+    fn load_campaign(env: &Env, id: u32) -> Campaign {
+        env.storage()
+            .persistent()
+            .get(&DataKey::Campaign(id))
+            .unwrap_or_else(|| panic_with_error!(env, Error::CampaignNotFound))
+    }
+
+    fn save_campaign(env: &Env, campaign: &Campaign) {
+        env.storage()
+            .persistent()
+            .set(&DataKey::Campaign(campaign.id), campaign);
+        env.storage()
+            .persistent()
+            .extend_ttl(&DataKey::Campaign(campaign.id), BUMP_THRESHOLD, BUMP_AMOUNT);
+    }
+
     fn require_init(env: &Env) {
-        if !env.storage().instance().has(&DataKey::Admin) {
+        if !env.storage().instance().has(&DataKey::Token) {
             panic_with_error!(env, Error::NotInitialized);
         }
     }
