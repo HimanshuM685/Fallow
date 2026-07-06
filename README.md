@@ -6,6 +6,19 @@ A crowdfunding dApp built for **Level 2 – Yellow Belt** of the Stellar fronten
 
 > Level 1 (a single-creator tip jar) lives in this repo's git history; `main` is now the Level 2 crowdfunding factory.
 
+## ✅ Submission checklist
+
+- ✅ **Public GitHub repository** — [github.com/HimanshuM685/Fallow](https://github.com/HimanshuM685/Fallow)
+- ✅ **README with setup instructions** — see [Getting Started](#getting-started)
+- ✅ **Minimum 2+ meaningful commits** — see the repo's commit history
+
+**Required in README:**
+
+- ⚪ **Live demo link** (optional) — not deployed; run locally with `npm run dev`
+- ✅ **Screenshot: wallet options available** — [StellarWalletsKit connect modal](#wallet-options-available-stellarwalletskit) (`screenshots/AllProvidor.png`)
+- ✅ **Deployed contract address** — [`CDAVG46KQE4IGGSP4Q2CJ4WSL3CAAFUF73CH4MYR3N4G75JYNH2NR46B`](https://stellar.expert/explorer/testnet/contract/CDAVG46KQE4IGGSP4Q2CJ4WSL3CAAFUF73CH4MYR3N4G75JYNH2NR46B)
+- ✅ **Transaction hash of a contract call** (verifiable on Stellar Explorer) — `contribute`: [`249515a9d3752b6e05ca33ae3b5adeaa80cae384520412574e7381b1df65ecad`](https://stellar.expert/explorer/testnet/tx/249515a9d3752b6e05ca33ae3b5adeaa80cae384520412574e7381b1df65ecad)
+
 ## What it does
 
 - 🔌 **Multi-wallet** connect via StellarWalletsKit — Freighter, xBull, Albedo, Lobstr, Rabet, Hana.
@@ -22,6 +35,7 @@ A crowdfunding dApp built for **Level 2 – Yellow Belt** of the Stellar fronten
 | | |
 |---|---|
 | Contract ID | [`CDAVG46KQE4IGGSP4Q2CJ4WSL3CAAFUF73CH4MYR3N4G75JYNH2NR46B`](https://stellar.expert/explorer/testnet/contract/CDAVG46KQE4IGGSP4Q2CJ4WSL3CAAFUF73CH4MYR3N4G75JYNH2NR46B) |
+| Example contract call | `contribute` — tx [`249515a9d375…65ecad`](https://stellar.expert/explorer/testnet/tx/249515a9d3752b6e05ca33ae3b5adeaa80cae384520412574e7381b1df65ecad) |
 | Token collected | Native XLM SAC `CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC` |
 | Admin | none — each campaign is owned by its creator |
 | Network | Stellar Testnet |
@@ -114,20 +128,29 @@ npm run start
 
 > All screenshots are on the **Stellar testnet**.
 
-### Browse & create campaigns (wallet connected)
+### Wallet options available (StellarWalletsKit)
 
-<!-- TODO: capture with a wallet connected — header chip + campaign grid + create form -->
-![Campaigns list with a wallet connected](docs/screenshots/l2-campaigns.png)
+Connect modal listing every supported wallet — Freighter, xBull, Albedo, LOBSTR, Rabet (Hana below the fold).
 
-### Contribution — transaction status → success
+![Connect Wallet modal listing all supported wallets](screenshots/AllProvidor.png)
 
-<!-- TODO: capture the status pill and/or the success banner with a tx hash -->
-![Contribution transaction status and success](docs/screenshots/l2-transaction.png)
+### Wallet connected — balance displayed
+
+Header chip shows the connected address and live XLM balance, with **Fund** (Friendbot) and **Disconnect**. The campaign card exposes contribute presets and a **Start a campaign** action.
+
+![Wallet connected with balance in the header and a live campaign](screenshots/connected.png)
+
+### Before connecting
+
+Landing state before a wallet is connected — campaigns and progress are readable without signing in.
+
+![Landing page before wallet connect](screenshots/BeforeWalletConetced.png)
 
 ### On-chain confirmation (stellar.expert)
 
-<!-- TODO: capture a contribute/create tx on stellar.expert -->
-![Transaction confirmed on stellar.expert](docs/screenshots/l2-explorer.png)
+The deployed contract on stellar.expert — 30 XLM escrowed and the full call history (`create contract` → `initialize` → `create_campaign` → `contribute`).
+
+![Contract and contract-call history on stellar.expert](screenshots/ContractSS.png)
 
 ## Project structure
 
