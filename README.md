@@ -4,17 +4,6 @@ A crowdfunding dApp built for **Level 2 – Yellow Belt** of the Stellar fronten
 
 **There is no privileged admin.** Whoever creates a campaign is its owner and sole beneficiary — they (and only they) can withdraw once the goal is met. Backers can refund themselves if a campaign's deadline passes without reaching its goal. The account that deployed the contract has no special powers.
 
-> Level 1 (a single-creator tip jar) lives in this repo's git history; `main` is now the Level 2 crowdfunding factory.
-
-## ✅ Submission checklist
-
-- ✅ **Public GitHub repository** — [github.com/HimanshuM685/Fallow](https://github.com/HimanshuM685/Fallow)
-- ✅ **README with setup instructions** — see [Getting Started](#getting-started)
-- ✅ **Minimum 2+ meaningful commits** — see the repo's commit history
-
-**Required in README:**
-
-- ⚪ **Live demo link** (optional) — not deployed; run locally with `npm run dev`
 - ✅ **Screenshot: wallet options available** — [StellarWalletsKit connect modal](#wallet-options-available-stellarwalletskit) (`screenshots/AllProvidor.png`)
 - ✅ **Deployed contract address** — [`CDAVG46KQE4IGGSP4Q2CJ4WSL3CAAFUF73CH4MYR3N4G75JYNH2NR46B`](https://stellar.expert/explorer/testnet/contract/CDAVG46KQE4IGGSP4Q2CJ4WSL3CAAFUF73CH4MYR3N4G75JYNH2NR46B)
 - ✅ **Transaction hash of a contract call** (verifiable on Stellar Explorer) — `contribute`: [`249515a9d3752b6e05ca33ae3b5adeaa80cae384520412574e7381b1df65ecad`](https://stellar.expert/explorer/testnet/tx/249515a9d3752b6e05ca33ae3b5adeaa80cae384520412574e7381b1df65ecad)
