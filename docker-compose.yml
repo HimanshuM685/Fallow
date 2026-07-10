@@ -1,0 +1,58 @@
+# Tendril — each piece is its own service. They are independent: the backend
+# usually runs on a server, and the contributor runs on each machine sharing
+# compute, pointing at that backend via REGISTRY_URL in .env.
+#
+#   docker compose up --build backend       # run the backend / registry  (:4000)
+#   docker compose up --build contributor   # share THIS machine's compute
+#   docker compose run  --rm   buyer        # one-shot autonomous buyer
+#
+# The WEB app is NOT here on purpose — it's a static Vite SPA, so build it with
+# `npm run build -w web` and drop web/dist on any static host (see DEPLOY.md).
+#
+# All config comes from the repo-root .env (copy from .env.example first). Point
+# the contributor/buyer at your backend by setting REGISTRY_URL there.
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    image: tendril-backend
+    # State lives in Neon (Postgres) via DATABASE_URL in .env — no local volume.
+    # Set DATABASE_URL, PLATFORM_PAYTO and PLATFORM_PRIVATE_KEY (signs contributor
+    # payouts) in .env before `up backend`.
+    env_file: .env
+    environment:
+      REGISTRY_PORT: "4000"
+    ports:
+      - "4000:4000"
+    restart: unless-stopped
+
+  contributor:
+    build:
+      context: .
+      dockerfile: contributor/Dockerfile
+    image: tendril-contributor
+    # Connects to the backend at REGISTRY_URL (set in .env) — runs standalone:
+    #   docker compose up --build contributor
+    env_file: .env
+    # Launches sandboxes on the HOST Docker daemon (via the mounted socket) so it
+    # needs no Docker-in-Docker of its own. In the default TUNNEL_MODE=bore, each
+    # sandbox dials OUT for SSH, so host networking is NOT required.
+    #   ⚠ network_mode: host is only needed for TUNNEL_MODE=local (same-machine
+    #   SSH), and it doesn't share the host loopback on Docker Desktop (Mac/Win) —
+    #   there, run the contributor natively (`npm run contributor`) for local mode.
+    # network_mode: host
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+  # One-shot autonomous buyer. Connects to the backend at REGISTRY_URL (.env).
+  # Not started by a bare `up`; run on demand:  docker compose run --rm buyer
+  buyer:
+    build:
+      context: .
+      dockerfile: example-buyer/Dockerfile
+    image: tendril-buyer
+    env_file: .env
+    profiles: ["buyer"]

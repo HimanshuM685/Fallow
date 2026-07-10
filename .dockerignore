@@ -1,0 +1,13 @@
+node_modules
+**/node_modules
+**/dist
+# the web app is a static SPA, never built in any image — keep it out of the context
+web
+**/.next
+**/*.tsbuildinfo
+.git
+data
+*.sqlite
+*.sqlite-*
+.env
+.env.*

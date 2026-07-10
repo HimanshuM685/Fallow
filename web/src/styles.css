@@ -1,0 +1,870 @@
+/* ===========================================================================
+   Tendril — duotone "encryption desk" aesthetic.
+   STRICTLY TWO COLORS: deep green #0B5D3A + paper cream #F4F1EA.
+   Didone serif (Bodoni Moda) for display ONLY. Space Mono for everything else.
+   No third color, no gradients (tonal only), no glows, no rounded corners.
+   =========================================================================== */
+
+:root {
+  --green: #0B5D3A;
+  --cream: #F4F1EA;
+  --display: "Bodoni Moda", "Didot", "Times New Roman", serif;
+  --mono: "Space Mono", "JetBrains Mono", ui-monospace, monospace;
+  --maxw: 1240px;
+  --gutter: 32px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  border-radius: 0; /* sharp corners everywhere */
+}
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--green);
+  color: var(--cream);
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+a { color: inherit; text-decoration: none; }
+::selection { background: var(--cream); color: var(--green); }
+
+/* global CRT scanline wash — slowly drifts + faintly flickers for a live-tube feel */
+.scanlines {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(11, 93, 58, 0.06) 0px,
+    rgba(11, 93, 58, 0.06) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  animation: scan-drift 8s linear infinite, scan-flicker 4s steps(2) infinite;
+}
+@keyframes scan-drift { to { background-position: 0 120px; } }
+@keyframes scan-flicker { 0%, 96% { opacity: 1; } 97% { opacity: 0.72; } 98% { opacity: 1; } }
+
+/* ---- shared display / labels ------------------------------------------- */
+.display {
+  font-family: var(--display);
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 0.92;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.kicker {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  margin: 0;
+}
+
+.muted { opacity: 0.72; }
+.small { font-size: 11px; letter-spacing: 0.08em; }
+
+.rule { height: 0; border-top: 1px solid var(--cream); }
+.rule-heavy { border-top-width: 3px; }
+
+/* ---- masthead ----------------------------------------------------------- */
+.masthead {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 18px var(--gutter);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
+.mast-left, .mast-right { display: flex; gap: 22px; align-items: center; }
+.mast-right { justify-content: flex-end; }
+
+.mast-left button,
+.mast-left a {
+  position: relative;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cream);
+  background: transparent;
+  border: none;
+  padding: 4px 0 7px;
+  cursor: pointer;
+  opacity: 0.62;
+  transition: opacity 0.18s ease;
+}
+/* underline bar that wipes in from the left on hover, and stays for active */
+.mast-left button::after,
+.mast-left a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--cream);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.22s ease;
+}
+.mast-left button:hover,
+.mast-left a:hover { opacity: 1; }
+.mast-left button:hover::after,
+.mast-left a:hover::after,
+.mast-left button.active::after,
+.mast-left a.active::after { transform: scaleX(1); }
+.mast-left button.active,
+.mast-left a.active { opacity: 1; }
+
+.wordmark {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 0.12em;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.wordmark:hover { animation: glitch 0.32s steps(2) 2; }
+.wm-tld { opacity: 0.55; }
+@keyframes glitch {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-1.5px, 1px) skewX(-4deg); }
+  50% { transform: translate(1.5px, -1px) skewX(4deg); }
+  75% { transform: translate(-1px, 0) skewX(-2deg); }
+  100% { transform: translate(0, 0); }
+}
+
+/* ---- hero (encryption / hashing landing) -------------------------------- */
+.hero {
+  position: relative;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 56px var(--gutter) 60px;
+  overflow: hidden;
+}
+.hero .kicker { margin-bottom: 26px; }
+.hero-title {
+  font-size: clamp(3rem, 11vw, 8.5rem);
+  max-width: 13ch;
+  min-height: 1.1em;
+}
+
+.hero-foot {
+  margin-top: 44px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: end;
+}
+.hero-body {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  line-height: 1.9;
+  text-transform: uppercase;
+  max-width: 44ch;
+  margin: 0;
+}
+
+/* ---- terminal block (cream card on green) ------------------------------- */
+.terminal {
+  background: var(--cream);
+  color: var(--green);
+  border: 3px solid var(--cream);
+  outline: 1px solid var(--green);
+  outline-offset: -4px;
+  position: relative;
+}
+.terminal-tabs {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid var(--green);
+}
+.tab {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  padding: 8px 14px;
+  border-right: 1px solid var(--green);
+}
+.tab-active { background: var(--green); color: var(--cream); }
+.copy {
+  margin-left: auto;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  padding: 8px 14px;
+  border-left: 1px solid var(--green);
+}
+.terminal-body {
+  margin: 0;
+  padding: 14px 16px;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.t-prompt { font-weight: 700; }
+.hash-line { display: block; }
+.hash-label { opacity: 0.55; text-transform: uppercase; letter-spacing: 0.12em; }
+.t-cursor { display: inline-block; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+.hero-cta { display: flex; gap: 14px; margin-top: 30px; flex-wrap: wrap; }
+
+/* ---- docs / about pages ------------------------------------------------- */
+.page {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 40px var(--gutter) 56px;
+}
+.prose { max-width: 74ch; }
+
+/* Cream content card — breaks up the green field on text-heavy pages so the
+   site isn't green wall-to-wall. Flips text + accents to green on the cream. */
+.panel {
+  background: var(--cream);
+  color: var(--green);
+  border: 3px solid var(--cream);
+  outline: 1px solid var(--green);
+  outline-offset: -4px;
+  padding: 26px 30px;
+}
+.prose.panel { max-width: 84ch; }
+.prose.panel code { border-color: var(--green); }
+/* command blocks invert to green-on-cream so they read as code on the card */
+.prose.panel .cmd {
+  background: var(--green);
+  color: var(--cream);
+  border-color: var(--green);
+}
+.prose.panel .cmd code { color: var(--cream); }
+@media (max-width: 600px) { .panel { padding: 20px 18px; } }
+
+.prose h3 {
+  font-family: var(--mono);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 13px;
+  margin: 30px 0 8px;
+}
+.prose p, .prose li { font-size: 13px; line-height: 1.85; letter-spacing: 0.02em; }
+.prose ul { padding-left: 18px; margin: 6px 0; }
+.prose li { margin: 4px 0; }
+.prose code {
+  font-family: var(--mono);
+  border: 1px solid var(--cream);
+  padding: 0 5px;
+}
+.prose .cmd { background: var(--cream); color: var(--green); border: 1px solid var(--cream); }
+.prose .cmd code { border: none; padding: 0; }
+
+/* ---- architecture diagram (inline SVG, on-palette) ---------------------- */
+/* Drawn cream-on-green, so on a cream card it lives in its own green inset. */
+.arch {
+  margin: 22px 0 10px;
+  max-width: 100%;
+  background: var(--green);
+  color: var(--cream);
+  padding: 20px;
+}
+.arch svg { display: block; width: 100%; height: auto; }
+.arch .box-fill { fill: var(--cream); }
+.arch .box-edge { fill: none; stroke: var(--green); stroke-width: 1; }
+.arch .flow { stroke: var(--cream); stroke-width: 1.4; fill: none; }
+.arch .arrowhead { fill: var(--cream); }
+.arch text { font-family: var(--mono); }
+.arch .b-title {
+  fill: var(--green);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.arch .b-sub { fill: var(--green); font-size: 10.5px; letter-spacing: 0.07em; opacity: 0.72; }
+.arch .f-lbl { fill: var(--cream); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; }
+.arch-cap {
+  margin: 10px 0 0;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  line-height: 1.7;
+  opacity: 0.72;
+}
+
+/* ---- dashboard ---------------------------------------------------------- */
+.dash-note { padding: 12px 0; }
+.dash-addr {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  word-break: break-all;
+  margin: 4px 0 24px;
+  opacity: 0.85;
+}
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 16px;
+  margin-bottom: 34px;
+}
+.stat {
+  background: var(--cream);
+  color: var(--green);
+  border: 3px solid var(--cream);
+  outline: 1px solid var(--green);
+  outline-offset: -4px;
+  padding: 16px;
+}
+.stat-label { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.7; }
+.stat-value {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(1.5rem, 3.6vw, 2.2rem);
+  margin-top: 6px;
+  line-height: 1;
+}
+.dash-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.dash-cols h3 {
+  font-family: var(--mono);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 13px;
+  margin: 0 0 10px;
+}
+.ledger { width: 100%; border-collapse: collapse; font-size: 12px; }
+.ledger th {
+  text-align: left;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.6;
+  border-bottom: 1px solid var(--cream);
+  padding: 6px 8px;
+}
+.ledger td {
+  padding: 6px 8px;
+  border-bottom: 1px solid rgba(244, 241, 234, 0.18);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+.ledger .num { font-variant-numeric: tabular-nums; }
+/* On the cream history card, flip the ledger rules from cream to green. */
+.panel .ledger th { border-bottom-color: var(--green); }
+.panel .ledger td { border-bottom-color: rgba(11, 93, 58, 0.16); }
+
+/* ---- balance chart (inline SVG on the cream card) ----------------------- */
+.chart-card { margin-bottom: 28px; }
+.chart-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.chart-head h3 {
+  font-family: var(--mono);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 13px;
+  margin: 0;
+}
+.chart-now {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(1.3rem, 3vw, 1.9rem);
+  line-height: 1;
+}
+.balance-chart { margin: 14px 0 0; }
+.balance-chart svg { display: block; width: 100%; height: auto; }
+.bc-grid { stroke: var(--green); stroke-width: 1; stroke-dasharray: 2 4; opacity: 0.3; }
+.bc-area { fill: var(--green); opacity: 0.1; }
+.bc-line { fill: none; stroke: var(--green); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.bc-dot { fill: var(--green); }
+.bc-dot-now { fill: var(--cream); stroke: var(--green); stroke-width: 2.5; }
+.bc-vlabel { fill: var(--green); font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; opacity: 0.7; }
+.bc-tlabel { fill: var(--green); font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; opacity: 0.6; }
+/* draw the line on first paint */
+.bc-line {
+  stroke-dasharray: 1400;
+  stroke-dashoffset: 1400;
+  animation: bc-draw 1.1s 0.15s ease forwards;
+}
+@keyframes bc-draw { to { stroke-dashoffset: 0; } }
+@media (max-width: 700px) { .dash-cols { grid-template-columns: 1fr; } }
+
+/* ---- about page: text one side, art the other --------------------------- */
+.about-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 36px;
+  align-items: center;
+}
+/* Nous Hermes engraving: bright line-art on black. It lives in its own column
+   on the green field, so `screen` drops the black into the green and the filter
+   recolours the blue lines to the site green — part of the duotone palette
+   rather than a pasted rectangle. */
+.about-art {
+  margin: 0;
+  justify-self: center;
+  width: 100%;
+  max-width: 380px;
+}
+.about-art img {
+  display: block;
+  width: 100%;
+  height: auto;
+  mix-blend-mode: screen;
+  filter: grayscale(1) brightness(1.05) sepia(1) hue-rotate(86deg) saturate(2.4);
+}
+@media (max-width: 820px) {
+  .about-grid { grid-template-columns: 1fr; gap: 8px; }
+  .about-art { order: -1; max-width: 280px; margin-bottom: 12px; }
+}
+
+/* ---- main + section head ------------------------------------------------- */
+main { display: block; }
+.index {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 40px var(--gutter) 56px;
+}
+.section-head { margin-bottom: 18px; }
+.sh-left .kicker { margin-bottom: 12px; }
+.section-title { font-size: clamp(2.2rem, 6vw, 4.4rem); }
+
+/* ---- buttons ------------------------------------------------------------ */
+.btn {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--green);
+  background: var(--cream);
+  border: 1px solid var(--cream);
+  padding: 9px 16px;
+  cursor: pointer;
+  transition: none;
+}
+.btn:hover { background: var(--green); color: var(--cream); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn.ghost { background: transparent; color: var(--cream); border-color: var(--cream); }
+.btn.ghost:hover { background: var(--cream); color: var(--green); }
+
+/* Buttons sitting on a CREAM surface need inverted (green) styling. */
+.card .btn,
+.wallet-panel .btn,
+.lease-panel .btn {
+  color: var(--cream);
+  background: var(--green);
+  border-color: var(--green);
+}
+.card .btn:hover,
+.wallet-panel .btn:hover,
+.lease-panel .btn:hover { background: var(--cream); color: var(--green); }
+.card .btn.ghost,
+.wallet-panel .btn.ghost,
+.lease-panel .btn.ghost { background: transparent; color: var(--green); border-color: var(--green); }
+.card .btn.ghost:hover,
+.wallet-panel .btn.ghost:hover,
+.lease-panel .btn.ghost:hover { background: var(--green); color: var(--cream); }
+.wallet-panel .btn.ghost.active { background: var(--green); color: var(--cream); }
+
+/* ---- wallet bar (on the green field) ------------------------------------ */
+.wallet-bar { display: flex; gap: 10px; align-items: center; }
+.addr {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  border: 1px solid var(--cream);
+  padding: 7px 11px;
+}
+
+/* ---- wallet picker modal ------------------------------------------------ */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(8, 46, 29, 0.78);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: fade 0.15s both;
+}
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+.modal {
+  width: 100%;
+  max-width: 360px;
+  background: var(--cream);
+  color: var(--green);
+  border: 3px solid var(--cream);
+  outline: 1px solid var(--green);
+  outline-offset: -4px;
+}
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--green);
+  padding: 12px 16px;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.modal-close {
+  font-family: var(--mono);
+  font-size: 18px;
+  line-height: 1;
+  color: var(--green);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0 4px;
+}
+.modal-close:hover { opacity: 0.6; }
+.modal-wallets { display: flex; flex-direction: column; padding: 14px 16px; gap: 10px; }
+.wallet-choice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-align: left;
+  color: var(--green);
+  background: transparent;
+  border: 1px solid var(--green);
+  padding: 12px 14px;
+  cursor: pointer;
+}
+.wallet-choice:hover { background: var(--green); color: var(--cream); }
+.wallet-choice img { width: 24px; height: 24px; display: block; }
+.modal-foot {
+  margin: 0;
+  padding: 0 16px 16px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  opacity: 0.7;
+}
+
+/* ---- wallet panel (cream card) ------------------------------------------ */
+.wallet-panel {
+  max-width: var(--maxw);
+  margin: 0 auto 8px;
+  padding: 20px var(--gutter);
+}
+.wallet-panel {
+  background: var(--cream);
+  color: var(--green);
+  border: 3px solid var(--cream);
+  outline: 1px solid var(--green);
+  outline-offset: -4px;
+}
+.wallet-balance { display: flex; flex-direction: column; gap: 4px; margin-bottom: 16px; }
+.balance { font-family: var(--display); font-weight: 900; font-size: clamp(1.8rem, 4vw, 2.6rem); }
+.topup { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.topup-amount {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--green);
+  background: transparent;
+  border: 1px solid var(--green);
+  padding: 8px 10px;
+  width: 96px;
+}
+.history { margin-top: 18px; border-top: 1px solid var(--green); padding-top: 12px; }
+.history summary { cursor: pointer; }
+.history-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 12px; }
+.history-grid ul { list-style: none; margin: 8px 0 0; padding: 0; }
+.history-grid li { font-size: 12px; letter-spacing: 0.04em; padding: 2px 0; }
+.wallet-panel .muted { opacity: 0.7; }
+
+/* ---- project / node grid (cream cards on green) ------------------------- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 24px;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--cream);
+  color: var(--green);
+  border: 4px solid var(--cream);
+  outline: 1px solid var(--green);
+  outline-offset: -5px;
+  padding: 16px;
+  animation: rise 0.4s both;
+}
+.card.wide { grid-column: 1 / -1; }
+/* transform-only so cream cards never wash to green-on-green while entering */
+@keyframes rise { from { transform: translateY(10px); } to { transform: none; } }
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--green);
+  padding-bottom: 10px;
+}
+.card-head strong {
+  font-family: var(--display);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  font-size: clamp(1.3rem, 3vw, 1.7rem);
+}
+.badge {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border: 1px solid var(--green);
+  padding: 3px 8px;
+}
+.badge.online { background: var(--green); color: var(--cream); }
+.badge.offline { opacity: 0.55; }
+.specs {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin: 4px 0;
+  padding: 0;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+}
+.specs li::before { content: "› "; opacity: 0.5; }
+.price {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+}
+.card .btn { margin-top: auto; }
+
+/* contribute command block */
+.cmd {
+  background: var(--green);
+  color: var(--cream);
+  padding: 12px 14px;
+  margin: 10px 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* terminal-style code block with a copy button (green on the cream card) */
+.codeblock {
+  background: var(--green);
+  color: var(--cream);
+  border: 1px solid var(--green);
+  margin: 12px 0;
+}
+.codeblock-bar {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--cream);
+}
+.codeblock-title {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  padding: 7px 12px;
+}
+.codeblock-copy {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--cream);
+  background: transparent;
+  border: none;
+  border-left: 1px solid var(--cream);
+  padding: 7px 14px;
+  cursor: pointer;
+}
+.codeblock-copy:hover,
+.codeblock-copy.done { background: var(--cream); color: var(--green); }
+.codeblock-body {
+  margin: 0;
+  padding: 12px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* ---- lease panel (cream card) ------------------------------------------- */
+.lease-panel {
+  max-width: var(--maxw);
+  margin: 28px auto 0;
+  background: var(--cream);
+  color: var(--green);
+  border: 3px solid var(--cream);
+  outline: 1px solid var(--green);
+  outline-offset: -4px;
+  padding: 20px;
+}
+.lease-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.lease-head code { font-family: var(--mono); }
+.timer {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 30px;
+  letter-spacing: 0.02em;
+}
+.timer[data-expiring="true"] { animation: blink 1s steps(1) infinite; }
+.lease-actions { display: flex; gap: 10px; }
+.lease-panel .muted { opacity: 0.7; }
+
+.ssh-access { margin-top: 16px; border-top: 1px solid var(--green); padding-top: 14px; }
+.ssh-row { display: flex; align-items: center; gap: 10px; margin: 8px 0; flex-wrap: wrap; }
+.ssh-code {
+  flex: 1;
+  min-width: 220px;
+  padding: 8px 10px;
+  background: var(--green);
+  color: var(--cream);
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  overflow-x: auto;
+}
+
+/* ---- error alert -------------------------------------------------------- */
+.error {
+  max-width: var(--maxw);
+  margin: 16px auto;
+  padding: 12px 16px;
+  background: var(--cream);
+  color: var(--green);
+  border: 1px solid var(--cream);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  overflow-wrap: anywhere;
+}
+
+.error-dismiss {
+  background: none;
+  border: none;
+  color: var(--green);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 2px;
+  flex-shrink: 0;
+}
+
+/* ---- footer ------------------------------------------------------------- */
+.footer {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 20px var(--gutter) 40px;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ---- motion: entrances, reveals & micro-interactions -------------------- */
+/* Each route remounts on navigation, so these one-shot entrances replay per page. */
+.hero,
+.index,
+.page { animation: enter 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+/* Transform-only (no opacity fade): a cream card mid-fade shows the green page
+   through it, turning its dark-green text into unreadable green-on-green. A pure
+   slide keeps every surface opaque, so text stays full-contrast throughout. */
+@keyframes enter {
+  from { transform: translateY(14px); }
+  to { transform: none; }
+}
+
+/* big Didone titles wipe in behind a left-to-right clip (reveal, not a fade) */
+.section-title { animation: wipe 0.7s 0.08s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+@keyframes wipe {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
+/* divider rules draw across from the left */
+.rule { transform: scaleX(0); transform-origin: left; animation: draw 0.6s 0.1s ease both; }
+@keyframes draw { to { transform: scaleX(1); } }
+
+/* staggered entrance + hover lift for stat cards and node cards.
+   `backwards` (not `both`) fill so the finished animation doesn't pin
+   `transform`, leaving the hover lift free to apply. */
+.stat { animation: rise 0.45s backwards; }
+.card { animation-fill-mode: backwards; }
+.stat:nth-child(2) { animation-delay: 0.06s; }
+.stat:nth-child(3) { animation-delay: 0.12s; }
+.stat:nth-child(4) { animation-delay: 0.18s; }
+.stat:nth-child(5) { animation-delay: 0.24s; }
+.stat:nth-child(6) { animation-delay: 0.3s; }
+.card:nth-child(2) { animation-delay: 0.08s; }
+.card:nth-child(3) { animation-delay: 0.16s; }
+.card:nth-child(4) { animation-delay: 0.24s; }
+.card:nth-child(5) { animation-delay: 0.32s; }
+.card:nth-child(6) { animation-delay: 0.4s; }
+.card,
+.stat { transition: transform 0.18s ease; }
+.card:hover,
+.stat:hover { transform: translateY(-3px); }
+
+/* tactile press on buttons */
+.btn:active { transform: translateY(1px); }
+
+/* hero CTAs rise in one after another under the decrypting title */
+.hero-cta .btn { animation: rise 0.5s 0.3s backwards; }
+.hero-cta .btn:nth-child(2) { animation-delay: 0.42s; }
+.hero-cta .btn:nth-child(3) { animation-delay: 0.54s; }
+
+/* live pulse on the online badge so the marketplace feels alive */
+.badge.online { animation: pulse 2.2s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.62; } }
+
+/* ---- responsive --------------------------------------------------------- */
+@media (max-width: 900px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+  .hero-foot { grid-template-columns: 1fr; }
+  .history-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  :root { --gutter: 18px; }
+  .masthead { grid-template-columns: auto 1fr; row-gap: 12px; }
+  .mast-left { grid-row: 2; grid-column: 1 / -1; }
+  .grid { grid-template-columns: 1fr; }
+  .lease-head { flex-direction: column; align-items: flex-start; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
