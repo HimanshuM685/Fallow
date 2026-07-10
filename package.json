@@ -1,26 +1,25 @@
 {
-  "name": "fallow",
+  "name": "tendril",
+  "version": "0.1.0",
   "private": true,
-  "version": "0.0.0",
+  "description": "Tendril — a prepaid, native-XLM compute marketplace for individual contributors on Stellar",
+  "workspaces": [
+    "shared",
+    "backend",
+    "contributor",
+    "web",
+    "example-buyer"
+  ],
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "oxlint"
+    "backend": "npm run dev -w backend",
+    "contributor": "npm run dev -w contributor",
+    "web": "npm run dev -w web",
+    "client": "npm run start -w example-buyer",
+    "keygen": "npm run keygen -w contributor",
+    "typecheck": "tsc -b shared backend contributor example-buyer",
+    "build:shared": "tsc -b shared"
   },
-  "dependencies": {
-    "@creit.tech/stellar-wallets-kit": "^2.5.0",
-    "@stellar/freighter-api": "^6.0.1",
-    "@stellar/stellar-sdk": "^16.0.1",
-    "next": "^15.1.0",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7"
-  },
-  "devDependencies": {
-    "@types/node": "^24.13.2",
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
-    "oxlint": "^1.71.0",
-    "typescript": "~6.0.2"
+  "engines": {
+    "node": ">=20"
   }
 }

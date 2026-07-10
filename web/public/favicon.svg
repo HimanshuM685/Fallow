@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Tendril mark: cream serif "T" on the brand green, sharp corners. -->
+  <rect width="32" height="32" fill="#0B5D3A"/>
+  <g fill="#F4F1EA">
+    <!-- top bar -->
+    <rect x="5" y="7" width="22" height="4"/>
+    <!-- serif ticks -->
+    <rect x="5" y="7" width="2" height="3"/>
+    <rect x="25" y="7" width="2" height="3"/>
+    <!-- stem -->
+    <rect x="14" y="7" width="4" height="17"/>
+    <!-- bottom serif foot -->
+    <rect x="10" y="22" width="12" height="3"/>
+  </g>
+</svg>
