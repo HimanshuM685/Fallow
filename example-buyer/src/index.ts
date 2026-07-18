@@ -47,7 +47,7 @@ const NETWORK = Networks.TESTNET;
 const MIN_RAM_MB = Number(process.env.AGENT_MIN_RAM_MB ?? 1024);
 const LEASE_MINUTES = Number(process.env.AGENT_LEASE_MINUTES ?? 1);
 const TOPUP_XLM = Number(process.env.AGENT_TOPUP_XLM ?? 2); // XLM to deposit when low
-const PRIVATE_KEY = process.env.AVM_PRIVATE_KEY ?? "";
+const PRIVATE_KEY = process.env.STELLAR_PRIVATE_KEY ?? "";
 
 const TRAINING_SCRIPT = `
 import random
@@ -72,7 +72,7 @@ print(f"DONE  learned w={w:.3f} (~3)  b={b:.3f} (~2)")
 async function main() {
   if (!PRIVATE_KEY) {
     throw new Error(
-      "AVM_PRIVATE_KEY is required (a funded testnet Stellar secret, S…). Generate one with: npm run keygen",
+      "STELLAR_PRIVATE_KEY is required (a funded testnet Stellar secret, S…). Generate one with: npm run keygen",
     );
   }
 

@@ -26,7 +26,7 @@ function normalizeRegistryUrl(raw: string): string {
 
 export const config = {
   registryUrl: normalizeRegistryUrl(process.env.REGISTRY_URL ?? "http://localhost:4000"),
-  secretKey: process.env.AVM_PRIVATE_KEY ?? "",
+  secretKey: process.env.STELLAR_PRIVATE_KEY ?? "",
   label: process.env.NODE_LABEL ?? "tendril-node",
   // Advertised price per HOUR (USD) — industry-standard hourly billing.
   pricePerHourUsd: Number(process.env.PRICE_PER_HOUR_USD ?? 1.0),

@@ -23,17 +23,17 @@ confirms each deposit on-chain and credits an off-chain ledger in Neon. On lease
 usage once and **pays the contributor on-chain** from the platform account.
 
 - **Platform account (`PLATFORM_PAYTO` + `PLATFORM_PRIVATE_KEY`):** generate a key with
-  `npm run keygen`; use its **Address** (`G…`) as `PLATFORM_PAYTO` and its **`AVM_PRIVATE_KEY`**
+  `npm run keygen`; use its **Address** (`G…`) as `PLATFORM_PAYTO` and its **`STELLAR_PRIVATE_KEY`**
   (`S…`) as `PLATFORM_PRIVATE_KEY` (the registry signs payouts with it). Fund it with enough XLM to
   cover payouts + txn fees — it's the pool that holds every user's prepaid balance.
 - **Consumer accounts:** funded with XLM to cover top-ups + the ~0.00001 XLM (100-stroop) deposit txn fee.
 
-1. **Generate a key** (prints `Address` + `AVM_PRIVATE_KEY`):
+1. **Generate a key** (prints `Address` + `STELLAR_PRIVATE_KEY`):
    ```bash
    npm run keygen
    ```
 2. **Fund with testnet XLM (Friendbot):** https://friendbot.stellar.org/?addr=<G…> (paste the address).
-3. Keep each `AVM_PRIVATE_KEY` secret — it's a Stellar secret seed (`S…`).
+3. Keep each `STELLAR_PRIVATE_KEY` secret — it's a Stellar secret seed (`S…`).
 
 ---
 
@@ -53,9 +53,9 @@ Run each piece in its own terminal:
 
 ```bash
 npm run backend       # http://localhost:4000  (needs DATABASE_URL + PLATFORM_PAYTO + PLATFORM_PRIVATE_KEY)
-npm run contributor   # contributor daemon (needs AVM_PRIVATE_KEY + Docker running)
+npm run contributor   # contributor daemon (needs STELLAR_PRIVATE_KEY + Docker running)
 npm run web           # http://localhost:5173
-npm run client        # the autonomous consumer agent (needs its own funded AVM_PRIVATE_KEY)
+npm run client        # the autonomous consumer agent (needs its own funded STELLAR_PRIVATE_KEY)
 ```
 
 Tips:
@@ -157,7 +157,7 @@ share. It needs Docker locally; SSH is exposed by a **bore** tunnel that runs *i
 ```bash
 # on the contributor's machine
 git clone <repo> tendril && cd tendril && npm install
-AVM_PRIVATE_KEY=<their-key> \
+STELLAR_PRIVATE_KEY=<their-key> \
 REGISTRY_URL=https://api.your-tendril-domain.com \
 NODE_LABEL="ryzen-3090-box" PRICE_PER_HOUR_USD=2.0 SANDBOX_GPUS=all \
   npm run contributor
@@ -168,7 +168,7 @@ The renter gets an `ssh root@<bore-host> -p <port>` command (password = the rent
 `PAYTO_ADDR` (defaults to the signing address) is where this node's **on-chain payouts** land. To run
 your own bore server instead of the public `bore.pub`, point `BORE_SERVER` at it.
 
-Agent env vars: `AVM_PRIVATE_KEY` (required), `REGISTRY_URL`, `NODE_LABEL`, `PRICE_PER_HOUR_USD`,
+Agent env vars: `STELLAR_PRIVATE_KEY` (required), `REGISTRY_URL`, `NODE_LABEL`, `PRICE_PER_HOUR_USD`,
 `PAYTO_ADDR` (defaults to the signing address — receives payouts), `SANDBOX_IMAGE` (defaults to the
 locally-built `tendril-ssh-sandbox`), `SANDBOX_MEMORY`, `SANDBOX_CPUS`, `SANDBOX_GPUS` (`all` to pass
 GPUs), `TUNNEL_MODE` (`bore`|`local`), `BORE_SERVER` (default `bore.pub`).
@@ -178,7 +178,7 @@ GPUs), `TUNNEL_MODE` (`bore`|`local`), `BORE_SERVER` (default `bore.pub`).
 Runs anywhere (CI, a laptop, a server) with a funded key:
 
 ```bash
-AVM_PRIVATE_KEY=<buyer-key> REGISTRY_URL=https://api.your-tendril-domain.com \
+STELLAR_PRIVATE_KEY=<buyer-key> REGISTRY_URL=https://api.your-tendril-domain.com \
 AGENT_MIN_RAM_MB=2048 AGENT_TOPUP_XLM=2 npm run client
 ```
 

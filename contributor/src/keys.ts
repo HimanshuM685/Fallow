@@ -14,7 +14,7 @@ export function loadKey(secret: string): {
     keypair = Keypair.fromSecret(secret);
   } catch {
     throw new Error(
-      "AVM_PRIVATE_KEY must be a Stellar secret seed (S…). Generate one with: npm run keygen",
+      "STELLAR_PRIVATE_KEY must be a Stellar secret seed (S…). Generate one with: npm run keygen",
     );
   }
   return {

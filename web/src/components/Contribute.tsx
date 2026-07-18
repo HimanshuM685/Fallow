@@ -31,7 +31,7 @@ export function Contribute({ address }: { address: string | null }) {
   }, [address]);
 
   const envCmd = `# set these in .env (copied from .env.example)
-AVM_PRIVATE_KEY=<your-key>
+STELLAR_PRIVATE_KEY=<your-key>
 PRICE_PER_HOUR_USD=1.0
 REGISTRY_URL=http://<backend-host>:4000`;
   const runCmd = `# bring up the contributor

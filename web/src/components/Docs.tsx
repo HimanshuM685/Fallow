@@ -81,7 +81,7 @@ export function Docs() {
           Run the contributor daemon on the machine you want to share — it advertises specs, proves
           ownership by signing a nonce, heartbeats, and launches sandboxes on demand:
         </p>
-        <pre className="cmd">AVM_PRIVATE_KEY=&lt;your-key&gt; PRICE_PER_HOUR_USD=1.0 npm run contributor</pre>
+        <pre className="cmd">STELLAR_PRIVATE_KEY=&lt;your-key&gt; PRICE_PER_HOUR_USD=1.0 npm run contributor</pre>
         <p>Renters reach the box through a bore tunnel that runs inside the sandbox — nothing to open on your host.</p>
 
         <h3>Safety</h3>

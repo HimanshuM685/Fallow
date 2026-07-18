@@ -17,7 +17,7 @@ import { detectSpecs } from "./specs.js";
 import { runInSandbox, startSandbox, stopSandbox } from "./docker.js";
 
 if (!config.secretKey) {
-  console.error("AVM_PRIVATE_KEY is required. Generate one with: npm run keygen");
+  console.error("STELLAR_PRIVATE_KEY is required. Generate one with: npm run keygen");
   process.exit(1);
 }
 

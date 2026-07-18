@@ -30,7 +30,7 @@ RUN set -eux; \
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# The renter's Algorand address is injected as the root password at runtime.
+# The renter's Stellar address is injected as the root password at runtime.
 ENV SSH_PASSWORD=tendril
 ENV BORE_SERVER=bore.pub
 

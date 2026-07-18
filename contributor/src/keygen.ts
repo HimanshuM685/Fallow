@@ -9,9 +9,9 @@ import { Keypair } from "@stellar/stellar-sdk";
 const keypair = Keypair.random();
 
 console.log("Address:        ", keypair.publicKey());
-console.log("AVM_PRIVATE_KEY=", keypair.secret());
+console.log("STELLAR_PRIVATE_KEY=", keypair.secret());
 console.log("\nNext steps:");
 console.log(
   `  1. Fund the address with testnet XLM (Friendbot):  https://friendbot.stellar.org/?addr=${keypair.publicKey()}`,
 );
-console.log("  2. Put AVM_PRIVATE_KEY in your .env. (Payments are native XLM — no trustline needed.)");
+console.log("  2. Put STELLAR_PRIVATE_KEY in your .env. (Payments are native XLM — no trustline needed.)");

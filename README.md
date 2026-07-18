@@ -100,8 +100,8 @@ cp .env.example .env            # set DATABASE_URL (Neon), PLATFORM_PAYTO + PLAT
 npm run backend                 # …or:  cd backend     && npm run dev
 
 # 2. Contributor agent — generate + fund a key first
-npm run keygen                  # prints Address + AVM_PRIVATE_KEY  (cd contributor && npm run keygen)
-AVM_PRIVATE_KEY=<key> PRICE_PER_HOUR_USD=1.0 npm run contributor   # …or:  cd contributor && npm run dev
+npm run keygen                  # prints Address + STELLAR_PRIVATE_KEY  (cd contributor && npm run keygen)
+STELLAR_PRIVATE_KEY=<key> PRICE_PER_HOUR_USD=1.0 npm run contributor   # …or:  cd contributor && npm run dev
 #   tip: the SSH sandbox image builds locally on the first rent (cached after)
 #   tip: same machine as the consumer? add TUNNEL_MODE=local
 
@@ -110,7 +110,7 @@ cp web/.env.example web/.env    # set VITE_REGISTRY_URL (defaults to localhost:4
 npm run web                     # connect Freighter → Sign in → Top up → Rent → copy the ssh command
 
 # 3b. …or the autonomous agent (its own funded key — signs in, tops up, rents)
-AVM_PRIVATE_KEY=<buyer-key> npm run client       # …or:  cd example-buyer && npm run start
+STELLAR_PRIVATE_KEY=<buyer-key> npm run client       # …or:  cd example-buyer && npm run start
 ```
 
 Each top-level folder is a self-contained piece you can `cd` into: **`backend/`**, **`contributor/`**,
