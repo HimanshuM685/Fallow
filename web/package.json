@@ -1,5 +1,5 @@
 {
-  "name": "@tendril/web",
+  "name": "@fallow/web",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -16,7 +16,7 @@
     "react-router-dom": "^7.18.0"
   },
   "devDependencies": {
-    "@tendril/shared": "*",
+    "@fallow/shared": "*",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",

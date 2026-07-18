@@ -87,7 +87,7 @@ export function HashHero({ onEnter, onDocs, onAbout }: HashHeroProps) {
 
       <div className="hero-foot">
         <p className="hero-body">
-          TENDRIL&nbsp;RENTS&nbsp;REAL&nbsp;MACHINES&nbsp;BY&nbsp;THE&nbsp;HOUR.&nbsp;TOP&nbsp;UP&nbsp;XLM&nbsp;ONCE,
+          FALLOW&nbsp;RENTS&nbsp;REAL&nbsp;MACHINES&nbsp;BY&nbsp;THE&nbsp;HOUR.&nbsp;TOP&nbsp;UP&nbsp;XLM&nbsp;ONCE,
           GET&nbsp;A&nbsp;SANDBOXED&nbsp;SSH&nbsp;BOX,&nbsp;AND&nbsp;PAY&nbsp;ONLY&nbsp;FOR&nbsp;THE&nbsp;TIME&nbsp;YOU&nbsp;USE.
         </p>
 

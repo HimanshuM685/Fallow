@@ -4,7 +4,7 @@ import { createConnection, createServer } from "node:net";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
-import type { SandboxLimits } from "@tendril/shared";
+import type { SandboxLimits } from "@fallow/shared";
 import { config } from "./config.js";
 
 const execFileP = promisify(execFile);
@@ -18,7 +18,7 @@ export interface SandboxEndpoint {
 }
 
 function containerName(leaseId: string): string {
-  return `tendril-${leaseId.replace(/[^a-zA-Z0-9_.-]/g, "")}`;
+  return `fallow-${leaseId.replace(/[^a-zA-Z0-9_.-]/g, "")}`;
 }
 
 /** Ask the OS for an available TCP port. */

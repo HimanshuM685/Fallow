@@ -9,7 +9,7 @@ import {
   type RunResponse,
   type SandboxLimits,
   type WalletLoginResponse,
-} from "@tendril/shared";
+} from "@fallow/shared";
 import {
   addressFromSession,
   issueLeaseToken,

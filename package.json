@@ -1,8 +1,8 @@
 {
-  "name": "tendril",
+  "name": "fallow",
   "version": "0.1.0",
   "private": true,
-  "description": "Tendril — a prepaid, native-XLM compute marketplace for individual contributors on Stellar",
+  "description": "Fallow — a prepaid, native-XLM compute marketplace for individual contributors on Stellar",
   "workspaces": [
     "shared",
     "backend",
@@ -17,7 +17,8 @@
     "client": "npm run start -w example-buyer",
     "keygen": "npm run keygen -w contributor",
     "typecheck": "tsc -b shared backend contributor example-buyer",
-    "build:shared": "tsc -b shared"
+    "build:shared": "tsc -b shared",
+    "build:backend": "tsc -b shared backend"
   },
   "engines": {
     "node": ">=20"

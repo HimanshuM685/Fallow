@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import type { ComputeNode } from "@tendril/shared";
+import type { ComputeNode } from "@fallow/shared";
 import { fetchMyNodes } from "../api";
 import { writeClipboard } from "../clipboard";
 
 /**
- * On Tendril you contribute by running the agent daemon (it holds your key,
+ * On Fallow you contribute by running the agent daemon (it holds your key,
  * proves ownership, and manages sandboxes). This tab shows the command to start
  * it and lists the nodes currently registered under the connected wallet.
  */

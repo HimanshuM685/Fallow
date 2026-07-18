@@ -1,5 +1,5 @@
 /**
- * Tendril autonomous consumer agent (prepaid wallet model).
+ * Fallow autonomous consumer agent (prepaid wallet model).
  *
  * A headless "training agent" that, with zero human clicks:
  *   1. signs in with its wallet (proves address control to the registry),
@@ -39,7 +39,7 @@ import {
   type WalletLoginResponse,
   type WalletNonceResponse,
   type WalletSummary,
-} from "@tendril/shared";
+} from "@fallow/shared";
 
 const REGISTRY = process.env.REGISTRY_URL ?? "http://localhost:4000";
 const HORIZON_URL = process.env.HORIZON_URL ?? "https://horizon-testnet.stellar.org";

@@ -1,5 +1,5 @@
 import pg from "pg";
-import type { Charge, Payout, TopUp, Wallet, WalletStats, WalletSummary } from "@tendril/shared";
+import type { Charge, Payout, TopUp, Wallet, WalletStats, WalletSummary } from "@fallow/shared";
 import { config } from "./config.js";
 
 // Neon is plain Postgres over TLS. A pool suits the long-running registry.

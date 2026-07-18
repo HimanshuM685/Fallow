@@ -1,4 +1,4 @@
-# Tendril — each piece is its own service. They are independent: the backend
+# Fallow — each piece is its own service. They are independent: the backend
 # usually runs on a server, and the contributor runs on each machine sharing
 # compute, pointing at that backend via REGISTRY_URL in .env.
 #
@@ -17,7 +17,7 @@ services:
     build:
       context: .
       dockerfile: backend/Dockerfile
-    image: tendril-backend
+    image: fallow-backend
     # State lives in Neon (Postgres) via DATABASE_URL in .env — no local volume.
     # Set DATABASE_URL, PLATFORM_PAYTO and PLATFORM_PRIVATE_KEY (signs contributor
     # payouts) in .env before `up backend`.
@@ -32,7 +32,7 @@ services:
     build:
       context: .
       dockerfile: contributor/Dockerfile
-    image: tendril-contributor
+    image: fallow-contributor
     # Connects to the backend at REGISTRY_URL (set in .env) — runs standalone:
     #   docker compose up --build contributor
     env_file: .env
@@ -53,6 +53,6 @@ services:
     build:
       context: .
       dockerfile: example-buyer/Dockerfile
-    image: tendril-buyer
+    image: fallow-buyer
     env_file: .env
     profiles: ["buyer"]

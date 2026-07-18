@@ -1,6 +1,6 @@
 import { useState } from "react";
-import type { WalletSummary } from "@tendril/shared";
-import { formatXlm } from "@tendril/shared";
+import type { WalletSummary } from "@fallow/shared";
+import { formatXlm } from "@fallow/shared";
 import { topUp } from "../wallet";
 
 type SignXdr = (xdr: string) => Promise<string>;

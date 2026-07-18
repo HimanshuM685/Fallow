@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid";
-import type { Lease, LeaseStatus, SandboxAccess } from "@tendril/shared";
-import { proratedCost } from "@tendril/shared";
+import type { Lease, LeaseStatus, SandboxAccess } from "@fallow/shared";
+import { proratedCost } from "@fallow/shared";
 import { debitWallet, recordPayout } from "./db.js";
 import { payContributor, payoutsEnabled } from "./payout.js";
 import { destroyContainer } from "./ws.js";

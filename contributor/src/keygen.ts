@@ -1,7 +1,7 @@
 import { Keypair } from "@stellar/stellar-sdk";
 
 /**
- * Generate a fresh Stellar account and print it in the format Tendril expects.
+ * Generate a fresh Stellar account and print it in the format Fallow expects.
  * Fund the address with testnet XLM before using it (payments are native XLM).
  *
  *   npm run keygen

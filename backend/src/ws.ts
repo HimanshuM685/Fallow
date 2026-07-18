@@ -11,7 +11,7 @@ import {
   type SandboxAccess,
   type SandboxLimits,
   type StartContainerMsg,
-} from "@tendril/shared";
+} from "@fallow/shared";
 import { verifyAgentHello } from "./auth.js";
 import { markOffline, touchHeartbeat, upsertNode } from "./registry.js";
 import { activateLease, endLeaseAndBill, getLease, leasesForNode, setLeaseStatus } from "./leases.js";

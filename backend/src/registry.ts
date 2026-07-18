@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid";
-import type { ComputeNode, ExplorerNode } from "@tendril/shared";
-import { isOnline } from "@tendril/shared";
+import type { ComputeNode, ExplorerNode } from "@fallow/shared";
+import { isOnline } from "@fallow/shared";
 import { config } from "./config.js";
 
 /**

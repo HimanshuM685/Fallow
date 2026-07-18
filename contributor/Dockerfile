@@ -1,11 +1,11 @@
 # Contributor agent. Build from the REPO ROOT:
-#   docker build -f contributor/Dockerfile -t tendril-contributor .
+#   docker build -f contributor/Dockerfile -t fallow-contributor .
 #
 # At runtime it needs the HOST Docker daemon (to launch sandboxes). SSH is exposed
 # by a bore tunnel running INSIDE each sandbox (it dials out), so the contributor
 # itself needs no inbound ports. Standalone:
 #   docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-#     --env-file .env -e REGISTRY_URL=http://localhost:4000 tendril-contributor
+#     --env-file .env -e REGISTRY_URL=http://localhost:4000 fallow-contributor
 # (Add --network host only if you use TUNNEL_MODE=local for same-machine SSH.)
 FROM node:20-slim
 
@@ -26,11 +26,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
 COPY package.json package-lock.json ./
 COPY shared/package.json shared/
 COPY contributor/package.json contributor/
-RUN npm ci --workspace contributor --include-workspace-root
+RUN npm ci --workspace contributor --include-workspace-root --ignore-scripts
 
-# Copy sources.
+# Copy sources and build the shared package (tsx runs the agent's own TS directly,
+# but @fallow/shared resolves to its compiled dist/).
 COPY tsconfig.base.json ./
 COPY shared shared
 COPY contributor contributor
+RUN npx tsc -b shared
 
 CMD ["npm", "run", "start", "-w", "contributor"]

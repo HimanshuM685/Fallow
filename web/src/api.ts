@@ -6,7 +6,7 @@ import type {
   RunResponse,
   SandboxAccess,
   WalletSummary,
-} from "@tendril/shared";
+} from "@fallow/shared";
 
 export const REGISTRY_URL =
   (import.meta.env.VITE_REGISTRY_URL as string | undefined) ?? "http://localhost:4000";

@@ -7,7 +7,7 @@ export function ArchDiagram() {
   return (
     <figure className="arch">
       <svg viewBox="0 0 960 600" role="img" aria-labelledby="arch-title arch-desc">
-        <title id="arch-title">Tendril architecture</title>
+        <title id="arch-title">Fallow architecture</title>
         <desc id="arch-desc">
           A consumer signs in and tops up at the registry, which meters usage against a Neon ledger,
           settles on Stellar, and orchestrates contributor sandboxes reached over an SSH bore tunnel.

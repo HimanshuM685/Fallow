@@ -4,7 +4,7 @@
 # stdout — the contributor reads that from `docker logs` to learn the endpoint.
 set -e
 
-: "${SSH_PASSWORD:=tendril}"
+: "${SSH_PASSWORD:=fallow}"
 : "${BORE_SERVER:=bore.pub}"
 
 # Root login with the renter's address as the password.

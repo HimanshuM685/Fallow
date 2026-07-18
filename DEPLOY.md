@@ -1,4 +1,4 @@
-# Tendril — Setup & Deployment
+# Fallow — Setup & Deployment
 
 This covers full local setup, Stellar testnet account prep, and production deployment of each
 component. For the project overview and the demo script, see [README.md](./README.md).
@@ -40,7 +40,7 @@ usage once and **pays the contributor on-chain** from the platform account.
 ## 2. Local setup
 
 ```bash
-git clone <repo> tendril && cd tendril
+git clone <repo> fallow && cd fallow
 npm install
 cp .env.example .env          # edit values; root .env is picked up by all Node apps
 ```
@@ -79,28 +79,34 @@ Requirements: a long-running Node host with **WebSocket** support, a **Neon** Po
 and (if the web app is HTTPS) **TLS**. No local disk/volume — only money state lives in Neon; nodes
 and leases are in-memory.
 
+> ⚠️ **Not serverless-compatible (Vercel/Netlify functions, AWS Lambda).** The registry holds
+> persistent Socket.IO connections to every contributor and keeps nodes/leases in process memory;
+> serverless platforms kill idle instances and can't hold WebSockets open. Deploy the backend to a
+> long-running host (Options A–C below) and put only the **web** app on Vercel.
+
 **Option A — Docker (provided):**
 ```bash
 # build from the repo root
-docker build -f backend/Dockerfile -t tendril-backend .
-docker run -d --name tendril-backend \
+docker build -f backend/Dockerfile -t fallow-backend .
+docker run -d --name fallow-backend \
   -p 4000:4000 \
   -e DATABASE_URL="postgresql://...neon.tech/neondb?sslmode=require" \
   -e PLATFORM_PAYTO=<your-platform-stellar-address-G...> \
   -e PLATFORM_PRIVATE_KEY=<stellar-secret-seed-S...> \
   -e PLATFORM_FEE_PCT=10 \
   -e JWT_SECRET=$(openssl rand -hex 32) \
-  -e CORS_ORIGIN=https://tendril.your-domain.com \
-  tendril-backend
+  -e CORS_ORIGIN=https://fallow.your-domain.com \
+  fallow-backend
 ```
 
 **Option B — PaaS (Railway / Render / Fly.io):**
-- Start command: `npm run start -w backend` (no build step — `tsx` runs the TS directly).
+- Build command: `npm ci && npm run build:backend` · Start command: `npm run start -w backend`.
 - Set env vars (below). No volume needed — point `DATABASE_URL` at Neon.
+- The server binds `PORT` when the platform injects it (`REGISTRY_PORT` still wins locally).
 - Ensure WebSockets are enabled (Render/Railway: on by default; Fly: TCP/HTTP service is fine).
 
 **Option C — bare VPS + systemd + nginx:**
-- `npm ci --omit=dev` on the box, run `npm run start -w backend` under systemd (or pm2).
+- `npm ci && npm run build:backend` on the box, run `npm run start -w backend` under systemd (or pm2).
 - Put nginx/Caddy in front for TLS, and **proxy WebSocket upgrades**:
   ```nginx
   location / {
@@ -116,7 +122,7 @@ Registry env vars:
 
 | Var | Default | Notes |
 |---|---|---|
-| `REGISTRY_PORT` | `4000` | |
+| `REGISTRY_PORT` | `4000` | falls back to the platform-injected `PORT` if unset |
 | `DATABASE_URL` | — | **required** — Neon Postgres connection string (keep `?sslmode=require`) |
 | `PLATFORM_PAYTO` | — | **required** — custodial Stellar address (`G…`) that receives top-ups |
 | `PLATFORM_PRIVATE_KEY` | — | **required for payouts** — Stellar secret seed (`S…`) for `PLATFORM_PAYTO`; signs on-chain contributor payouts. If unset, payouts are recorded as unpaid |
@@ -134,14 +140,14 @@ Registry env vars:
 It's a Vite build — pure static assets. Set `VITE_REGISTRY_URL` **at build time**.
 
 ```bash
-VITE_REGISTRY_URL=https://api.your-tendril-domain.com npm run build -w web
+VITE_REGISTRY_URL=https://api.your-fallow-domain.com npm run build -w web
 # output: web/dist  → upload to any static host
 ```
 
 **Vercel / Netlify / Cloudflare Pages:**
 - Build command: `npm install && npm run build -w web`
 - Output directory: `web/dist`
-- Env var: `VITE_REGISTRY_URL = https://api.your-tendril-domain.com`
+- Env var: `VITE_REGISTRY_URL = https://api.your-fallow-domain.com`
 - SPA rewrite: serve `index.html` for all routes (Netlify `_redirects`: `/* /index.html 200`;
   Vercel/CF Pages handle SPAs automatically).
 
@@ -156,21 +162,21 @@ share. It needs Docker locally; SSH is exposed by a **bore** tunnel that runs *i
 
 ```bash
 # on the contributor's machine
-git clone <repo> tendril && cd tendril && npm install
+git clone <repo> fallow && cd fallow && npm install
 STELLAR_PRIVATE_KEY=<their-key> \
-REGISTRY_URL=https://api.your-tendril-domain.com \
+REGISTRY_URL=https://api.your-fallow-domain.com \
 NODE_LABEL="ryzen-3090-box" PRICE_PER_HOUR_USD=2.0 SANDBOX_GPUS=all \
   npm run contributor
 ```
 
-Keep it alive with **pm2** (`pm2 start "npm run contributor" --name tendril-contributor`) or a systemd unit.
+Keep it alive with **pm2** (`pm2 start "npm run contributor" --name fallow-contributor`) or a systemd unit.
 The renter gets an `ssh root@<bore-host> -p <port>` command (password = the renter's wallet address).
 `PAYTO_ADDR` (defaults to the signing address) is where this node's **on-chain payouts** land. To run
 your own bore server instead of the public `bore.pub`, point `BORE_SERVER` at it.
 
 Agent env vars: `STELLAR_PRIVATE_KEY` (required), `REGISTRY_URL`, `NODE_LABEL`, `PRICE_PER_HOUR_USD`,
 `PAYTO_ADDR` (defaults to the signing address — receives payouts), `SANDBOX_IMAGE` (defaults to the
-locally-built `tendril-ssh-sandbox`), `SANDBOX_MEMORY`, `SANDBOX_CPUS`, `SANDBOX_GPUS` (`all` to pass
+locally-built `fallow-ssh-sandbox`), `SANDBOX_MEMORY`, `SANDBOX_CPUS`, `SANDBOX_GPUS` (`all` to pass
 GPUs), `TUNNEL_MODE` (`bore`|`local`), `BORE_SERVER` (default `bore.pub`).
 
 ### 3d. Autonomous consumer agent
@@ -178,7 +184,7 @@ GPUs), `TUNNEL_MODE` (`bore`|`local`), `BORE_SERVER` (default `bore.pub`).
 Runs anywhere (CI, a laptop, a server) with a funded key:
 
 ```bash
-STELLAR_PRIVATE_KEY=<buyer-key> REGISTRY_URL=https://api.your-tendril-domain.com \
+STELLAR_PRIVATE_KEY=<buyer-key> REGISTRY_URL=https://api.your-fallow-domain.com \
 AGENT_MIN_RAM_MB=2048 AGENT_TOPUP_XLM=2 npm run client
 ```
 
@@ -197,7 +203,7 @@ matching node, runs its job, and releases — reporting how much balance it drew
 - [ ] Horizon (`HORIZON_URL`) reachable from the registry host (top-ups + payouts) and clients.
 - [ ] `XLM_USD_PRICE` set to a sane rate (or wired to a price feed); `METER_INTERVAL_MS` reviewed.
 - [ ] `VITE_REGISTRY_URL` + `VITE_HORIZON_URL` baked into the web build.
-- [ ] Contributors pre-build `SANDBOX_IMAGE` (`docker build -t tendril-ssh-sandbox contributor/sandbox-ssh`);
+- [ ] Contributors pre-build `SANDBOX_IMAGE` (`docker build -t fallow-ssh-sandbox contributor/sandbox-ssh`);
       agents kept alive (pm2/systemd) with Docker running + outbound network for bore.
 - [ ] Consumer accounts hold **XLM** for top-ups (+ txn fees). No trustline / asset opt-in needed.
 - [ ] Safeguard `PLATFORM_PRIVATE_KEY` — it custodies user top-ups *and* signs every payout.

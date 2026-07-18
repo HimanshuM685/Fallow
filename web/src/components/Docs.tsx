@@ -12,7 +12,7 @@ export function Docs() {
 
       <div className="prose panel">
         <p>
-          Tendril is a prepaid marketplace for renting real machines by the hour, settled in native
+          Fallow is a prepaid marketplace for renting real machines by the hour, settled in native
           XLM on Stellar. Top up once, rent a node, get a sandboxed SSH box, and pay only for the
           time you actually use — billed when you release. No per-action signing, no x402.
         </p>

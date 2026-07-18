@@ -17,7 +17,7 @@ const NONCE_TTL_MS = 5 * 60_000;
 const nonces = new Map<string, NonceEntry>();
 
 export function issueNonce(address: string): string {
-  const nonce = `tendril-auth:${nanoid(24)}`;
+  const nonce = `fallow-auth:${nanoid(24)}`;
   nonces.set(address, { nonce, expiresAt: Date.now() + NONCE_TTL_MS });
   return nonce;
 }

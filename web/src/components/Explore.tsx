@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import type { ExplorerNode } from "@tendril/shared";
-import { formatXlm, usdToStroops } from "@tendril/shared";
+import type { ExplorerNode } from "@fallow/shared";
+import { formatXlm, usdToStroops } from "@fallow/shared";
 import { type ActiveLease, fetchExplorer, fetchPlatform, rentNode } from "../api";
 import type { Session } from "../App";
 

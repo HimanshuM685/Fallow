@@ -1,5 +1,5 @@
-import type { WalletStats, WalletSummary } from "@tendril/shared";
-import { formatXlm } from "@tendril/shared";
+import type { WalletStats, WalletSummary } from "@fallow/shared";
+import { formatXlm } from "@fallow/shared";
 import { BalanceChart } from "./BalanceChart";
 
 interface Props {

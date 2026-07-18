@@ -13,7 +13,7 @@ import type {
   PlatformInfo,
   WalletLoginResponse,
   WalletNonceResponse,
-} from "@tendril/shared";
+} from "@fallow/shared";
 import { REGISTRY_URL, apiError } from "./api";
 
 /** Signs an XDR string with the connected wallet, returning the signed XDR. */

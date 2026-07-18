@@ -10,7 +10,8 @@ loadEnv();
 loadEnv({ path: resolve(repoRoot, ".env") });
 
 export const config = {
-  port: Number(process.env.REGISTRY_PORT ?? 4000),
+  // PaaS hosts (Render/Railway/Fly) inject PORT; REGISTRY_PORT wins for local dev.
+  port: Number(process.env.REGISTRY_PORT ?? process.env.PORT ?? 4000),
   jwtSecret: process.env.JWT_SECRET ?? "dev-secret-change-me",
   heartbeatTimeoutMs: Number(process.env.HEARTBEAT_TIMEOUT_MS ?? 30_000),
   // Neon (Postgres) connection string — stores ONLY wallets, top-ups, charges,

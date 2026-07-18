@@ -1,9 +1,9 @@
-# Tendril SSH sandbox image. A renter gets a plain SSH shell here — no Jupyter.
+# Fallow SSH sandbox image. A renter gets a plain SSH shell here — no Jupyter.
 # The container dials OUT to a bore server (so no inbound port needs publishing
 # on the contributor's host) and the renter connects with the printed host:port.
 #
 # Build (from the repo root or this dir):
-#   docker build -t tendril-ssh-sandbox:latest contributor/sandbox-ssh
+#   docker build -t fallow-ssh-sandbox:latest contributor/sandbox-ssh
 #
 # Python 3 is included so the autonomous buyer's `docker exec python3 -` jobs
 # still run against this image.
@@ -31,7 +31,7 @@ COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # The renter's Stellar address is injected as the root password at runtime.
-ENV SSH_PASSWORD=tendril
+ENV SSH_PASSWORD=fallow
 ENV BORE_SERVER=bore.pub
 
 EXPOSE 22

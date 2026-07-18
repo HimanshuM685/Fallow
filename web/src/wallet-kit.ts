@@ -13,7 +13,7 @@ import { LobstrModule } from "@creit.tech/stellar-wallets-kit/modules/lobstr";
 import { RabetModule } from "@creit.tech/stellar-wallets-kit/modules/rabet";
 import { HanaModule } from "@creit.tech/stellar-wallets-kit/modules/hana";
 
-const STORAGE_KEY = "tendril_wallet_id";
+const STORAGE_KEY = "fallow_wallet_id";
 
 let started = false;
 

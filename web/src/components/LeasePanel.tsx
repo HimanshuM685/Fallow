@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { LeaseStatus } from "@tendril/shared";
+import type { LeaseStatus } from "@fallow/shared";
 import { type ActiveLease, fetchLease, releaseLease } from "../api";
 import { writeClipboard } from "../clipboard";
 

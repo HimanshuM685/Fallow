@@ -1,5 +1,5 @@
-import type { Charge, TopUp } from "@tendril/shared";
-import { formatXlm } from "@tendril/shared";
+import type { Charge, TopUp } from "@fallow/shared";
+import { formatXlm } from "@fallow/shared";
 
 interface Props {
   topups: TopUp[];

@@ -1,4 +1,4 @@
-import type { WalletSummary } from "@tendril/shared";
+import type { WalletSummary } from "@fallow/shared";
 import type { Session } from "../App";
 import type { ActiveLease } from "../api";
 import { WalletPanel } from "./WalletPanel";

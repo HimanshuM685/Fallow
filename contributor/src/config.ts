@@ -27,14 +27,14 @@ function normalizeRegistryUrl(raw: string): string {
 export const config = {
   registryUrl: normalizeRegistryUrl(process.env.REGISTRY_URL ?? "http://localhost:4000"),
   secretKey: process.env.STELLAR_PRIVATE_KEY ?? "",
-  label: process.env.NODE_LABEL ?? "tendril-node",
+  label: process.env.NODE_LABEL ?? "fallow-node",
   // Advertised price per HOUR (USD) — industry-standard hourly billing.
   pricePerHourUsd: Number(process.env.PRICE_PER_HOUR_USD ?? 1.0),
   payToAddr: process.env.PAYTO_ADDR ?? "", // defaults to the signing address
   sandbox: {
     // SSH sandbox image (built locally on first run if missing). The renter gets
     // a plain SSH shell, not a Jupyter server.
-    image: process.env.SANDBOX_IMAGE ?? "tendril-ssh-sandbox:latest",
+    image: process.env.SANDBOX_IMAGE ?? "fallow-ssh-sandbox:latest",
     memory: process.env.SANDBOX_MEMORY ?? "2g",
     cpus: Number(process.env.SANDBOX_CPUS ?? 2),
     gpus: process.env.SANDBOX_GPUS ?? "", // "all" to pass GPUs through

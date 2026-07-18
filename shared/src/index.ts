@@ -1,5 +1,5 @@
 /**
- * @tendril/shared — types, contracts, and helpers shared across the registry,
+ * @fallow/shared — types, contracts, and helpers shared across the registry,
  * the contributor agent, and the autonomous consumer agent.
  */
 

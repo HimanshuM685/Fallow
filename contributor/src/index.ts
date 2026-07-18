@@ -10,7 +10,7 @@ import {
   type JobResultMsg,
   type RunJobMsg,
   type StartContainerMsg,
-} from "@tendril/shared";
+} from "@fallow/shared";
 import { config } from "./config.js";
 import { loadKey } from "./keys.js";
 import { detectSpecs } from "./specs.js";

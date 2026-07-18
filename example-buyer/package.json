@@ -1,5 +1,5 @@
 {
-  "name": "@tendril/example-buyer",
+  "name": "@fallow/example-buyer",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -7,7 +7,7 @@
     "start": "tsx src/index.ts"
   },
   "dependencies": {
-    "@tendril/shared": "*",
+    "@fallow/shared": "*",
     "@stellar/stellar-sdk": "^13.0.0",
     "dotenv": "^16.4.5",
     "tsx": "^4.19.0"

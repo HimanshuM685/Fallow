@@ -11,7 +11,7 @@ export function About() {
       <div className="about-grid">
         <div className="prose panel">
         <p>
-          Tendril is a lean, agent-first take on Akash / io.net — but for <strong>individuals</strong>{" "}
+          Fallow is a lean, agent-first take on Akash / io.net — but for <strong>individuals</strong>{" "}
           instead of data centers. Anyone can rent out their PC's CPU/RAM/GPU; anyone (a human or an
           autonomous agent) can rent it by the hour, prepaid in native XLM.
         </p>
@@ -50,7 +50,7 @@ export function About() {
         </div>
 
         <figure className="about-art">
-          <img src="/hero-art.jpg" alt="Tendril — many hands, one machine" loading="lazy" />
+          <img src="/hero-art.jpg" alt="Fallow — many hands, one machine" loading="lazy" />
         </figure>
       </div>
     </section>

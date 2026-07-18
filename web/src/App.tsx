@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { NavLink, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { useWallet } from "./wallet-context";
-import type { WalletSummary } from "@tendril/shared";
+import type { WalletSummary } from "@fallow/shared";
 import { WalletBar } from "./components/WalletBar";
 import { Marketplace } from "./components/Marketplace";
 import { HashHero } from "./components/HashHero";
@@ -15,7 +15,7 @@ export type Session = { token: string; address: string };
 
 // The session token is a 7-day JWT, so persist it and restore on reload — a
 // refresh shouldn't force the user to re-sign (and re-sign each time).
-const SESSION_KEY = "tendril.session";
+const SESSION_KEY = "fallow.session";
 
 function loadSession(): Session | null {
   try {
@@ -68,7 +68,7 @@ export function App() {
       "/about": "ABOUT",
     };
     const page = titles[path];
-    document.title = page ? `TENDRIL — ${page}` : "TENDRIL";
+    document.title = page ? `FALLOW — ${page}` : "FALLOW";
   }, [path]);
 
   // Drop the session only on a real disconnect / account switch — and only once
@@ -170,7 +170,7 @@ export function App() {
           </NavLink>
         </nav>
         <span className="wordmark" onClick={() => navigate("/")} role="button" tabIndex={0}>
-          TENDRIL<span className="wm-tld">.XLM</span>
+          FALLOW<span className="wm-tld">.XLM</span>
         </span>
         <div className="mast-right">
           {!isLanding && (
@@ -258,7 +258,7 @@ export function App() {
       <div className="rule rule-heavy"></div>
 
       <footer className="footer">
-        <span>&copy;&nbsp;TENDRIL</span>
+        <span>&copy;&nbsp;FALLOW</span>
         <span className="foot-mid">
           EPHEMERAL DOCKER SANDBOX &bull; NO HOST MOUNT &bull; DESTROYED ON LEASE END
         </span>

@@ -1,8 +1,8 @@
-# 🌿 Tendril
+# 🌿 Fallow
 
 **A prepaid compute marketplace for individual contributors — metered in native XLM on Stellar.**
 
-Tendril is a lean, agent-first take on Akash / io.net, but for *individuals* instead of data
+Fallow is a lean, agent-first take on Akash / io.net, but for *individuals* instead of data
 centers. Anyone can rent out their PC's CPU/RAM/GPU. A human (or an autonomous AI agent) **tops up a
 prepaid XLM balance once**, then rents a node and gets a sandboxed **SSH session** billed **by the
 hour, prorated** — usage is tracked as it runs and **charged once when the lease ends** (or when the
@@ -23,7 +23,7 @@ permissions system — it's an **ephemeral Docker container**:
 - **destroyed the moment the paid lease ends.**
 
 This is the same containerization trade-off the entire DePIN compute sector already runs on —
-Tendril just makes it prepaid and individual-scale.
+Fallow just makes it prepaid and individual-scale.
 
 ## Architecture
 
@@ -47,7 +47,7 @@ Tendril just makes it prepaid and individual-scale.
 | `contributor/` | **The contributor script.** The daemon a contributor runs. Proves node ownership by signing a nonce, heartbeats, and on a lease spins up a hardened Docker **SSH** sandbox that exposes itself over a **bore** tunnel — torn down when the lease ends. |
 | `web/` | **The website.** Vite + React + `@creit.tech/stellar-wallets-kit` (Freighter/xBull/…). **Explore** (browse + rent + copyable **SSH** connect command + balance countdown), a **wallet panel** (balance + top-up + history), and **Contribute**. |
 | `example-buyer/` | A headless autonomous "training agent": signs in → tops up if low → discovers → rents → runs a script → releases, with zero clicks. |
-| `shared/` | Shared types, the WebSocket contract, and pricing helpers — imported by all of the above as `@tendril/shared`. |
+| `shared/` | Shared types, the WebSocket contract, and pricing helpers — imported by all of the above as `@fallow/shared`. |
 
 How money flows: a user **signs in** with their wallet (a signed nonce proves address control), then
 **tops up** by signing a native XLM `payment` txn to the platform's custodial address — the registry
