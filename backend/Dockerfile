@@ -2,7 +2,7 @@
 #   docker build -f backend/Dockerfile -t fallow-backend .
 #   docker run -p 4000:4000 --env-file .env fallow-backend
 # State lives in Neon (Postgres) via DATABASE_URL — no local volume needed.
-FROM node:20-slim AS build
+FROM node:22-slim AS build
 
 WORKDIR /app
 
@@ -21,7 +21,7 @@ COPY backend backend
 RUN npx tsc -b shared backend
 
 # ── Runtime image: prod deps + compiled dist only ───────────────────────────
-FROM node:20-slim
+FROM node:22-slim
 
 WORKDIR /app
 

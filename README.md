@@ -34,11 +34,11 @@ Fallow just makes it prepaid and individual-scale.
  │  docker run ...  │            │ POST /wallet/topup   │      │   or                │
  │  (nodes/leases   │            │ POST /rent/:id       │      │ autonomous agent    │
  │   in memory)     │            │ watchdog + payout    │      └────────────────────┘
- └──────────────────┘            └──────────┬───────────┘   sign in + sign top-up txn
+ └──────────────────┘            └──────────┬───────────┘   sign in + call topup()
         │ bore tunnel (SSH)        ┌─────────┴────────┐
         ▼                          │                  │
-  sandboxed SSH shell        Neon (Postgres)   Stellar (Horizon: confirm top-ups,
-                       wallets·topups·charges·payouts        pay contributors)
+  sandboxed SSH shell        Neon (Postgres)   Stellar (ledger contract relays +
+                       wallets·topups·charges·payouts   publicly logs topup/payout)
 ```
 
 | Folder | What it is |
@@ -50,9 +50,10 @@ Fallow just makes it prepaid and individual-scale.
 | `shared/` | Shared types, the WebSocket contract, and pricing helpers — imported by all of the above as `@fallow/shared`. |
 
 How money flows: a user **signs in** with their wallet (a signed nonce proves address control), then
-**tops up** by signing a native XLM `payment` txn to the platform's custodial address — the registry
-**confirms it on-chain via Horizon** and credits an off-chain balance in Neon. Renting checks that
-balance (no signing). The registry tracks the active session in memory; when the lease ends (release,
+**tops up** by calling `topup(from, amount)` on the Fallow **ledger contract** — a thin Soroban
+contract that holds no funds itself, just relays the XLM to the platform's custodial address and
+emits a public event — and the registry **confirms it on-chain** and credits an off-chain balance
+in Neon. Renting checks that balance (no signing). The registry tracks the active session in memory; when the lease ends (release,
 balance exhausted, or the node going away) it **bills once** — `prorated(elapsed) × hourly rate`,
 debited in a single `charges` row — and **pays the contributor on-chain** (minus `PLATFORM_FEE_PCT`),
 recording a `payouts` row. Nodes are *priced* in USD per hour (`PRICE_PER_HOUR_USD`), converted to a
@@ -69,10 +70,12 @@ all stored as history.
 
 ## Prerequisites
 
-- Node 20+ and npm
+- Node 22+ and npm
 - A **Neon** Postgres database (free at [neon.tech](https://neon.tech)) — its connection string is `DATABASE_URL`
 - A **platform Stellar account** (`G…`) that receives top-ups *and* pays contributors: its address is
   `PLATFORM_PAYTO` and its secret seed (`S…`) is `PLATFORM_PRIVATE_KEY` (both from one `npm run keygen`)
+- A deployed **ledger contract** (`CONTRACT_ID`) — every top-up/payout is relayed and publicly
+  logged through it; see [contract/README.md](./contract/README.md) to deploy your own
 - **Docker** (daemon running) — for the contributor agent's SSH sandboxes
 - An **SSH client** to connect to a rented box (built into macOS/Linux/Windows). Public exposure uses
   an in-container **bore** tunnel — nothing to install on the contributor; or `TUNNEL_MODE=local`
@@ -178,9 +181,10 @@ and the env tables in [DEPLOY.md](./DEPLOY.md) for every variable.
 
 Compiles + builds clean (full `npm run typecheck`, web production build). Requires your environment
 to run end-to-end: a **Neon** database (`DATABASE_URL`), a **platform account** (`PLATFORM_PAYTO` +
-`PLATFORM_PRIVATE_KEY`), the Docker sandbox lifecycle (a running Docker daemon), outbound network for
-the bore tunnel, an SSH client, and Horizon reachable to confirm top-ups + send payouts (funded testnet
-accounts).
+`PLATFORM_PRIVATE_KEY`) and a deployed **ledger contract** (`CONTRACT_ID`, see
+[contract/README.md](./contract/README.md)), the Docker sandbox lifecycle (a running Docker daemon),
+outbound network for the bore tunnel, an SSH client, and Soroban RPC reachable to confirm top-ups +
+send payouts (funded testnet accounts).
 
 ## Notes & limitations
 

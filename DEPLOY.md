@@ -9,7 +9,7 @@ component. For the project overview and the demo script, see [README.md](./READM
 
 | Tool | Why | Install |
 |---|---|---|
-| Node 20+ & npm | runs everything | https://nodejs.org |
+| Node 22+ & npm | runs everything | https://nodejs.org |
 | **Neon** Postgres | stores wallets, top-ups, charges, payouts (`DATABASE_URL`) — *not* nodes/leases | https://neon.tech (free tier) |
 | Docker (daemon running) | the contributor agent's SSH sandboxes | https://docs.docker.com |
 | SSH client | renters connect to a rented box (public exposure uses an in-container **bore** tunnel — nothing to install on the contributor) | built into macOS/Linux/Windows |

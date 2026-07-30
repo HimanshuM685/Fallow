@@ -21,6 +21,6 @@
     "build:backend": "tsc -b shared backend"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   }
 }
