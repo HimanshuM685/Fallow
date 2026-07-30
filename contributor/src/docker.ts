@@ -199,6 +199,7 @@ function waitForBoreEndpoint(
   return new Promise((resolve, reject) => {
     const child = spawn("docker", ["logs", "-f", name], { stdio: ["ignore", "pipe", "pipe"] });
     let settled = false;
+    let log = "";
     const finish = (fn: () => void) => {
       if (settled) return;
       settled = true;
@@ -207,17 +208,21 @@ function waitForBoreEndpoint(
       fn();
     };
     const timer = setTimeout(
-      () => finish(() => reject(new Error("bore endpoint not announced in time"))),
+      () => finish(() => reject(new Error(`bore endpoint not announced in time\n${log.trim()}`))),
       timeoutMs,
     );
     const onData = (buf: Buffer) => {
-      const m = buf.toString().match(BORE_RE);
+      const text = buf.toString();
+      log += text;
+      const m = text.match(BORE_RE);
       if (m) finish(() => resolve({ host: m[1], port: Number(m[2]) }));
     };
     child.stdout?.on("data", onData);
     child.stderr?.on("data", onData);
     child.on("error", (e) => finish(() => reject(e)));
-    child.on("exit", () => finish(() => reject(new Error("container exited before bore came up"))));
+    child.on("exit", () =>
+      finish(() => reject(new Error(`container exited before bore came up\n${log.trim()}`))),
+    );
   });
 }
 
