@@ -320,11 +320,13 @@ export interface PlatformInfo {
   network: string;
   /** USD per 1 XLM, for showing prices in XLM. */
   xlmUsdPrice: number;
+  /** Contract id (C…) of the Fallow ledger contract — every top-up/payout goes through it. */
+  contractId: string;
 }
 
 /** POST /wallet/topup → credit the caller's balance with a confirmed deposit. */
 export interface TopUpRequest {
-  /** Base64 XDR of a signed payment sending XLM from the user to the platform address. */
+  /** Base64 XDR of a signed `topup(from, amount)` invocation on the Fallow ledger contract. */
   payment: string;
 }
 

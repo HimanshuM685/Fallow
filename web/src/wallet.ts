@@ -2,11 +2,11 @@ import {
   Account,
   Asset,
   BASE_FEE,
-  Horizon,
   Memo,
   Networks,
   Operation,
   TransactionBuilder,
+  contract,
   hash,
 } from "@stellar/stellar-sdk";
 import type {
@@ -20,9 +20,16 @@ import { REGISTRY_URL, apiError } from "./api";
 type SignXdr = (xdr: string) => Promise<string>;
 
 const NETWORK = Networks.TESTNET;
-const HORIZON_URL =
-  (import.meta.env.VITE_HORIZON_URL as string | undefined) ?? "https://horizon-testnet.stellar.org";
-const horizon = new Horizon.Server(HORIZON_URL);
+const SOROBAN_RPC_URL =
+  (import.meta.env.VITE_SOROBAN_RPC_URL as string | undefined) ?? "https://soroban-testnet.stellar.org";
+
+// `contract.Client`'s per-contract methods are attached dynamically at runtime
+// (from the deployed contract's on-chain spec), so plain structural typing
+// can't see them without codegen — this local cast just names the one method
+// this file calls.
+type LedgerClient = contract.Client & {
+  topup(args: { from: string; amount: bigint }): Promise<contract.AssembledTransaction<null>>;
+};
 
 /**
  * Sign in: prove control of `address` by signing a 1-stroop self-payment whose
@@ -58,8 +65,10 @@ export async function loginWithWallet(
 }
 
 /**
- * Top up: send `amountXlm` XLM from the wallet to the platform custodial address.
- * The backend confirms it on-chain (Horizon) and credits the balance.
+ * Top up: call `topup(from, amount)` on the Fallow ledger contract, which
+ * relays `amountXlm` XLM from the wallet to the platform's custodial address
+ * and emits a public event. The backend confirms it on-chain and credits the
+ * balance.
  */
 export async function topUp(
   token: string,
@@ -68,27 +77,27 @@ export async function topUp(
   amountXlm: number,
 ): Promise<{ txid: string; balanceStroops: number }> {
   const platform = (await (await fetch(`${REGISTRY_URL}/platform`)).json()) as PlatformInfo;
-  if (!platform.payTo) throw new Error("platform deposit address is not configured on the server");
+  if (!platform.contractId) throw new Error("ledger contract is not configured on the server");
 
-  // A real (broadcast) payment needs the current sequence number from Horizon.
-  const source = await horizon.loadAccount(address);
-  const tx = new TransactionBuilder(source, { fee: BASE_FEE, networkPassphrase: NETWORK })
-    .addOperation(
-      Operation.payment({
-        destination: platform.payTo,
-        asset: Asset.native(),
-        amount: amountXlm.toFixed(7),
-      }),
-    )
-    .setTimeout(120)
-    .build();
-
-  const signedTxXdr = await sign(tx.toXDR());
+  const client = (await contract.Client.from({
+    contractId: platform.contractId,
+    networkPassphrase: NETWORK,
+    rpcUrl: SOROBAN_RPC_URL,
+    publicKey: address,
+  })) as LedgerClient;
+  const assembledTx = await client.topup({
+    from: address,
+    amount: BigInt(Math.round(amountXlm * 1e7)),
+  });
+  await assembledTx.sign({ signTransaction: async (xdr) => ({ signedTxXdr: await sign(xdr) }) });
+  // `.sign()` stores the signed transaction on `.signed` — `.toXDR()` always
+  // serializes the *unsigned* `.built` transaction, so it must not be used here.
+  if (!assembledTx.signed) throw new Error("top-up transaction was not signed");
 
   const res = await fetch(`${REGISTRY_URL}/wallet/topup`, {
     method: "POST",
     headers: { "content-type": "application/json", authorization: `Bearer ${token}` },
-    body: JSON.stringify({ payment: signedTxXdr }),
+    body: JSON.stringify({ payment: assembledTx.signed.toXDR() }),
   });
   if (!res.ok) throw await apiError(res, "top-up");
   return res.json();

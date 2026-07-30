@@ -36,6 +36,7 @@ router.get("/platform", (_req, res) => {
     payTo: config.platformPayTo,
     network: STELLAR_TESTNET_PASSPHRASE,
     xlmUsdPrice: config.xlmUsdPrice,
+    contractId: config.contractId,
   };
   res.json(info);
 });

@@ -1,7 +1,17 @@
+import { useEffect, useState } from "react";
+import { fetchPlatform } from "../api";
 import { ArchDiagram } from "./ArchDiagram";
 
-/** Static documentation page — presentational only. */
+/** Static documentation page — presentational only (aside from the contract link). */
 export function Docs() {
+  const [contractId, setContractId] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchPlatform()
+      .then((p) => setContractId(p.contractId || null))
+      .catch(() => {});
+  }, []);
+
   return (
     <section className="page">
       <div className="section-head">
@@ -28,6 +38,21 @@ export function Docs() {
 
         <ArchDiagram />
 
+        {contractId && (
+          <p className="muted small">
+            Every top-up and payout is a public call on{" "}
+            <a
+              href={`https://stellar.expert/explorer/testnet/contract/${contractId}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              our ledger contract
+            </a>{" "}
+            — a thin relay that holds no funds itself, so money movement is auditable on-chain
+            instead of an anonymous payment.
+          </p>
+        )}
+
         <h3>1 · Connect &amp; sign in</h3>
         <p>
           Connect Freighter, xBull, or another Stellar wallet (testnet) from the top bar, then <strong>Sign in</strong>.
@@ -37,10 +62,11 @@ export function Docs() {
 
         <h3>2 · Top up</h3>
         <p>
-          Open the wallet panel and deposit XLM. You sign one <code>payment</code> transaction to the
-          platform's custodial address; the registry confirms it on-chain and credits your prepaid
-          balance. Crediting is idempotent per transaction id — a deposit can never be counted twice.
-          Every deposit is kept as history.
+          Open the wallet panel and deposit XLM. You sign one call to <code>topup(from, amount)</code> on
+          the ledger contract, which relays the XLM to the platform's custodial address and emits a
+          public event; the registry confirms it on-chain and credits your prepaid balance. Crediting
+          is idempotent per transaction id — a deposit can never be counted twice. Every deposit is
+          kept as history.
         </p>
 
         <h3>3 · Rent &amp; connect over SSH</h3>

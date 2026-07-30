@@ -19,8 +19,6 @@ export const config = {
   databaseUrl: process.env.DATABASE_URL ?? "",
   // Comma-separated list of allowed web origins for CORS; "*" allows all.
   corsOrigin: process.env.CORS_ORIGIN ?? "*",
-  // Horizon endpoint used to submit + confirm native-XLM payments (public, no token).
-  horizonUrl: process.env.HORIZON_URL ?? "https://horizon-testnet.stellar.org",
   // Stellar network passphrase — part of every signature (testnet by default).
   networkPassphrase: process.env.NETWORK_PASSPHRASE ?? "Test SDF Network ; September 2015",
   // USD per 1 XLM — converts a node's USD price into the stroops billing rate.
@@ -30,6 +28,10 @@ export const config = {
   // Stellar secret seed (S…) for PLATFORM_PAYTO — signs on-chain contributor
   // payouts. REQUIRED for payouts to work; safeguard it (it custodies funds).
   platformPrivateKey: process.env.PLATFORM_PRIVATE_KEY ?? "",
+  // Soroban RPC endpoint — used to submit/confirm topup + payout contract calls.
+  sorobanRpcUrl: process.env.SOROBAN_RPC_URL ?? "https://soroban-testnet.stellar.org",
+  // Contract id (C…) of the Fallow ledger contract (see contract/README.md).
+  contractId: process.env.CONTRACT_ID ?? "",
   // Platform's percentage cut of each charge; the rest is paid to the contributor.
   platformFeePct: Number(process.env.PLATFORM_FEE_PCT ?? 10),
   // How often the watchdog checks active leases for balance exhaustion (ms).

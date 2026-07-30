@@ -1,0 +1,10 @@
+/Users/fusion/Code/GitRepos/Fallow/contract/target/release/deps/soroban_spec_rust-64faee523675041f.d: /Users/fusion/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/soroban-spec-rust-26.1.1/src/lib.rs /Users/fusion/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/soroban-spec-rust-26.1.1/src/syn_ext.rs /Users/fusion/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/soroban-spec-rust-26.1.1/src/trait.rs /Users/fusion/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/soroban-spec-rust-26.1.1/src/types.rs
+
+/Users/fusion/Code/GitRepos/Fallow/contract/target/release/deps/libsoroban_spec_rust-64faee523675041f.rlib: /Users/fusion/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/soroban-spec-rust-26.1.1/src/lib.rs /Users/fusion/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/soroban-spec-rust-26.1.1/src/syn_ext.rs /Users/fusion/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/soroban-spec-rust-26.1.1/src/trait.rs /Users/fusion/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/soroban-spec-rust-26.1.1/src/types.rs
+
+/Users/fusion/Code/GitRepos/Fallow/contract/target/release/deps/libsoroban_spec_rust-64faee523675041f.rmeta: /Users/fusion/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/soroban-spec-rust-26.1.1/src/lib.rs /Users/fusion/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/soroban-spec-rust-26.1.1/src/syn_ext.rs /Users/fusion/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/soroban-spec-rust-26.1.1/src/trait.rs /Users/fusion/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/soroban-spec-rust-26.1.1/src/types.rs
+
+/Users/fusion/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/soroban-spec-rust-26.1.1/src/lib.rs:
+/Users/fusion/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/soroban-spec-rust-26.1.1/src/syn_ext.rs:
+/Users/fusion/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/soroban-spec-rust-26.1.1/src/trait.rs:
+/Users/fusion/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/soroban-spec-rust-26.1.1/src/types.rs:

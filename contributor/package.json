@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@fallow/shared": "*",
-    "@stellar/stellar-sdk": "^13.0.0",
+    "@stellar/stellar-sdk": "^16.2.0",
     "dotenv": "^16.4.5",
     "nanoid": "^5.0.7",
     "socket.io-client": "^4.7.5",

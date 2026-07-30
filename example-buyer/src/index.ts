@@ -17,12 +17,12 @@ import {
   Account,
   Asset,
   BASE_FEE,
-  Horizon,
   Keypair,
   Memo,
   Networks,
   Operation,
   TransactionBuilder,
+  contract,
   hash,
 } from "@stellar/stellar-sdk";
 
@@ -42,8 +42,16 @@ import {
 } from "@fallow/shared";
 
 const REGISTRY = process.env.REGISTRY_URL ?? "http://localhost:4000";
-const HORIZON_URL = process.env.HORIZON_URL ?? "https://horizon-testnet.stellar.org";
+const SOROBAN_RPC_URL = process.env.SOROBAN_RPC_URL ?? "https://soroban-testnet.stellar.org";
 const NETWORK = Networks.TESTNET;
+
+// `contract.Client`'s per-contract methods are attached dynamically at runtime
+// (from the deployed contract's on-chain spec), so plain structural typing
+// can't see them without codegen — this local cast just names the one method
+// this file calls.
+type LedgerClient = contract.Client & {
+  topup(args: { from: string; amount: bigint }): Promise<contract.AssembledTransaction<null>>;
+};
 const MIN_RAM_MB = Number(process.env.AGENT_MIN_RAM_MB ?? 1024);
 const LEASE_MINUTES = Number(process.env.AGENT_LEASE_MINUTES ?? 1);
 const TOPUP_XLM = Number(process.env.AGENT_TOPUP_XLM ?? 2); // XLM to deposit when low
@@ -78,7 +86,6 @@ async function main() {
 
   const keypair = Keypair.fromSecret(PRIVATE_KEY);
   const address = keypair.publicKey();
-  const horizon = new Horizon.Server(HORIZON_URL);
   console.log(`[agent] wallet: ${address}`);
 
   const platform = (await (await fetch(`${REGISTRY}/platform`)).json()) as PlatformInfo;
@@ -106,27 +113,29 @@ async function main() {
   const auth = { authorization: `Bearer ${login.token}` };
   console.log(`[agent] signed in; balance ${formatXlm(login.balanceStroops)}`);
 
-  // 2. Top up if the balance is low.
+  // 2. Top up if the balance is low — calls `topup(from, amount)` on the
+  // Fallow ledger contract, which relays the XLM to the platform address and
+  // emits a public event. Signed here (Node-side keypair), then handed to the
+  // registry as unsubmitted XDR — it's the one that submits + confirms.
   if (login.balanceStroops < TOPUP_XLM * 1e7) {
-    console.log(`[agent] topping up ${TOPUP_XLM} XLM → ${platform.payTo} ...`);
-    const source = await horizon.loadAccount(address);
-    const topTxn = new TransactionBuilder(source, {
-      fee: BASE_FEE,
+    console.log(`[agent] topping up ${TOPUP_XLM} XLM via contract ${platform.contractId} ...`);
+    const client = (await contract.Client.from({
+      contractId: platform.contractId,
       networkPassphrase: NETWORK,
-    })
-      .addOperation(
-        Operation.payment({
-          destination: platform.payTo,
-          asset: Asset.native(),
-          amount: TOPUP_XLM.toFixed(7),
-        }),
-      )
-      .setTimeout(120)
-      .build();
-    topTxn.sign(keypair);
+      rpcUrl: SOROBAN_RPC_URL,
+      publicKey: address,
+    })) as LedgerClient;
+    const assembledTx = await client.topup({
+      from: address,
+      amount: BigInt(Math.round(TOPUP_XLM * 1e7)),
+    });
+    await assembledTx.sign({ signTransaction: contract.basicNodeSigner(keypair, NETWORK).signTransaction });
+    // `.sign()` stores the signed transaction on `.signed` — `.toXDR()` always
+    // serializes the *unsigned* `.built` transaction, so it must not be used here.
+    if (!assembledTx.signed) throw new Error("top-up transaction was not signed");
     const top = (await postJson(
       `${REGISTRY}/wallet/topup`,
-      { payment: topTxn.toXDR() },
+      { payment: assembledTx.signed.toXDR() },
       auth,
     )) as { balanceStroops: number };
     console.log(`[agent] balance now ${formatXlm(top.balanceStroops)}`);

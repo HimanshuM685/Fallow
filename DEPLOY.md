@@ -35,6 +35,30 @@ usage once and **pays the contributor on-chain** from the platform account.
 2. **Fund with testnet XLM (Friendbot):** https://friendbot.stellar.org/?addr=<G…> (paste the address).
 3. Keep each `STELLAR_PRIVATE_KEY` secret — it's a Stellar secret seed (`S…`).
 
+### Deploy the ledger contract
+
+Top-ups and payouts are relayed through a small Soroban contract (`contract/`) instead of a
+plain payment — it holds no funds itself, just moves XLM between the caller and the platform
+address and emits a public event, so every top-up/payout is auditable on-chain. See
+[contract/README.md](./contract/README.md) for the contract itself; to deploy your own:
+
+```bash
+# Needs the `stellar` CLI (https://developers.stellar.org/docs/tools/cli/install-cli) + Rust
+# with the wasm32v1-none target.
+stellar keys generate deployer --network testnet --fund   # throwaway, pays deploy fees only
+stellar keys generate platform --network testnet --fund   # becomes PLATFORM_PAYTO / PLATFORM_PRIVATE_KEY
+
+cd contract && stellar contract build
+stellar contract deploy \
+  --wasm target/wasm32v1-none/release/fallow_ledger.wasm \
+  --source deployer --network testnet \
+  -- --platform "$(stellar keys address platform)"
+# → prints the Contract ID — set it as CONTRACT_ID
+```
+
+`stellar keys show platform` prints the secret seed for `PLATFORM_PRIVATE_KEY`; `stellar keys
+address platform` prints `PLATFORM_PAYTO`.
+
 ---
 
 ## 2. Local setup
@@ -76,8 +100,9 @@ site), **contributor** (runs on each contributor's own machine). The autonomous 
 ### 3a. Backend / registry (central API)
 
 Requirements: a long-running Node host with **WebSocket** support, a **Neon** Postgres database
-(`DATABASE_URL`), outbound HTTPS to a **Horizon** endpoint (to confirm top-ups **and send payouts**),
-and (if the web app is HTTPS) **TLS**. No local disk/volume — only money state lives in Neon; nodes
+(`DATABASE_URL`), outbound HTTPS to a **Soroban RPC** endpoint (to confirm top-ups **and send
+payouts** through the ledger contract), and (if the web app is HTTPS) **TLS**. No local disk/volume
+— only money state lives in Neon; nodes
 and leases are in-memory.
 
 > ⚠️ **Not serverless-compatible (Vercel/Netlify functions, AWS Lambda).** The registry holds
@@ -127,13 +152,14 @@ Registry env vars:
 | `DATABASE_URL` | — | **required** — Neon Postgres connection string (keep `?sslmode=require`) |
 | `PLATFORM_PAYTO` | — | **required** — custodial Stellar address (`G…`) that receives top-ups |
 | `PLATFORM_PRIVATE_KEY` | — | **required for payouts** — Stellar secret seed (`S…`) for `PLATFORM_PAYTO`; signs on-chain contributor payouts. If unset, payouts are recorded as unpaid |
+| `CONTRACT_ID` | — | **required** — contract id (`C…`) of the Fallow ledger contract every top-up/payout is relayed through (see [contract/README.md](./contract/README.md)) |
 | `PLATFORM_FEE_PCT` | `10` | platform's % cut of each charge; the rest is paid to the contributor |
 | `JWT_SECRET` | dev value | **set a strong secret in prod** (signs wallet-session + lease tokens) |
 | `CORS_ORIGIN` | `*` | set to your web origin(s), comma-separated |
 | `HEARTBEAT_TIMEOUT_MS` | `30000` | node considered offline after this gap |
 | `XLM_USD_PRICE` | `0.11` | USD per 1 XLM — converts the USD price to the stroops/**hour** rate |
 | `METER_INTERVAL_MS` | `10000` | how often the **watchdog** checks active leases for balance exhaustion (no per-tick billing) |
-| `HORIZON_URL` | `https://horizon-testnet.stellar.org` | Horizon used to confirm top-ups + send payouts |
+| `SOROBAN_RPC_URL` | `https://soroban-testnet.stellar.org` | Soroban RPC used to submit + confirm topup/payout contract calls |
 | `NETWORK_PASSPHRASE` | `Test SDF Network ; September 2015` | Stellar network passphrase (part of every signature) |
 
 ### 3b. Web app (static SPA)
@@ -201,9 +227,9 @@ matching node, runs its job, and releases — reporting how much balance it drew
       control and **funded** (it pays out every contributor); `PLATFORM_FEE_PCT` reviewed.
 - [ ] `CORS_ORIGIN` locked to your web origin.
 - [ ] Registry + web both HTTPS (avoid mixed-content blocking); WebSocket upgrades proxied.
-- [ ] Horizon (`HORIZON_URL`) reachable from the registry host (top-ups + payouts) and clients.
+- [ ] Soroban RPC (`SOROBAN_RPC_URL`) reachable from the registry host (top-ups + payouts) and clients; `CONTRACT_ID` set to your deployed ledger contract.
 - [ ] `XLM_USD_PRICE` set to a sane rate (or wired to a price feed); `METER_INTERVAL_MS` reviewed.
-- [ ] `VITE_REGISTRY_URL` + `VITE_HORIZON_URL` baked into the web build.
+- [ ] `VITE_REGISTRY_URL` + `VITE_SOROBAN_RPC_URL` baked into the web build.
 - [ ] Contributors pre-build `SANDBOX_IMAGE` (`docker build -t fallow-ssh-sandbox contributor/sandbox-ssh`);
       agents kept alive (pm2/systemd) with Docker running + outbound network for bore.
 - [ ] Consumer accounts hold **XLM** for top-ups (+ txn fees). No trustline / asset opt-in needed.

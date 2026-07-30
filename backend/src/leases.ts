@@ -115,7 +115,7 @@ async function payoutContributor(lease: Lease, charged: number): Promise<void> {
   }
 
   try {
-    const txid = await payContributor(lease.payToAddr, contributorCut);
+    const txid = await payContributor(lease.id, lease.payToAddr, lease.renterAddr, contributorCut);
     await recordPayout(lease.payToAddr, lease.id, contributorCut, txid);
     console.log(
       `[payout] ${contributorCut} stroops → ${lease.payToAddr} (fee ${fee}, txid ${txid})`,
