@@ -9,7 +9,7 @@
 # still run against this image.
 FROM python:3.12-slim
 
-ARG BORE_VERSION=0.5.1
+ARG BORE_VERSION=0.6.0
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends openssh-server curl ca-certificates \
