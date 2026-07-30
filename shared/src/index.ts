@@ -173,7 +173,7 @@ export interface ActiveComputePoint {
 export type LeaderboardSort = "topup" | "leasetime" | "leasespan";
 
 /** One ranked row on the leaderboard. `value`'s unit depends on `sort`: stroops
- *  for "topup", seconds for "leasetime", days for "leasespan". */
+ *  for "topup", a lease count for "leasetime", seconds for "leasespan". */
 export interface LeaderboardEntry {
   address: string;
   value: number;

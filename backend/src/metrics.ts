@@ -43,9 +43,8 @@ const LEADERBOARD_LIMIT = 20;
 /**
  * Top 20 addresses ranked by one of three bases:
  *   topup     — lifetime XLM deposited (stroops)
- *   leasetime — lifetime compute time used (seconds)
- *   leasespan — how long they've been a customer: days between their first
- *               and last billed lease (0 for a single-lease user)
+ *   leasetime — number of leases taken, lifetime (integer count)
+ *   leasespan — total lifetime compute time used, across all leases (seconds)
  */
 export async function leaderboard(sort: LeaderboardSort): Promise<LeaderboardEntry[]> {
   if (sort === "topup") {
@@ -58,15 +57,15 @@ export async function leaderboard(sort: LeaderboardSort): Promise<LeaderboardEnt
   }
   if (sort === "leasetime") {
     const { rows } = await pool.query<{ address: string; value: number }>(
-      `SELECT address, SUM(seconds)::bigint AS value
+      `SELECT address, COUNT(*)::bigint AS value
        FROM charges GROUP BY address ORDER BY value DESC LIMIT $1`,
       [LEADERBOARD_LIMIT],
     );
     return rows.map((r) => ({ address: r.address, value: Number(r.value) }));
   }
-  // leasespan — days between first and last billed lease.
+  // leasespan — total lifetime compute seconds across all leases.
   const { rows } = await pool.query<{ address: string; value: number }>(
-    `SELECT address, ((MAX(created_at) - MIN(created_at)) / 86400000.0) AS value
+    `SELECT address, SUM(seconds)::bigint AS value
      FROM charges GROUP BY address ORDER BY value DESC LIMIT $1`,
     [LEADERBOARD_LIMIT],
   );
