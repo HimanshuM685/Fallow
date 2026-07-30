@@ -60,6 +60,16 @@ recording a `payouts` row. Nodes are *priced* in USD per hour (`PRICE_PER_HOUR_U
 stroops/hour rate at a configurable `XLM_USD_PRICE`. Deposits (`topups`), charges, and payouts are
 all stored as history.
 
+## Ledger contract
+
+Every top-up and payout goes through a small Soroban contract on Stellar testnet. It never holds
+any money — it just moves XLM from one wallet to another and leaves a public record of the move,
+so anyone can verify it happened. Nothing hides in a database.
+
+- **Contract ID:** `CC2ISLGUZEIM37F7D7PNXOC2YVCPBN2TVDRYN4DBL7FCT3N2VYKN4ZIA`
+- **View it live:** https://stellar.expert/explorer/testnet/contract/CC2ISLGUZEIM37F7D7PNXOC2YVCPBN2TVDRYN4DBL7FCT3N2VYKN4ZIA
+- **Source + how to deploy your own:** [contract/README.md](./contract/README.md)
+
 ## The two agentic endpoints (and why they're agentic)
 
 - `GET /explorer` — **free**, so an agent can survey live nodes (specs + price) and choose itself.
