@@ -91,6 +91,7 @@ you prefer.
 
 ```bash
 npm install
+npm run build:shared             # compiles @fallow/shared to dist/ — required once before first run
 cp .env.example .env            # set DATABASE_URL (Neon), PLATFORM_PAYTO + PLATFORM_PRIVATE_KEY — REQUIRED
 ```
 

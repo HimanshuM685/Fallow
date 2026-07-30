@@ -42,6 +42,7 @@ usage once and **pays the contributor on-chain** from the platform account.
 ```bash
 git clone <repo> fallow && cd fallow
 npm install
+npm run build:shared          # compiles @fallow/shared to dist/ (contributor/backend/example-buyer import the built output)
 cp .env.example .env          # edit values; root .env is picked up by all Node apps
 ```
 

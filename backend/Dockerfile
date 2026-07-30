@@ -7,14 +7,16 @@ FROM node:20-slim AS build
 WORKDIR /app
 
 # Install the workspaces the backend needs, WITH dev deps (typescript) for the build.
+# NOTE: shared's full source (incl. tsconfig.json) must be present before `npm ci` —
+# npm's --ignore-scripts doesn't skip a local workspace's `prepare` script, so it still
+# tries to run shared's `tsc -b` during install.
 COPY package.json package-lock.json ./
-COPY shared/package.json shared/
+COPY tsconfig.base.json ./
+COPY shared shared
 COPY backend/package.json backend/
 RUN npm ci --workspace backend --include-workspace-root --ignore-scripts
 
-# Copy sources and compile shared + backend to plain JS.
-COPY tsconfig.base.json ./
-COPY shared shared
+# Copy remaining sources and compile shared + backend to plain JS.
 COPY backend backend
 RUN npx tsc -b shared backend
 
@@ -24,7 +26,8 @@ FROM node:20-slim
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-COPY shared/package.json shared/
+COPY tsconfig.base.json ./
+COPY shared shared
 COPY backend/package.json backend/
 RUN npm ci --omit=dev --workspace backend --include-workspace-root --ignore-scripts
 

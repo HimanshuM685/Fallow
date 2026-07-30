@@ -23,15 +23,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
     && chmod +x /usr/local/bin/docker
 
 # Install only the workspaces the contributor needs (uses the root lockfile).
+# NOTE: shared's full source (incl. tsconfig.json) must be present before `npm ci` —
+# npm's --ignore-scripts doesn't skip a local workspace's `prepare` script, so it still
+# tries to run shared's `tsc -b` during install.
 COPY package.json package-lock.json ./
-COPY shared/package.json shared/
+COPY tsconfig.base.json ./
+COPY shared shared
 COPY contributor/package.json contributor/
 RUN npm ci --workspace contributor --include-workspace-root --ignore-scripts
 
-# Copy sources and build the shared package (tsx runs the agent's own TS directly,
-# but @fallow/shared resolves to its compiled dist/).
-COPY tsconfig.base.json ./
-COPY shared shared
+# Copy remaining sources and build the shared package (tsx runs the agent's own TS
+# directly, but @fallow/shared resolves to its compiled dist/).
 COPY contributor contributor
 RUN npx tsc -b shared
 
