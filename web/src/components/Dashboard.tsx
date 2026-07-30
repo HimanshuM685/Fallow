@@ -24,6 +24,9 @@ function short(addr: string): string {
   return addr ? `${addr.slice(0, 6)}…${addr.slice(-4)}` : "—";
 }
 
+const explorerTx = (id: string) => `https://stellar.expert/explorer/testnet/tx/${id}`;
+const explorerAccount = (addr: string) => `https://stellar.expert/explorer/testnet/account/${addr}`;
+
 /** Use server-side stats when present; otherwise derive from the loaded history
  *  (so the dashboard still works before the backend is rebuilt). */
 function resolveStats(w: WalletSummary): WalletStats {
@@ -106,7 +109,11 @@ export function Dashboard({ wallet, address, signedIn }: Props) {
                       <tr key={c.id}>
                         <td className="num">−{formatXlm(c.amountStroops)}</td>
                         <td className="num">{fmtDuration(c.seconds)}</td>
-                        <td title={c.payToAddr}>{short(c.payToAddr)}</td>
+                        <td>
+                          <a href={explorerAccount(c.payToAddr)} target="_blank" rel="noreferrer" title={c.payToAddr}>
+                            {short(c.payToAddr)}
+                          </a>
+                        </td>
                         <td>{new Date(c.createdAt).toLocaleString()}</td>
                       </tr>
                     ))}
@@ -132,7 +139,11 @@ export function Dashboard({ wallet, address, signedIn }: Props) {
                     {wallet.topups.map((t) => (
                       <tr key={t.txid}>
                         <td className="num">+{formatXlm(t.amountStroops)}</td>
-                        <td title={t.txid}>{short(t.txid)}</td>
+                        <td>
+                          <a href={explorerTx(t.txid)} target="_blank" rel="noreferrer" title={t.txid}>
+                            {short(t.txid)}
+                          </a>
+                        </td>
                         <td>{new Date(t.createdAt).toLocaleString()}</td>
                       </tr>
                     ))}
