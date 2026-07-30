@@ -154,6 +154,31 @@ export interface WalletSummary {
   stats: WalletStats;
 }
 
+/** One day's point on the cumulative-user-growth chart (GET /metrics/growth). */
+export interface UserGrowthPoint {
+  /** Day, as an ISO date string (UTC midnight), e.g. "2026-07-30". */
+  date: string;
+  /** Cumulative distinct users who had topped up by the end of this day. */
+  totalUsers: number;
+}
+
+/** One day's point on the active-users-on-compute chart (GET /metrics/active). */
+export interface ActiveComputePoint {
+  date: string;
+  /** Distinct users who had a lease billed (i.e. used compute) that day. */
+  activeUsers: number;
+}
+
+/** Leaderboard ranking basis (GET /leaderboard?sort=...). */
+export type LeaderboardSort = "topup" | "leasetime" | "leasespan";
+
+/** One ranked row on the leaderboard. `value`'s unit depends on `sort`: stroops
+ *  for "topup", seconds for "leasetime", days for "leasespan". */
+export interface LeaderboardEntry {
+  address: string;
+  value: number;
+}
+
 export interface Job {
   id: string;
   leaseId: string;

@@ -3,6 +3,7 @@ import { nanoid } from "nanoid";
 import {
   STELLAR_TESTNET_PASSPHRASE,
   stroopsPerHour,
+  type LeaderboardSort,
   type PlatformInfo,
   type RentResponse,
   type RunRequest,
@@ -22,6 +23,7 @@ import {
 import { creditWallet, getBalance, walletSummary } from "./db.js";
 import { getNode, listNodesByOwner, listOnlineNodes } from "./registry.js";
 import { createLease, endLeaseAndBill, getLease, setLeaseStatus } from "./leases.js";
+import { activeCompute, leaderboard, userGrowth } from "./metrics.js";
 import { settleTopUp, verifyLoginSignature } from "./wallet.js";
 import { isNodeConnected, runJob, startContainer } from "./ws.js";
 import { config } from "./config.js";
@@ -87,6 +89,37 @@ router.get("/nodes", (req: Request, res: Response) => {
   const owner = String(req.query.owner ?? "");
   if (!owner) return res.status(400).json({ error: "owner required" });
   res.json({ nodes: listNodesByOwner(owner) });
+});
+
+// ─────────────────────── platform metrics (free, public) ───────────────────────
+router.get("/metrics/growth", async (_req, res) => {
+  try {
+    res.json({ points: await userGrowth() });
+  } catch (err) {
+    res.status(502).json({ error: `metrics unavailable: ${(err as Error).message}` });
+  }
+});
+
+router.get("/metrics/active", async (_req, res) => {
+  try {
+    res.json({ points: await activeCompute() });
+  } catch (err) {
+    res.status(502).json({ error: `metrics unavailable: ${(err as Error).message}` });
+  }
+});
+
+const LEADERBOARD_SORTS: LeaderboardSort[] = ["topup", "leasetime", "leasespan"];
+
+router.get("/leaderboard", async (req: Request, res: Response) => {
+  const sort = String(req.query.sort ?? "topup") as LeaderboardSort;
+  if (!LEADERBOARD_SORTS.includes(sort)) {
+    return res.status(400).json({ error: `sort must be one of: ${LEADERBOARD_SORTS.join(", ")}` });
+  }
+  try {
+    res.json({ entries: await leaderboard(sort) });
+  } catch (err) {
+    res.status(502).json({ error: `leaderboard unavailable: ${(err as Error).message}` });
+  }
 });
 
 // ─────────────────────── prepaid wallet (session-gated) ───────────────────────

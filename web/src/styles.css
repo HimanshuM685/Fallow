@@ -401,6 +401,31 @@ a { color: inherit; text-decoration: none; }
 @keyframes bc-draw { to { stroke-dashoffset: 0; } }
 @media (max-width: 700px) { .dash-cols { grid-template-columns: 1fr; } }
 
+/* ---- leaderboard (sort toggle + ranked bars) ----------------------------- */
+.sort-toggle { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 20px; }
+.leaderboard-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.leaderboard-row { display: grid; grid-template-columns: 24px 96px 1fr auto; align-items: center; gap: 12px; }
+.lb-rank {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 12px;
+  opacity: 0.6;
+  text-align: right;
+}
+.lb-addr { font-family: var(--mono); font-size: 12px; letter-spacing: 0.02em; }
+.lb-bar-track { background: rgba(11, 93, 58, 0.1); height: 8px; border-radius: 4px; overflow: hidden; }
+.lb-bar { display: block; height: 100%; background: var(--green); border-radius: 4px; }
+.lb-value {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+@media (max-width: 560px) {
+  .leaderboard-row { grid-template-columns: 20px 84px 1fr auto; gap: 8px; }
+}
+
 /* ---- about page: text one side, art the other --------------------------- */
 .about-grid {
   display: grid;
@@ -463,21 +488,26 @@ main { display: block; }
 /* Buttons sitting on a CREAM surface need inverted (green) styling. */
 .card .btn,
 .wallet-panel .btn,
-.lease-panel .btn {
+.lease-panel .btn,
+.leaderboard .btn {
   color: var(--cream);
   background: var(--green);
   border-color: var(--green);
 }
 .card .btn:hover,
 .wallet-panel .btn:hover,
-.lease-panel .btn:hover { background: var(--cream); color: var(--green); }
+.lease-panel .btn:hover,
+.leaderboard .btn:hover { background: var(--cream); color: var(--green); }
 .card .btn.ghost,
 .wallet-panel .btn.ghost,
-.lease-panel .btn.ghost { background: transparent; color: var(--green); border-color: var(--green); }
+.lease-panel .btn.ghost,
+.leaderboard .btn.ghost { background: transparent; color: var(--green); border-color: var(--green); }
 .card .btn.ghost:hover,
 .wallet-panel .btn.ghost:hover,
-.lease-panel .btn.ghost:hover { background: var(--green); color: var(--cream); }
-.wallet-panel .btn.ghost.active { background: var(--green); color: var(--cream); }
+.lease-panel .btn.ghost:hover,
+.leaderboard .btn.ghost:hover { background: var(--green); color: var(--cream); }
+.wallet-panel .btn.ghost.active,
+.leaderboard .btn.ghost.active { background: var(--green); color: var(--cream); }
 
 /* ---- wallet bar (on the green field) ------------------------------------ */
 .wallet-bar { display: flex; gap: 10px; align-items: center; }

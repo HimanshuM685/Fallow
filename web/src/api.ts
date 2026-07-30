@@ -1,10 +1,14 @@
 import type {
+  ActiveComputePoint,
   ComputeNode,
   ExplorerNode,
+  LeaderboardEntry,
+  LeaderboardSort,
   Lease,
   PlatformInfo,
   RunResponse,
   SandboxAccess,
+  UserGrowthPoint,
   WalletSummary,
 } from "@fallow/shared";
 
@@ -53,6 +57,27 @@ export async function fetchPlatform(): Promise<PlatformInfo> {
   const res = await fetch(`${REGISTRY_URL}/platform`);
   if (!res.ok) throw await apiError(res, "platform");
   return res.json();
+}
+
+/** Cumulative distinct users over time, one point per day. */
+export async function fetchUserGrowth(): Promise<UserGrowthPoint[]> {
+  const res = await fetch(`${REGISTRY_URL}/metrics/growth`);
+  if (!res.ok) throw await apiError(res, "metrics");
+  return (await res.json()).points as UserGrowthPoint[];
+}
+
+/** Distinct users who used compute each day. */
+export async function fetchActiveCompute(): Promise<ActiveComputePoint[]> {
+  const res = await fetch(`${REGISTRY_URL}/metrics/active`);
+  if (!res.ok) throw await apiError(res, "metrics");
+  return (await res.json()).points as ActiveComputePoint[];
+}
+
+/** Top 20 addresses ranked by the given basis. */
+export async function fetchLeaderboard(sort: LeaderboardSort): Promise<LeaderboardEntry[]> {
+  const res = await fetch(`${REGISTRY_URL}/leaderboard?sort=${sort}`);
+  if (!res.ok) throw await apiError(res, "leaderboard");
+  return (await res.json()).entries as LeaderboardEntry[];
 }
 
 export async function fetchMyNodes(owner: string): Promise<ComputeNode[]> {

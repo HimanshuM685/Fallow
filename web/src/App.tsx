@@ -8,6 +8,7 @@ import { HashHero } from "./components/HashHero";
 import { Docs } from "./components/Docs";
 import { About } from "./components/About";
 import { Dashboard } from "./components/Dashboard";
+import { Metrics } from "./components/Metrics";
 import { loginWithWallet } from "./wallet";
 import { fetchWallet, type ActiveLease } from "./api";
 
@@ -162,6 +163,9 @@ export function App() {
           <NavLink to="/dashboard" className={navClass}>
             DASHBOARD
           </NavLink>
+          <NavLink to="/metrics" className={navClass}>
+            METRICS
+          </NavLink>
           <NavLink to="/docs" className={navClass}>
             DOCS
           </NavLink>
@@ -249,6 +253,7 @@ export function App() {
               <Dashboard wallet={wallet} address={session?.address ?? null} signedIn={!!session} />
             }
           />
+          <Route path="/metrics" element={<Metrics />} />
           <Route path="/docs" element={<Docs />} />
           <Route path="/about" element={<About />} />
           <Route path="*" element={<Navigate to="/" replace />} />
