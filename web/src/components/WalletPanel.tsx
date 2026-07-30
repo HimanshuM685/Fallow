@@ -14,11 +14,11 @@ interface Props {
   onError: (msg: string) => void;
 }
 
-const PRESETS = [0.5, 1, 5];
+const PRESETS = [5, 10, 50, 100];
 
 /** Prepaid balance + a top-up control + deposit/spend history. */
 export function WalletPanel({ wallet, address, token, signXdr, onChanged, onError }: Props) {
-  const [amount, setAmount] = useState(1);
+  const [amount, setAmount] = useState(5);
   const [busy, setBusy] = useState(false);
   const amountOk = Number.isFinite(amount) && amount > 0;
 
