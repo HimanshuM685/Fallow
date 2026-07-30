@@ -64,7 +64,15 @@ async function ensureImage(image: string): Promise<void> {
   const ctx = resolve(dirname(fileURLToPath(import.meta.url)), "../sandbox-ssh");
   if (image === config.sandbox.image && existsSync(join(ctx, "Dockerfile"))) {
     console.log(`[docker] image ${image} not found — building from ${ctx} (first run)...`);
-    await execFileP("docker", ["build", "-t", image, ctx], { maxBuffer: 50 * 1024 * 1024 });
+    try {
+      await execFileP("docker", ["build", "-t", image, ctx], { maxBuffer: 50 * 1024 * 1024 });
+    } catch (err) {
+      // docker writes the step-by-step build log (where the real failure shows up,
+      // e.g. a curl/tar error) to stdout — execFile's error.message only carries
+      // stderr, which is just docker's generic "non-zero code" wrapper line.
+      const e = err as { stdout?: string; stderr?: string; message: string };
+      throw new Error(`${e.message}\n${e.stdout ?? ""}\n${e.stderr ?? ""}`.trim());
+    }
   }
 }
 
