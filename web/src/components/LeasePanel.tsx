@@ -90,6 +90,11 @@ export function LeasePanel({ lease, onRelease }: Props) {
   }
 
   async function release() {
+    // Release is irreversible — the sandbox is destroyed and the usage billed.
+    const ok = window.confirm(
+      `End lease and destroy sandbox?\n\nYou'll be charged ${formatXlm(spentStroops)} for the time used. This can't be undone.`,
+    );
+    if (!ok) return;
     setBusy(true);
     setError(null);
     try {
