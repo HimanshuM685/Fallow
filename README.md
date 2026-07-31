@@ -443,7 +443,7 @@ transfer happened. Nothing hides in a database.
 
 **Web analytics on the deployed app** (`fallow.007575.xyz`) — 606 pageviews from 205 unique visitors in a 24-hour window:
 
-<img src="./screenshots/WebAnalytics.png" alt="Netlify Web Analytics for fallow.007575.xyz: 606 total pageviews, 205 unique visitors" width="100%">
+<img src="https://raw.githubusercontent.com/HimanshuM685/Fallow/main/screenshots/WebAnalytics.png" alt="Netlify Web Analytics for fallow.007575.xyz: 606 total pageviews, 205 unique visitors" width="100%">
 
 ## 14. Pitch Deck & Presentation
 
