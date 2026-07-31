@@ -491,7 +491,8 @@ main { display: block; }
 .card .btn,
 .wallet-panel .btn,
 .lease-panel .btn,
-.leaderboard .btn {
+.leaderboard .btn,
+.addr-dropdown .btn {
   color: var(--cream);
   background: var(--green);
   border-color: var(--green);
@@ -499,17 +500,21 @@ main { display: block; }
 .card .btn:hover,
 .wallet-panel .btn:hover,
 .lease-panel .btn:hover,
-.leaderboard .btn:hover { background: var(--cream); color: var(--green); }
+.leaderboard .btn:hover,
+.addr-dropdown .btn:hover { background: var(--cream); color: var(--green); }
 .card .btn.ghost,
 .wallet-panel .btn.ghost,
 .lease-panel .btn.ghost,
-.leaderboard .btn.ghost { background: transparent; color: var(--green); border-color: var(--green); }
+.leaderboard .btn.ghost,
+.addr-dropdown .btn.ghost { background: transparent; color: var(--green); border-color: var(--green); }
 .card .btn.ghost:hover,
 .wallet-panel .btn.ghost:hover,
 .lease-panel .btn.ghost:hover,
-.leaderboard .btn.ghost:hover { background: var(--green); color: var(--cream); }
+.leaderboard .btn.ghost:hover,
+.addr-dropdown .btn.ghost:hover { background: var(--green); color: var(--cream); }
 .wallet-panel .btn.ghost.active,
-.leaderboard .btn.ghost.active { background: var(--green); color: var(--cream); }
+.leaderboard .btn.ghost.active,
+.addr-dropdown .btn.ghost.active { background: var(--green); color: var(--cream); }
 
 /* ---- wallet bar (on the green field) ------------------------------------ */
 .wallet-bar { display: flex; gap: 10px; align-items: center; }
@@ -519,7 +524,53 @@ main { display: block; }
   letter-spacing: 0.08em;
   border: 1px solid var(--cream);
   padding: 7px 11px;
+  background: transparent;
+  color: var(--cream);
+  cursor: pointer;
 }
+.addr:hover { background: var(--cream); color: var(--green); }
+
+/* ---- address dropdown (balance / top up / history / disconnect) --------- */
+.addr-menu { position: relative; }
+.addr-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  z-index: 20;
+  min-width: 300px;
+  background: var(--cream);
+  color: var(--green);
+  border: 2px solid var(--green);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  text-align: left;
+  animation: rise 0.15s ease;
+}
+.addr-dropdown-balance { display: flex; flex-direction: column; gap: 2px; }
+.addr-dropdown-balance .balance { font-family: var(--display); font-weight: 900; font-size: 1.6rem; }
+.addr-dropdown-links {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(11, 93, 58, 0.16);
+}
+.addr-dropdown-link {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--green);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+.addr-dropdown-link:hover { text-decoration: underline; }
 
 /* ---- wallet picker modal ------------------------------------------------ */
 .modal-backdrop {

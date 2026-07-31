@@ -183,6 +183,10 @@ export function App() {
               canSignIn={!!activeAddress}
               signingIn={signingIn}
               onSignIn={signIn}
+              wallet={wallet}
+              token={session?.token ?? null}
+              onWalletChanged={onWalletChanged}
+              onError={setError}
             />
           )}
         </div>

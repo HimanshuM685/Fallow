@@ -1,21 +1,41 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import type { WalletSummary } from "@fallow/shared";
+import { formatXlm } from "@fallow/shared";
 import { useWallet } from "../wallet-context";
+import { TopUpControl } from "./TopUpControl";
 
 interface Props {
   signedIn: boolean;
   canSignIn: boolean;
   signingIn: boolean;
   onSignIn: () => void;
+  wallet: WalletSummary | null;
+  token: string | null;
+  onWalletChanged: () => void;
+  onError: (msg: string) => void;
 }
 
 /**
  * One "Connect Wallet" button → the StellarWalletsKit picker modal (Freighter /
  * xBull / Albedo / …) → on connect, sign-in fires automatically so the prepaid
- * balance loads in a single flow.
+ * balance loads in a single flow. Once signed in, the address becomes a
+ * dropdown: balance, a top-up control, a link to full history, and disconnect.
  */
-export function WalletBar({ signedIn, canSignIn, signingIn, onSignIn }: Props) {
-  const { activeAddress, connect, disconnect } = useWallet();
+export function WalletBar({
+  signedIn,
+  canSignIn,
+  signingIn,
+  onSignIn,
+  wallet,
+  token,
+  onWalletChanged,
+  onError,
+}: Props) {
+  const { activeAddress, signXdr, connect, disconnect } = useWallet();
   const [connecting, setConnecting] = useState(false);
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
   // Only auto sign-in after a user-initiated connect (not on reload reconnect).
   const autoSignIn = useRef(false);
 
@@ -25,6 +45,15 @@ export function WalletBar({ signedIn, canSignIn, signingIn, onSignIn }: Props) {
       onSignIn();
     }
   }, [activeAddress, signedIn, canSignIn, signingIn, onSignIn]);
+
+  useEffect(() => {
+    if (!open) return;
+    function onClickOutside(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", onClickOutside);
+    return () => document.removeEventListener("mousedown", onClickOutside);
+  }, [open]);
 
   async function onConnect() {
     autoSignIn.current = true;
@@ -39,10 +68,60 @@ export function WalletBar({ signedIn, canSignIn, signingIn, onSignIn }: Props) {
   }
 
   if (activeAddress) {
+    const short = `${activeAddress.slice(0, 6)}…${activeAddress.slice(-4)}`;
+
+    if (signedIn && token) {
+      return (
+        <div className="wallet-bar" ref={menuRef}>
+          <div className="addr-menu">
+            <button
+              className="addr"
+              onClick={() => setOpen((o) => !o)}
+              aria-expanded={open}
+              aria-haspopup="true"
+            >
+              {short}
+            </button>
+            {open && (
+              <div className="addr-dropdown">
+                <div className="addr-dropdown-balance">
+                  <span className="muted small">Balance</span>
+                  <strong className="balance">{formatXlm(wallet?.balanceStroops ?? 0)}</strong>
+                </div>
+
+                <TopUpControl
+                  address={activeAddress}
+                  token={token}
+                  signXdr={signXdr}
+                  onChanged={onWalletChanged}
+                  onError={onError}
+                />
+
+                <div className="addr-dropdown-links">
+                  <Link to="/dashboard" className="addr-dropdown-link" onClick={() => setOpen(false)}>
+                    History
+                  </Link>
+                  <button
+                    className="addr-dropdown-link"
+                    onClick={() => {
+                      setOpen(false);
+                      disconnect();
+                    }}
+                  >
+                    Disconnect
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="wallet-bar">
         <span className="addr" title={activeAddress}>
-          {activeAddress.slice(0, 6)}…{activeAddress.slice(-4)}
+          {short}
         </span>
         {!signedIn && (
           <button className="btn" disabled={!canSignIn || signingIn} onClick={onSignIn}>
