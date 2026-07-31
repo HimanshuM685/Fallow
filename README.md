@@ -437,6 +437,11 @@ transfer happened. Nothing hides in a database.
 | **Landing** — wallet connect lives in the nav from the first screen. <br> <img src="./screenshots/LandingPage.png" alt="Fallow landing page: RENT REAL COMPUTE, with the wallet chip in the nav and a live hashing panel" width="100%"> | **Explore** — prepaid balance + top-up presets, search / price sort / GPU / min-RAM filters, and a per-node hourly rate with a cost estimate before you rent. <br> <img src="./screenshots/ExplorePage.png" alt="Explore page showing a prepaid balance of 5.13 XLM, node filters, and a node card priced at ~36.36 XLM/hr" width="100%"> |
 | **Dashboard** — lifetime stats, an inline top-up control, and balance over time. <br> <img src="./screenshots/Dashboard.png" alt="Dashboard with balance, total spent, total topped up, lease time and leases-taken tiles above a balance-over-time chart" width="100%"> | **Metrics** — platform growth, daily active compute users, and the sortable leaderboards. <br> <img src="./screenshots/StatsPage.png" alt="Metrics page with users-over-time and active-users charts plus the Top users leaderboard" width="100%"> |
 
+**Mobile** — the masthead stacks (wordmark and **Connect Wallet** on top, nav links beneath), the hero
+wraps, and the action buttons reflow to fit a phone width:
+
+<img src="./screenshots/MobileUI.jpeg" alt="Fallow landing page on a phone: stacked masthead with Connect Wallet, wrapped RENT REAL COMPUTE hero, and the hashing panel full width" width="320">
+
 **Ledger contract on Stellar testnet** — real `topup()` invocations against the deployed contract, one per deposit:
 
 <img src="./screenshots/StellarContract.png" alt="stellar.expert showing contract CC2ISLGUZEIM37F7D7PNXOC2YVCPBN2TVDRYN4DBL7FCT3N2VYKN4ZIA with a history of topup invocations" width="100%">
