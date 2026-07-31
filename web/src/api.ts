@@ -3,7 +3,7 @@ import type {
   ComputeNode,
   ContributorSort,
   ExplorerNode,
-  LeaderboardEntry,
+  LeaderboardResponse,
   LeaderboardSort,
   Lease,
   PlatformInfo,
@@ -75,17 +75,30 @@ export async function fetchActiveCompute(): Promise<ActiveComputePoint[]> {
 }
 
 /** Top 20 addresses ranked by the given basis. */
-export async function fetchLeaderboard(sort: LeaderboardSort): Promise<LeaderboardEntry[]> {
-  const res = await fetch(`${REGISTRY_URL}/leaderboard?sort=${sort}`);
+export async function fetchLeaderboard(
+  sort: LeaderboardSort,
+  address?: string | null,
+): Promise<LeaderboardResponse> {
+  const res = await fetch(`${REGISTRY_URL}/leaderboard?sort=${sort}${addressQuery(address)}`);
   if (!res.ok) throw await apiError(res, "leaderboard");
-  return (await res.json()).entries as LeaderboardEntry[];
+  return res.json();
 }
 
 /** Top 20 contributors ranked by the given basis. */
-export async function fetchContributorLeaderboard(sort: ContributorSort): Promise<LeaderboardEntry[]> {
-  const res = await fetch(`${REGISTRY_URL}/leaderboard/contributors?sort=${sort}`);
+export async function fetchContributorLeaderboard(
+  sort: ContributorSort,
+  address?: string | null,
+): Promise<LeaderboardResponse> {
+  const res = await fetch(
+    `${REGISTRY_URL}/leaderboard/contributors?sort=${sort}${addressQuery(address)}`,
+  );
   if (!res.ok) throw await apiError(res, "leaderboard");
-  return (await res.json()).entries as LeaderboardEntry[];
+  return res.json();
+}
+
+/** `&address=…` when a wallet is connected, so the board can pin its own row. */
+function addressQuery(address?: string | null): string {
+  return address ? `&address=${encodeURIComponent(address)}` : "";
 }
 
 export async function fetchMyNodes(owner: string): Promise<ComputeNode[]> {

@@ -1,5 +1,5 @@
 import type { Charge, TopUp } from "@fallow/shared";
-import { formatXlm } from "@fallow/shared";
+import { formatXlm, formatXlmShort } from "@fallow/shared";
 
 interface Props {
   topups: TopUp[];
@@ -70,7 +70,7 @@ export function BalanceChart({ topups, charges, currentBalance }: Props) {
     <div className="panel chart-card">
       <div className="chart-head">
         <h3>Balance over time</h3>
-        <span className="chart-now">{formatXlm(currentBalance)}</span>
+        <span className="chart-now" title={formatXlm(currentBalance)}>{formatXlmShort(currentBalance)}</span>
       </div>
       <figure className="balance-chart">
         <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Historical balance">
@@ -89,9 +89,9 @@ export function BalanceChart({ topups, charges, currentBalance }: Props) {
           <circle className="bc-dot bc-dot-now" cx={x(last.t)} cy={y(last.v)} r={4.5} />
 
           {/* value labels */}
-          <text className="bc-vlabel" x={pad.l} y={y(vMax) - 6}>{formatXlm(vMax)}</text>
+          <text className="bc-vlabel" x={pad.l} y={y(vMax) - 6}>{formatXlmShort(vMax)}</text>
           {vMin !== vMax && (
-            <text className="bc-vlabel" x={pad.l} y={y(vMin) - 6}>{formatXlm(vMin)}</text>
+            <text className="bc-vlabel" x={pad.l} y={y(vMin) - 6}>{formatXlmShort(vMin)}</text>
           )}
           {/* date range */}
           <text className="bc-tlabel" x={pad.l} y={H - 8} textAnchor="start">{fmtDate(tMin)}</text>

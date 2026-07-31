@@ -1,5 +1,5 @@
 import type { WalletSummary } from "@fallow/shared";
-import { formatXlm } from "@fallow/shared";
+import { formatXlm, formatXlmShort } from "@fallow/shared";
 import { TopUpControl } from "./TopUpControl";
 
 type SignXdr = (xdr: string) => Promise<string>;
@@ -21,7 +21,7 @@ export function WalletPanel({ wallet, address, token, signXdr, onChanged, onErro
     <section className="wallet-panel">
       <div className="wallet-balance">
         <span className="muted small">Prepaid balance</span>
-        <strong className="balance">{formatXlm(balance)}</strong>
+        <strong className="balance" title={formatXlm(balance)}>{formatXlmShort(balance)}</strong>
       </div>
 
       <TopUpControl address={address} token={token} signXdr={signXdr} onChanged={onChanged} onError={onError} />

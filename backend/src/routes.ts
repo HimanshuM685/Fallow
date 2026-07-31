@@ -116,8 +116,11 @@ router.get("/leaderboard", async (req: Request, res: Response) => {
   if (!LEADERBOARD_SORTS.includes(sort)) {
     return res.status(400).json({ error: `sort must be one of: ${LEADERBOARD_SORTS.join(", ")}` });
   }
+  // `address` is optional and public — it only asks "where does this address
+  // rank", which the board already discloses for everyone in the top 20.
+  const address = String(req.query.address ?? "") || undefined;
   try {
-    res.json({ entries: await leaderboard(sort) });
+    res.json(await leaderboard(sort, address));
   } catch (err) {
     res.status(502).json({ error: `leaderboard unavailable: ${(err as Error).message}` });
   }
@@ -130,8 +133,9 @@ router.get("/leaderboard/contributors", async (req: Request, res: Response) => {
   if (!CONTRIBUTOR_SORTS.includes(sort)) {
     return res.status(400).json({ error: `sort must be one of: ${CONTRIBUTOR_SORTS.join(", ")}` });
   }
+  const address = String(req.query.address ?? "") || undefined;
   try {
-    res.json({ entries: await contributorLeaderboard(sort) });
+    res.json(await contributorLeaderboard(sort, address));
   } catch (err) {
     res.status(502).json({ error: `leaderboard unavailable: ${(err as Error).message}` });
   }

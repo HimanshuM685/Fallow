@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
-import type { ContributorSort, LeaderboardEntry, LeaderboardSort } from "@fallow/shared";
-import { formatXlm } from "@fallow/shared";
+import type {
+  ContributorSort,
+  LeaderboardEntry,
+  LeaderboardSort,
+  RankedEntry,
+} from "@fallow/shared";
+import { formatXlm, formatXlmShort } from "@fallow/shared";
 import {
   fetchActiveCompute,
   fetchContributorLeaderboard,
   fetchLeaderboard,
   fetchUserGrowth,
 } from "../api";
+import { useWallet } from "../wallet-context";
 
 interface Pt {
   date: string;
@@ -184,6 +190,41 @@ function TimeSeriesChart({
   );
 }
 
+/** One ranked row. Both boards render through this so "you" looks the same on
+ *  either, whether it's in the list or pinned below it. */
+function LeaderRow({
+  rank,
+  entry,
+  max,
+  format,
+  title,
+  isYou,
+}: {
+  rank: number;
+  entry: LeaderboardEntry;
+  max: number;
+  format: (value: number) => string;
+  /** Exact figure on hover, where the short form rounds (XLM sorts only). */
+  title?: (value: number) => string | undefined;
+  isYou: boolean;
+}) {
+  return (
+    <li className={`leaderboard-row${isYou ? " is-you" : ""}`}>
+      <span className="lb-rank">{rank}</span>
+      <span className="lb-addr" title={entry.address}>
+        {short(entry.address)}
+        {isYou && <span className="lb-you">you</span>}
+      </span>
+      <span className="lb-bar-track">
+        <span className="lb-bar" style={{ width: `${Math.max(4, (entry.value / max) * 100)}%` }} />
+      </span>
+      <span className="lb-value" title={title?.(entry.value)}>
+        {format(entry.value)}
+      </span>
+    </li>
+  );
+}
+
 const SORTS: { key: LeaderboardSort; label: string }[] = [
   { key: "topup", label: "Top-up amount" },
   { key: "leasetime", label: "Lease time" },
@@ -191,7 +232,7 @@ const SORTS: { key: LeaderboardSort; label: string }[] = [
 ];
 
 function formatEntryValue(sort: LeaderboardSort, value: number): string {
-  if (sort === "topup") return formatXlm(value);
+  if (sort === "topup") return formatXlmShort(value);
   if (sort === "leasetime") return value === 1 ? "1 lease" : `${value} leases`;
   // leasespan — total lifetime compute time, in seconds.
   const h = Math.floor(value / 3600);
@@ -201,21 +242,31 @@ function formatEntryValue(sort: LeaderboardSort, value: number): string {
 
 /** Ranked list for the current sort, as thin single-hue bars (length ∝ value). */
 function Leaderboard() {
+  const { activeAddress } = useWallet();
   const [sort, setSort] = useState<LeaderboardSort>("topup");
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
+  const [you, setYou] = useState<RankedEntry | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let alive = true;
     setLoading(true);
-    fetchLeaderboard(sort)
-      .then((e) => alive && setEntries(e))
-      .catch(() => alive && setEntries([]))
+    fetchLeaderboard(sort, activeAddress)
+      .then((r) => {
+        if (!alive) return;
+        setEntries(r.entries);
+        setYou(r.you ?? null);
+      })
+      .catch(() => {
+        if (!alive) return;
+        setEntries([]);
+        setYou(null);
+      })
       .finally(() => alive && setLoading(false));
     return () => {
       alive = false;
     };
-  }, [sort]);
+  }, [sort, activeAddress]);
 
   const max = Math.max(...entries.map((e) => e.value), 1);
 
@@ -247,15 +298,31 @@ function Leaderboard() {
       ) : (
         <ol className="leaderboard-list">
           {entries.map((e, i) => (
-            <li key={e.address} className="leaderboard-row">
-              <span className="lb-rank">{i + 1}</span>
-              <span className="lb-addr" title={e.address}>{short(e.address)}</span>
-              <span className="lb-bar-track">
-                <span className="lb-bar" style={{ width: `${Math.max(4, (e.value / max) * 100)}%` }} />
-              </span>
-              <span className="lb-value">{formatEntryValue(sort, e.value)}</span>
-            </li>
+            <LeaderRow
+              key={e.address}
+              rank={i + 1}
+              entry={e}
+              max={max}
+              format={(v) => formatEntryValue(sort, v)}
+              title={(v) => (sort === "topup" ? formatXlm(v) : undefined)}
+              isYou={e.address === activeAddress}
+            />
           ))}
+          {/* Off the top 20 — pin it below the list rather than make people
+              wonder whether they're on the board at all. */}
+          {you && (
+            <>
+              <li className="lb-gap" aria-hidden="true">⋯</li>
+              <LeaderRow
+                rank={you.rank}
+                entry={you}
+                max={max}
+                format={(v) => formatEntryValue(sort, v)}
+                title={(v) => (sort === "topup" ? formatXlm(v) : undefined)}
+                isYou
+              />
+            </>
+          )}
         </ol>
       )}
     </div>
@@ -278,21 +345,31 @@ function formatContributorValue(sort: ContributorSort, value: number): string {
 /** Ranked list of top contributors, by time served or total leases served —
  *  gives contributors a reason to keep their node online past a one-off demo. */
 function ContributorLeaderboard() {
+  const { activeAddress } = useWallet();
   const [sort, setSort] = useState<ContributorSort>("leasetime");
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
+  const [you, setYou] = useState<RankedEntry | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let alive = true;
     setLoading(true);
-    fetchContributorLeaderboard(sort)
-      .then((e) => alive && setEntries(e))
-      .catch(() => alive && setEntries([]))
+    fetchContributorLeaderboard(sort, activeAddress)
+      .then((r) => {
+        if (!alive) return;
+        setEntries(r.entries);
+        setYou(r.you ?? null);
+      })
+      .catch(() => {
+        if (!alive) return;
+        setEntries([]);
+        setYou(null);
+      })
       .finally(() => alive && setLoading(false));
     return () => {
       alive = false;
     };
-  }, [sort]);
+  }, [sort, activeAddress]);
 
   const max = Math.max(...entries.map((e) => e.value), 1);
 
@@ -324,15 +401,27 @@ function ContributorLeaderboard() {
       ) : (
         <ol className="leaderboard-list">
           {entries.map((e, i) => (
-            <li key={e.address} className="leaderboard-row">
-              <span className="lb-rank">{i + 1}</span>
-              <span className="lb-addr" title={e.address}>{short(e.address)}</span>
-              <span className="lb-bar-track">
-                <span className="lb-bar" style={{ width: `${Math.max(4, (e.value / max) * 100)}%` }} />
-              </span>
-              <span className="lb-value">{formatContributorValue(sort, e.value)}</span>
-            </li>
+            <LeaderRow
+              key={e.address}
+              rank={i + 1}
+              entry={e}
+              max={max}
+              format={(v) => formatContributorValue(sort, v)}
+              isYou={e.address === activeAddress}
+            />
           ))}
+          {you && (
+            <>
+              <li className="lb-gap" aria-hidden="true">⋯</li>
+              <LeaderRow
+                rank={you.rank}
+                entry={you}
+                max={max}
+                format={(v) => formatContributorValue(sort, v)}
+                isYou
+              />
+            </>
+          )}
         </ol>
       )}
     </div>

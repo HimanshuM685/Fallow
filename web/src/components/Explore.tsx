@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { ExplorerNode } from "@fallow/shared";
-import { formatXlm, usdToStroops } from "@fallow/shared";
+import { formatXlmShort, usdToStroops } from "@fallow/shared";
 import { type ActiveLease, fetchExplorer, fetchPlatform, rentNode } from "../api";
 import type { Session } from "../App";
 
@@ -69,7 +69,7 @@ export function Explore({ session, balanceStroops, onLeased }: Props) {
 
   const priceLabel = (usdPerHour: number) => {
     const r = rateStroops(usdPerHour);
-    return r ? `~${formatXlm(r)}/hr` : `$${usdPerHour}/hr`;
+    return r ? `~${formatXlmShort(r)}/hr` : `$${usdPerHour}/hr`;
   };
 
   /** Minutes the current balance buys at this node's hourly rate. */
@@ -85,7 +85,7 @@ export function Explore({ session, balanceStroops, onLeased }: Props) {
     const r = rateStroops(usdPerHour);
     if (!r || !session) return null;
     const capped = balanceStroops < r;
-    return `est. ${formatXlm(Math.min(r, balanceStroops))} for 1 hr${capped ? " (your whole balance)" : ""}`;
+    return `est. ${formatXlmShort(Math.min(r, balanceStroops))} for 1 hr${capped ? " (your whole balance)" : ""}`;
   };
 
   async function rent(node: ExplorerNode) {

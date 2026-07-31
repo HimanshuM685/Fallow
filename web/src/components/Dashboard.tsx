@@ -1,6 +1,8 @@
 import type { WalletStats, WalletSummary } from "@fallow/shared";
-import { formatXlm } from "@fallow/shared";
+import { formatXlm, formatXlmShort } from "@fallow/shared";
+import type { ActiveLease } from "../api";
 import { BalanceChart } from "./BalanceChart";
+import { LeasePanel } from "./LeasePanel";
 import { TopUpControl } from "./TopUpControl";
 
 interface Props {
@@ -11,6 +13,8 @@ interface Props {
   signXdr: (xdr: string) => Promise<string>;
   onWalletChanged: () => void;
   onError: (msg: string) => void;
+  lease: ActiveLease | null;
+  onLeaseEnded: () => void;
 }
 
 function fmtDuration(seconds: number): string {
@@ -47,17 +51,35 @@ function resolveStats(w: WalletSummary): WalletStats {
   };
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
+function Stat({ label, value, title }: { label: string; value: string; title?: string }) {
   return (
     <div className="stat">
       <div className="stat-label">{label}</div>
-      <div className="stat-value">{value}</div>
+      <div className="stat-value" title={title}>
+        {value}
+      </div>
     </div>
   );
 }
 
+/** Rounded for the tile, exact on hover — the ledger tables below keep full
+ *  precision inline, since that's where you'd go to reconcile. */
+function xlmStat(stroops: number) {
+  return { value: formatXlmShort(stroops), title: formatXlm(stroops) };
+}
+
 /** Address-only account dashboard: lifetime stats + spend/top-up history. */
-export function Dashboard({ wallet, address, signedIn, token, signXdr, onWalletChanged, onError }: Props) {
+export function Dashboard({
+  wallet,
+  address,
+  signedIn,
+  token,
+  signXdr,
+  onWalletChanged,
+  onError,
+  lease,
+  onLeaseEnded,
+}: Props) {
   return (
     <section className="page">
       <div className="section-head">
@@ -65,6 +87,10 @@ export function Dashboard({ wallet, address, signedIn, token, signXdr, onWalletC
         <h2 className="display section-title">DASHBOARD</h2>
       </div>
       <div className="rule"></div>
+
+      {/* Above the stats — a running lease is the thing you'd come here to check,
+          and the SSH details shouldn't live only on /explore. */}
+      {lease && <LeasePanel lease={lease} onRelease={onLeaseEnded} />}
 
       {!signedIn || !address ? (
         <p className="muted dash-note">Connect your wallet and sign in to view your dashboard.</p>
@@ -78,13 +104,13 @@ export function Dashboard({ wallet, address, signedIn, token, signXdr, onWalletC
           <p className="dash-addr">{address}</p>
 
           <div className="stat-grid">
-            <Stat label="Balance" value={formatXlm(wallet.balanceStroops)} />
-            <Stat label="Total spent" value={formatXlm(stats.totalSpentStroops)} />
-            <Stat label="Total topped up" value={formatXlm(stats.totalToppedUpStroops)} />
+            <Stat label="Balance" {...xlmStat(wallet.balanceStroops)} />
+            <Stat label="Total spent" {...xlmStat(stats.totalSpentStroops)} />
+            <Stat label="Total topped up" {...xlmStat(stats.totalToppedUpStroops)} />
             <Stat label="Lease time" value={fmtDuration(stats.totalLeaseSeconds)} />
             <Stat label="Leases taken" value={String(stats.leaseCount)} />
             {stats.payoutCount > 0 && (
-              <Stat label="Earned (contributor)" value={formatXlm(stats.totalEarnedStroops)} />
+              <Stat label="Earned (contributor)" {...xlmStat(stats.totalEarnedStroops)} />
             )}
           </div>
 

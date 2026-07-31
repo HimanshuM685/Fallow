@@ -184,6 +184,20 @@ export interface LeaderboardEntry {
   value: number;
 }
 
+/** A leaderboard row that carries its absolute rank — used for the caller's own
+ *  row, which may sit well outside the returned top 20. */
+export interface RankedEntry extends LeaderboardEntry {
+  /** 1-based, ties share a rank (SQL RANK()). */
+  rank: number;
+}
+
+/** GET /leaderboard[/contributors] response. `you` is present only when an
+ *  `address` was asked for, it has ranked data, and it fell outside `entries`. */
+export interface LeaderboardResponse {
+  entries: LeaderboardEntry[];
+  you?: RankedEntry;
+}
+
 export interface Job {
   id: string;
   leaseId: string;
@@ -375,9 +389,24 @@ export function proratedCost(rateStroopsPerHour: number, seconds: number): numbe
   return Math.round((seconds / 3600) * rateStroopsPerHour);
 }
 
-/** Format stroops for display, e.g. 1000000 -> "0.1000 XLM". */
+/** Format stroops at full precision, e.g. 1000000 -> "0.1000 XLM". For ledger
+ *  rows and tooltips — anywhere the exact figure is the point. */
 export function formatXlm(stroops: number): string {
   return `${(stroops / 1e7).toFixed(4)} XLM`;
+}
+
+/**
+ * Format stroops for reading rather than auditing: at most 2 decimals, trailing
+ * zeros dropped — 600000000 -> "60 XLM", 4200000 -> "0.42 XLM".
+ *
+ * Amounts under 0.01 XLM keep full precision instead of collapsing to "0 XLM" —
+ * a metered rate can sit well below a cent, and rounding a live spend figure to
+ * zero reads as free.
+ */
+export function formatXlmShort(stroops: number): string {
+  const xlm = stroops / 1e7;
+  if (xlm !== 0 && Math.abs(xlm) < 0.01) return formatXlm(stroops);
+  return `${Number(xlm.toFixed(2))} XLM`;
 }
 
 /** A node is online if it has beat within the timeout window. */

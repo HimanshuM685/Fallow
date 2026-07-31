@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import type { WalletSummary } from "@fallow/shared";
-import { formatXlm } from "@fallow/shared";
+import { formatXlm, formatXlmShort } from "@fallow/shared";
 import { useWallet } from "../wallet-context";
 import { writeClipboard } from "../clipboard";
 import { TopUpControl } from "./TopUpControl";
@@ -107,7 +107,9 @@ export function WalletBar({
                 <>
                   <div className="addr-dropdown-balance">
                     <span className="muted small">Balance</span>
-                    <strong className="balance">{formatXlm(wallet?.balanceStroops ?? 0)}</strong>
+                    <strong className="balance" title={formatXlm(wallet?.balanceStroops ?? 0)}>
+                      {formatXlmShort(wallet?.balanceStroops ?? 0)}
+                    </strong>
                   </div>
 
                   <TopUpControl

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { formatXlm, proratedCost, type LeaseStatus } from "@fallow/shared";
+import { formatXlm, formatXlmShort, proratedCost, type LeaseStatus } from "@fallow/shared";
 import { type ActiveLease, fetchLease, releaseLease } from "../api";
 import { writeClipboard } from "../clipboard";
 
@@ -116,15 +116,21 @@ export function LeasePanel({ lease, onRelease }: Props) {
         <div>
           <strong>Active session</strong> on <code>{lease.label}</code>
           <div className="muted small">
-            lease {lease.leaseId} · {(lease.rateStroopsPerHour / 1e7).toFixed(4)} XLM/hr
+            lease {lease.leaseId} ·{" "}
+            <span title={`${formatXlm(lease.rateStroopsPerHour)}/hr`}>
+              {formatXlmShort(lease.rateStroopsPerHour)}/hr
+            </span>
           </div>
         </div>
         <div className="timer-block">
           <div className="timer" data-expiring={remainingMs < 60_000} title="time left at current balance">
             {fmtCountdown(remainingMs)}
           </div>
-          <div className="muted small" title="usage so far — charged when you release">
-            {formatXlm(spentStroops)} spent so far
+          <div
+            className="muted small"
+            title={`${formatXlm(spentStroops)} — charged when you release`}
+          >
+            {formatXlmShort(spentStroops)} spent so far
           </div>
         </div>
         <div className="lease-actions">

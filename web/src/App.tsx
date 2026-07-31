@@ -262,6 +262,8 @@ export function App() {
                 signXdr={signXdr}
                 onWalletChanged={onWalletChanged}
                 onError={setError}
+                lease={lease}
+                onLeaseEnded={() => setLease(null)}
               />
             }
           />

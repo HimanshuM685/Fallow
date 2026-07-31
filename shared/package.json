@@ -12,6 +12,7 @@
     }
   },
   "scripts": {
-    "build": "tsc -b"
+    "build": "tsc -b",
+    "check": "tsc -b && node dist/format.check.js"
   }
 }

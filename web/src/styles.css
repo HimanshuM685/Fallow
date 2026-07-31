@@ -406,7 +406,23 @@ a { color: inherit; text-decoration: none; }
 /* ---- leaderboard (sort toggle + ranked bars) ----------------------------- */
 .sort-toggle { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 20px; }
 .leaderboard-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-.leaderboard-row { display: grid; grid-template-columns: 24px 96px 1fr auto; align-items: center; gap: 12px; }
+.leaderboard-row { display: grid; grid-template-columns: 24px 132px 1fr auto; align-items: center; gap: 12px; }
+/* The connected wallet's own row, in the list or pinned under it. */
+.leaderboard-row.is-you { background: rgba(11, 93, 58, 0.09); box-shadow: inset 3px 0 0 var(--green); }
+.leaderboard-row.is-you .lb-rank { opacity: 1; }
+.leaderboard-row.is-you .lb-addr, .leaderboard-row.is-you .lb-value { font-weight: 700; }
+.lb-you {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cream);
+  background: var(--green);
+  border-radius: 3px;
+  padding: 1px 4px;
+}
+.lb-gap { font-family: var(--mono); opacity: 0.4; text-align: center; line-height: 0.6; }
 .lb-rank {
   font-family: var(--mono);
   font-weight: 700;
@@ -414,7 +430,7 @@ a { color: inherit; text-decoration: none; }
   opacity: 0.6;
   text-align: right;
 }
-.lb-addr { font-family: var(--mono); font-size: 12px; letter-spacing: 0.02em; }
+.lb-addr { font-family: var(--mono); font-size: 12px; letter-spacing: 0.02em; display: flex; align-items: center; gap: 6px; }
 .lb-bar-track { background: rgba(11, 93, 58, 0.1); height: 8px; border-radius: 4px; overflow: hidden; }
 .lb-bar { display: block; height: 100%; background: var(--green); border-radius: 4px; }
 .lb-value {
@@ -425,7 +441,7 @@ a { color: inherit; text-decoration: none; }
   white-space: nowrap;
 }
 @media (max-width: 560px) {
-  .leaderboard-row { grid-template-columns: 20px 84px 1fr auto; gap: 8px; }
+  .leaderboard-row { grid-template-columns: 20px 116px 1fr auto; gap: 8px; }
 }
 
 /* ---- about page: text one side, art the other --------------------------- */
