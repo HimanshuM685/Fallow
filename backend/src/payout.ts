@@ -35,10 +35,15 @@ export function payoutsEnabled(): boolean {
  * Pay a contributor their cut of a lease by calling `payout(...)` on the
  * Fallow ledger contract, signed by the platform key — the contract moves
  * `amountStroops` of native XLM from the platform's custodial address to
- * `contributorAddr` and emits a public `payout` event. Returns the confirmed
- * txid. Throws on any failure (the caller logs it and records the payout as
- * failed — usage is still billed). The contributor's account must already
- * exist (funded via Friendbot).
+ * `contributorAddr` and emits a public `payout` event. The contributor's
+ * account must already exist (funded via Friendbot).
+ *
+ * Returns the transaction hash whenever the network *accepted* the submission,
+ * even if confirmation didn't come back in time. The SDK throws
+ * `TransactionStillPending` / `SendResultOnly` for a transaction it has already
+ * broadcast — treating that as "no payout" is how a real, settled payment ends
+ * up labelled `unpaid` in spend history forever. Only a genuine send failure
+ * (or a pre-send error) throws out of here.
  */
 export async function payContributor(
   leaseId: string,
@@ -64,9 +69,23 @@ export async function payContributor(
     user: userAddr,
     amount: BigInt(amountStroops),
   });
-  const sent = await tx.signAndSend();
-  if (!sent.sendTransactionResponse) {
-    throw new Error("payout: transaction was not submitted");
+
+  // Sign first so the hash is known locally — it's deterministic from the signed
+  // envelope, so we keep it even if the confirmation poll later times out.
+  await tx.sign();
+  const hash = tx.signed?.hash().toString("hex");
+
+  try {
+    const sent = await tx.send();
+    return sent.getTransactionResponse?.txHash ?? sent.sendTransactionResponse?.hash ?? hash ?? "";
+  } catch (err) {
+    // The send itself was rejected — nothing landed, so this really is unpaid.
+    if (err instanceof contract.SentTransaction.Errors.SendFailed || !hash) throw err;
+    // Broadcast, just not confirmed yet. Hand back the hash so the payout is
+    // recorded and checkable on an explorer instead of showing as unpaid.
+    console.warn(
+      `[payout] lease ${leaseId}: submitted ${hash} but not confirmed in time — ${(err as Error).message}`,
+    );
+    return hash;
   }
-  return sent.sendTransactionResponse.hash;
 }
