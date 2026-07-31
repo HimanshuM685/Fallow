@@ -64,6 +64,11 @@ export async function loginWithWallet(
   return res.json();
 }
 
+/** Where a `topUp()` call currently is — lets the caller show distinct
+ *  "approve in your wallet" vs "confirming on-chain" states, since the
+ *  backend blocks on Soroban RPC confirmation before responding. */
+export type TopUpPhase = "signing" | "confirming";
+
 /**
  * Top up: call `topup(from, amount)` on the Fallow ledger contract, which
  * relays `amountXlm` XLM from the wallet to the platform's custodial address
@@ -75,6 +80,7 @@ export async function topUp(
   address: string,
   sign: SignXdr,
   amountXlm: number,
+  onPhase?: (phase: TopUpPhase) => void,
 ): Promise<{ txid: string; balanceStroops: number }> {
   const platform = (await (await fetch(`${REGISTRY_URL}/platform`)).json()) as PlatformInfo;
   if (!platform.contractId) throw new Error("ledger contract is not configured on the server");
@@ -89,11 +95,13 @@ export async function topUp(
     from: address,
     amount: BigInt(Math.round(amountXlm * 1e7)),
   });
+  onPhase?.("signing");
   await assembledTx.sign({ signTransaction: async (xdr) => ({ signedTxXdr: await sign(xdr) }) });
   // `.sign()` stores the signed transaction on `.signed` — `.toXDR()` always
   // serializes the *unsigned* `.built` transaction, so it must not be used here.
   if (!assembledTx.signed) throw new Error("top-up transaction was not signed");
 
+  onPhase?.("confirming");
   const res = await fetch(`${REGISTRY_URL}/wallet/topup`, {
     method: "POST",
     headers: { "content-type": "application/json", authorization: `Bearer ${token}` },

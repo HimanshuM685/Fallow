@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { WalletSummary } from "@fallow/shared";
 import { formatXlm } from "@fallow/shared";
-import { topUp } from "../wallet";
+import { topUp, type TopUpPhase } from "../wallet";
 
 type SignXdr = (xdr: string) => Promise<string>;
 
@@ -19,21 +19,29 @@ const PRESETS = [5, 10, 50, 100];
 /** Prepaid balance + a top-up control + deposit/spend history. */
 export function WalletPanel({ wallet, address, token, signXdr, onChanged, onError }: Props) {
   const [amount, setAmount] = useState(5);
-  const [busy, setBusy] = useState(false);
+  const [phase, setPhase] = useState<TopUpPhase | null>(null);
+  const [confirmed, setConfirmed] = useState<string | null>(null);
   const amountOk = Number.isFinite(amount) && amount > 0;
+  const busy = phase !== null;
 
   async function deposit() {
     if (!amountOk) return;
-    setBusy(true);
+    setConfirmed(null);
+    setPhase("signing");
     try {
-      await topUp(token, address, signXdr, amount);
+      await topUp(token, address, signXdr, amount, setPhase);
       onChanged();
+      setConfirmed(`+${amount} XLM confirmed`);
+      setTimeout(() => setConfirmed(null), 4000);
     } catch (e) {
       onError((e as Error).message);
     } finally {
-      setBusy(false);
+      setPhase(null);
     }
   }
+
+  const buttonLabel =
+    phase === "signing" ? "Approve in wallet…" : phase === "confirming" ? "Confirming on-chain…" : "Top up";
 
   const balance = wallet?.balanceStroops ?? 0;
 
@@ -42,6 +50,7 @@ export function WalletPanel({ wallet, address, token, signXdr, onChanged, onErro
       <div className="wallet-balance">
         <span className="muted small">Prepaid balance</span>
         <strong className="balance">{formatXlm(balance)}</strong>
+        {confirmed && <span className="topup-toast">✓ {confirmed}</span>}
       </div>
 
       <div className="topup">
@@ -70,7 +79,7 @@ export function WalletPanel({ wallet, address, token, signXdr, onChanged, onErro
           title={amountOk ? "" : "Enter an amount above 0"}
           onClick={deposit}
         >
-          {busy ? "Topping up…" : "Top up"}
+          {buttonLabel}
         </button>
       </div>
 
