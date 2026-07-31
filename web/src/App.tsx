@@ -267,7 +267,14 @@ export function App() {
         <span className="foot-mid">
           EPHEMERAL DOCKER SANDBOX &bull; NO HOST MOUNT &bull; DESTROYED ON LEASE END
         </span>
-        <span>STELLAR&nbsp;TESTNET</span>
+        <a
+          href="https://stellar.expert/explorer/testnet/contract/CC2ISLGUZEIM37F7D7PNXOC2YVCPBN2TVDRYN4DBL7FCT3N2VYKN4ZIA"
+          target="_blank"
+          rel="noreferrer"
+          title="View the Fallow ledger contract on stellar.expert"
+        >
+          STELLAR&nbsp;TESTNET
+        </a>
       </footer>
     </div>
   );

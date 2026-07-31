@@ -42,8 +42,8 @@ export function About() {
         <p>
           TypeScript everywhere. Vite + React + <code>@creit.tech/stellar-wallets-kit</code>
           (Freighter/xBull/…) on the web; Express + socket.io + Neon Postgres for the registry;
-          Docker + bore for sandboxes; @stellar/stellar-sdk for native-XLM payments and on-chain
-          payouts via Horizon. Stellar testnet.
+          Docker + bore for sandboxes; a Soroban ledger contract + @stellar/stellar-sdk for
+          topups and on-chain contributor payouts. Stellar testnet.
         </p>
 
         <p className="muted small">Open source · no tracking · HTML / CSS / TS</p>

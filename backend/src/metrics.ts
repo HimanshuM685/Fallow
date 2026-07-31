@@ -1,4 +1,10 @@
-import type { ActiveComputePoint, LeaderboardEntry, LeaderboardSort, UserGrowthPoint } from "@fallow/shared";
+import type {
+  ActiveComputePoint,
+  ContributorSort,
+  LeaderboardEntry,
+  LeaderboardSort,
+  UserGrowthPoint,
+} from "@fallow/shared";
 import pool from "./db.js";
 
 /**
@@ -67,6 +73,29 @@ export async function leaderboard(sort: LeaderboardSort): Promise<LeaderboardEnt
   const { rows } = await pool.query<{ address: string; value: number }>(
     `SELECT address, SUM(seconds)::bigint AS value
      FROM charges GROUP BY address ORDER BY value DESC LIMIT $1`,
+    [LEADERBOARD_LIMIT],
+  );
+  return rows.map((r) => ({ address: r.address, value: Number(r.value) }));
+}
+
+/**
+ * Top 20 contributors (by pay_to address) ranked by one of two bases:
+ *   leasetime — total lifetime compute time they've served, across all
+ *               leases (seconds)
+ *   buyers    — number of distinct renters they've served (lifetime)
+ */
+export async function contributorLeaderboard(sort: ContributorSort): Promise<LeaderboardEntry[]> {
+  if (sort === "buyers") {
+    const { rows } = await pool.query<{ address: string; value: number }>(
+      `SELECT pay_to AS address, COUNT(DISTINCT address)::bigint AS value
+       FROM charges WHERE pay_to <> '' GROUP BY pay_to ORDER BY value DESC LIMIT $1`,
+      [LEADERBOARD_LIMIT],
+    );
+    return rows.map((r) => ({ address: r.address, value: Number(r.value) }));
+  }
+  const { rows } = await pool.query<{ address: string; value: number }>(
+    `SELECT pay_to AS address, SUM(seconds)::bigint AS value
+     FROM charges WHERE pay_to <> '' GROUP BY pay_to ORDER BY value DESC LIMIT $1`,
     [LEADERBOARD_LIMIT],
   );
   return rows.map((r) => ({ address: r.address, value: Number(r.value) }));

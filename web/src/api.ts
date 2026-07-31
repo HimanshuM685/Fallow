@@ -1,6 +1,7 @@
 import type {
   ActiveComputePoint,
   ComputeNode,
+  ContributorSort,
   ExplorerNode,
   LeaderboardEntry,
   LeaderboardSort,
@@ -76,6 +77,13 @@ export async function fetchActiveCompute(): Promise<ActiveComputePoint[]> {
 /** Top 20 addresses ranked by the given basis. */
 export async function fetchLeaderboard(sort: LeaderboardSort): Promise<LeaderboardEntry[]> {
   const res = await fetch(`${REGISTRY_URL}/leaderboard?sort=${sort}`);
+  if (!res.ok) throw await apiError(res, "leaderboard");
+  return (await res.json()).entries as LeaderboardEntry[];
+}
+
+/** Top 20 contributors ranked by the given basis. */
+export async function fetchContributorLeaderboard(sort: ContributorSort): Promise<LeaderboardEntry[]> {
+  const res = await fetch(`${REGISTRY_URL}/leaderboard/contributors?sort=${sort}`);
   if (!res.ok) throw await apiError(res, "leaderboard");
   return (await res.json()).entries as LeaderboardEntry[];
 }

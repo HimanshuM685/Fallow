@@ -194,8 +194,21 @@ export async function walletSummary(address: string): Promise<WalletSummary> {
       "SELECT * FROM topups WHERE address = $1 ORDER BY created_at DESC LIMIT 50",
       [address],
     ),
-    q<{ id: number; address: string; lease_id: string; pay_to: string; amount_stroops: number; seconds: number; created_at: number }>(
-      "SELECT * FROM charges WHERE address = $1 ORDER BY created_at DESC LIMIT 50",
+    q<{
+      id: number;
+      address: string;
+      lease_id: string;
+      pay_to: string;
+      amount_stroops: number;
+      seconds: number;
+      created_at: number;
+      payout_txid: string | null;
+    }>(
+      `SELECT c.*, p.txid AS payout_txid
+         FROM charges c
+         LEFT JOIN payouts p ON p.lease_id = c.lease_id
+        WHERE c.address = $1
+        ORDER BY c.created_at DESC LIMIT 50`,
       [address],
     ),
     q<{ id: number; to_addr: string; lease_id: string; amount_stroops: number; txid: string | null; created_at: number }>(
@@ -235,6 +248,7 @@ export async function walletSummary(address: string): Promise<WalletSummary> {
     amountStroops: c.amount_stroops,
     seconds: c.seconds,
     createdAt: c.created_at,
+    payoutTxid: c.payout_txid,
   }));
   const payouts: Payout[] = payoutRows.map((p) => ({
     id: p.id,

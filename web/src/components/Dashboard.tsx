@@ -101,6 +101,7 @@ export function Dashboard({ wallet, address, signedIn }: Props) {
                       <th>Amount</th>
                       <th>Time</th>
                       <th>Paid to</th>
+                      <th>Txn</th>
                       <th>When</th>
                     </tr>
                   </thead>
@@ -113,6 +114,17 @@ export function Dashboard({ wallet, address, signedIn }: Props) {
                           <a href={explorerAccount(c.payToAddr)} target="_blank" rel="noreferrer" title={c.payToAddr}>
                             {short(c.payToAddr)}
                           </a>
+                        </td>
+                        <td>
+                          {c.payoutTxid ? (
+                            <a href={explorerTx(c.payoutTxid)} target="_blank" rel="noreferrer" title={c.payoutTxid}>
+                              {short(c.payoutTxid)}
+                            </a>
+                          ) : (
+                            <span className="muted" title="Payout wasn't sent on-chain (PLATFORM_PRIVATE_KEY unset, or it failed)">
+                              unpaid
+                            </span>
+                          )}
                         </td>
                         <td>{new Date(c.createdAt).toLocaleString()}</td>
                       </tr>

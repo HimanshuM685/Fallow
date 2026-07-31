@@ -3,6 +3,7 @@ import { nanoid } from "nanoid";
 import {
   STELLAR_TESTNET_PASSPHRASE,
   stroopsPerHour,
+  type ContributorSort,
   type LeaderboardSort,
   type PlatformInfo,
   type RentResponse,
@@ -23,7 +24,7 @@ import {
 import { creditWallet, getBalance, walletSummary } from "./db.js";
 import { getNode, listNodesByOwner, listOnlineNodes } from "./registry.js";
 import { createLease, endLeaseAndBill, getLease, setLeaseStatus } from "./leases.js";
-import { activeCompute, leaderboard, userGrowth } from "./metrics.js";
+import { activeCompute, contributorLeaderboard, leaderboard, userGrowth } from "./metrics.js";
 import { settleTopUp, verifyLoginSignature } from "./wallet.js";
 import { isNodeConnected, runJob, startContainer } from "./ws.js";
 import { config } from "./config.js";
@@ -117,6 +118,20 @@ router.get("/leaderboard", async (req: Request, res: Response) => {
   }
   try {
     res.json({ entries: await leaderboard(sort) });
+  } catch (err) {
+    res.status(502).json({ error: `leaderboard unavailable: ${(err as Error).message}` });
+  }
+});
+
+const CONTRIBUTOR_SORTS: ContributorSort[] = ["leasetime", "buyers"];
+
+router.get("/leaderboard/contributors", async (req: Request, res: Response) => {
+  const sort = String(req.query.sort ?? "leasetime") as ContributorSort;
+  if (!CONTRIBUTOR_SORTS.includes(sort)) {
+    return res.status(400).json({ error: `sort must be one of: ${CONTRIBUTOR_SORTS.join(", ")}` });
+  }
+  try {
+    res.json({ entries: await contributorLeaderboard(sort) });
   } catch (err) {
     res.status(502).json({ error: `leaderboard unavailable: ${(err as Error).message}` });
   }

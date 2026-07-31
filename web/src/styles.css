@@ -826,6 +826,7 @@ main { display: block; }
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
+.footer a:hover { text-decoration: underline; }
 
 /* ---- motion: entrances, reveals & micro-interactions -------------------- */
 /* Each route remounts on navigation, so these one-shot entrances replay per page. */

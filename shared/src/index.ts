@@ -113,6 +113,8 @@ export interface Charge {
   /** Seconds of usage this charge covers (the billed duration). */
   seconds: number;
   createdAt: number;
+  /** On-chain txid of the matching contributor payout, or null if it failed/skipped. */
+  payoutTxid: string | null;
 }
 
 /** An on-chain payout to a contributor for compute they provided. */
@@ -171,6 +173,9 @@ export interface ActiveComputePoint {
 
 /** Leaderboard ranking basis (GET /leaderboard?sort=...). */
 export type LeaderboardSort = "topup" | "leasetime" | "leasespan";
+
+/** Contributor-leaderboard ranking basis (GET /leaderboard/contributors?sort=...). */
+export type ContributorSort = "leasetime" | "buyers";
 
 /** One ranked row on the leaderboard. `value`'s unit depends on `sort`: stroops
  *  for "topup", a lease count for "leasetime", seconds for "leasespan". */

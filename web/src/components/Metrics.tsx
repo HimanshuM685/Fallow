@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
-import type { LeaderboardEntry, LeaderboardSort } from "@fallow/shared";
+import type { ContributorSort, LeaderboardEntry, LeaderboardSort } from "@fallow/shared";
 import { formatXlm } from "@fallow/shared";
-import { fetchActiveCompute, fetchLeaderboard, fetchUserGrowth } from "../api";
+import {
+  fetchActiveCompute,
+  fetchContributorLeaderboard,
+  fetchLeaderboard,
+  fetchUserGrowth,
+} from "../api";
 
 interface Pt {
   date: string;
@@ -217,7 +222,7 @@ function Leaderboard() {
   return (
     <div className="panel chart-card leaderboard">
       <div className="chart-head">
-        <h3>Leaderboard</h3>
+        <h3>Top users</h3>
       </div>
 
       <div className="sort-toggle" role="radiogroup" aria-label="Sort leaderboard by">
@@ -257,6 +262,82 @@ function Leaderboard() {
   );
 }
 
+const CONTRIBUTOR_SORTS: { key: ContributorSort; label: string }[] = [
+  { key: "leasetime", label: "Time served" },
+  { key: "buyers", label: "Buyers served" },
+];
+
+function formatContributorValue(sort: ContributorSort, value: number): string {
+  if (sort === "buyers") return value === 1 ? "1 buyer" : `${value} buyers`;
+  // leasetime — total lifetime compute time served, in seconds.
+  const h = Math.floor(value / 3600);
+  const m = Math.floor((value % 3600) / 60);
+  return h > 0 ? `${h}h ${m}m` : `${m}m`;
+}
+
+/** Ranked list of top contributors, by time served or distinct buyers served. */
+function ContributorLeaderboard() {
+  const [sort, setSort] = useState<ContributorSort>("leasetime");
+  const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let alive = true;
+    setLoading(true);
+    fetchContributorLeaderboard(sort)
+      .then((e) => alive && setEntries(e))
+      .catch(() => alive && setEntries([]))
+      .finally(() => alive && setLoading(false));
+    return () => {
+      alive = false;
+    };
+  }, [sort]);
+
+  const max = Math.max(...entries.map((e) => e.value), 1);
+
+  return (
+    <div className="panel chart-card leaderboard">
+      <div className="chart-head">
+        <h3>Top contributors</h3>
+      </div>
+
+      <div className="sort-toggle" role="radiogroup" aria-label="Sort contributor leaderboard by">
+        {CONTRIBUTOR_SORTS.map((s) => (
+          <button
+            key={s.key}
+            type="button"
+            role="radio"
+            aria-checked={sort === s.key}
+            className={`btn ghost small${sort === s.key ? " active" : ""}`}
+            onClick={() => setSort(s.key)}
+          >
+            {s.label}
+          </button>
+        ))}
+      </div>
+
+      {loading ? (
+        <p className="muted small">Loading…</p>
+      ) : entries.length === 0 ? (
+        <p className="muted small">No data yet.</p>
+      ) : (
+        <ol className="leaderboard-list">
+          {entries.map((e, i) => (
+            <li key={e.address} className="leaderboard-row">
+              <span className="lb-rank">{i + 1}</span>
+              <span className="lb-addr" title={e.address}>{short(e.address)}</span>
+              <span className="lb-bar-track">
+                <span className="lb-bar" style={{ width: `${Math.max(4, (e.value / max) * 100)}%` }} />
+              </span>
+              <span className="lb-value">{formatContributorValue(sort, e.value)}</span>
+            </li>
+          ))}
+        </ol>
+      )}
+    </div>
+  );
+}
+
 /** Platform-wide metrics: user growth, daily active compute users, and a
  *  sortable leaderboard. All public data — no wallet/session required. */
 export function Metrics() {
@@ -288,6 +369,7 @@ export function Metrics() {
       />
       <TimeSeriesChart title="Active users on compute" points={active} formatValue={(v) => String(Math.round(v))} />
       <Leaderboard />
+      <ContributorLeaderboard />
     </section>
   );
 }
