@@ -250,7 +250,15 @@ export function App() {
           <Route
             path="/dashboard"
             element={
-              <Dashboard wallet={wallet} address={session?.address ?? null} signedIn={!!session} />
+              <Dashboard
+                wallet={wallet}
+                address={session?.address ?? null}
+                signedIn={!!session}
+                token={session?.token ?? null}
+                signXdr={signXdr}
+                onWalletChanged={onWalletChanged}
+                onError={setError}
+              />
             }
           />
           <Route path="/metrics" element={<Metrics />} />

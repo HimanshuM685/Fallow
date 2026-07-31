@@ -1,11 +1,16 @@
 import type { WalletStats, WalletSummary } from "@fallow/shared";
 import { formatXlm } from "@fallow/shared";
 import { BalanceChart } from "./BalanceChart";
+import { TopUpControl } from "./TopUpControl";
 
 interface Props {
   wallet: WalletSummary | null;
   address: string | null;
   signedIn: boolean;
+  token: string | null;
+  signXdr: (xdr: string) => Promise<string>;
+  onWalletChanged: () => void;
+  onError: (msg: string) => void;
 }
 
 function fmtDuration(seconds: number): string {
@@ -52,7 +57,7 @@ function Stat({ label, value }: { label: string; value: string }) {
 }
 
 /** Address-only account dashboard: lifetime stats + spend/top-up history. */
-export function Dashboard({ wallet, address, signedIn }: Props) {
+export function Dashboard({ wallet, address, signedIn, token, signXdr, onWalletChanged, onError }: Props) {
   return (
     <section className="page">
       <div className="section-head">
@@ -82,6 +87,17 @@ export function Dashboard({ wallet, address, signedIn }: Props) {
               <Stat label="Earned (contributor)" value={formatXlm(stats.totalEarnedStroops)} />
             )}
           </div>
+
+          {token && (
+            <TopUpControl
+              address={address}
+              token={token}
+              signXdr={signXdr}
+              onChanged={onWalletChanged}
+              onError={onError}
+              className="dash-topup"
+            />
+          )}
 
           <BalanceChart
             topups={wallet.topups}
