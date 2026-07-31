@@ -10,12 +10,18 @@ interface Props {
   onLeased: (lease: ActiveLease) => void;
 }
 
+type SortBy = "price-asc" | "price-desc";
+
 export function Explore({ session, balanceStroops, onLeased }: Props) {
   const [nodes, setNodes] = useState<ExplorerNode[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [renting, setRenting] = useState<string | null>(null);
   const [xlmUsdPrice, setXlmUsdPrice] = useState<number | null>(null);
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState<SortBy>("price-asc");
+  const [gpuOnly, setGpuOnly] = useState(false);
+  const [minRamGb, setMinRamGb] = useState(0);
 
   useEffect(() => {
     fetchPlatform()
@@ -91,6 +97,16 @@ export function Explore({ session, balanceStroops, onLeased }: Props) {
     }
   }
 
+  const maxRamGb = Math.max(1, ...nodes.map((n) => Math.ceil(n.ramMb / 1024)));
+  const q = search.trim().toLowerCase();
+  const visible = nodes
+    .filter((n) => !q || n.label.toLowerCase().includes(q))
+    .filter((n) => !gpuOnly || !!n.gpu)
+    .filter((n) => n.ramMb >= minRamGb * 1024)
+    .sort((a, b) =>
+      sortBy === "price-asc" ? a.pricePerHourUsd - b.pricePerHourUsd : b.pricePerHourUsd - a.pricePerHourUsd,
+    );
+
   return (
     <div>
       <p className="muted">
@@ -105,8 +121,48 @@ export function Explore({ session, balanceStroops, onLeased }: Props) {
       {!loading && nodes.length === 0 && (
         <p className="muted">No nodes online. Start a contributor agent.</p>
       )}
+      {nodes.length > 0 && (
+        <div className="explore-filters">
+          <input
+            type="search"
+            placeholder="Search by name…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="filter-search"
+            aria-label="Search nodes by name"
+          />
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as SortBy)}
+            className="filter-select"
+            aria-label="Sort by"
+          >
+            <option value="price-asc">Price: low to high</option>
+            <option value="price-desc">Price: high to low</option>
+          </select>
+          <label className="filter-checkbox">
+            <input type="checkbox" checked={gpuOnly} onChange={(e) => setGpuOnly(e.target.checked)} />
+            GPU only
+          </label>
+          <label className="filter-slider">
+            Min RAM: {minRamGb} GB
+            <input
+              type="range"
+              min={0}
+              max={maxRamGb}
+              step={1}
+              value={minRamGb}
+              onChange={(e) => setMinRamGb(Number(e.target.value))}
+              aria-label="Minimum RAM in GB"
+            />
+          </label>
+        </div>
+      )}
+      {nodes.length > 0 && visible.length === 0 && (
+        <p className="muted">No nodes match these filters.</p>
+      )}
       <div className="grid">
-        {nodes.map((n) => (
+        {visible.map((n) => (
           <div className="card" key={n.id}>
             <div className="card-head">
               <strong>{n.label}</strong>
