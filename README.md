@@ -44,18 +44,50 @@ it prepaid and individual-scale.
 
 ## Architecture
 
-```
-   Contributor PC                Registry + API                 Consumer / Agent
- ┌──────────────────┐  WebSocket ┌──────────────────────┐      ┌────────────────────┐
- │ contributor agent│◄──────────►│ GET  /explorer (free)│◄────►│ browser (Explore UI)│
- │  docker run ...  │            │ POST /wallet/topup   │      │   or                │
- │  (nodes/leases   │            │ POST /rent/:id       │      │ autonomous agent    │
- │   in memory)     │            │ watchdog + payout    │      └────────────────────┘
- └──────────────────┘            └──────────┬───────────┘   sign in + call topup()
-        │ bore tunnel (SSH)        ┌─────────┴────────┐
-        ▼                          │                  │
-  sandboxed SSH shell        Neon (Postgres)   Stellar (ledger contract relays +
-                       wallets·topups·charges·payouts   publicly logs topup/payout)
+```mermaid
+flowchart LR
+  subgraph consumer["Consumer / Agent"]
+    web["Web SPA<br/>Explore · Dashboard · Metrics"]
+    agent["example-buyer<br/>autonomous agent"]
+    wallet["Freighter / xBull<br/>(wallets-kit)"]
+  end
+
+  subgraph registry["Registry + API (backend/)"]
+    api["Express routes<br/>/explorer · /rent/:id · /wallet/topup"]
+    ws["socket.io hub<br/>node registry, in memory"]
+    dog["Watchdog<br/>ends lease when balance dries"]
+  end
+
+  subgraph contributor["Contributor PC (contributor/)"]
+    daemon["Contributor daemon<br/>heartbeats, signs a nonce"]
+    sandbox["Docker SSH sandbox<br/>no mounts · caps dropped · ephemeral"]
+  end
+
+  subgraph state["Persistent state"]
+    neon[("Neon Postgres<br/>wallets · topups · charges · payouts")]
+  end
+
+  subgraph stellar["Stellar testnet"]
+    ledger["Fallow ledger contract<br/>topup() · payout()"]
+    rpc["Soroban RPC"]
+  end
+
+  web -->|"sign in, rent, release"| api
+  agent -->|"same REST API, zero clicks"| api
+  web -.->|"sign login nonce + topup XDR"| wallet
+  wallet -->|"signed XDR"| ledger
+
+  api <-->|"WebSocket: lease start/stop, heartbeats"| ws
+  ws <-->|"persistent socket"| daemon
+  daemon -->|"docker run"| sandbox
+  sandbox -->|"bore tunnel"| sshuser(["ssh root@… -p …"])
+  web -.->|"SSH, password = wallet address"| sshuser
+
+  api -->|"only money state"| neon
+  dog -->|"bill once at lease end"| neon
+  api -->|"confirm deposit on-chain"| rpc
+  dog -->|"payout to contributor"| ledger
+  ledger --> rpc
 ```
 
 One npm-workspaces monorepo. Each folder is a self-contained piece you can `cd` into:
@@ -189,6 +221,63 @@ All Node services read the repo-root `.env`, and each app's own `.env` overrides
 `FOO=bar npm run …` overrides both. The web app reads `web/.env` (`VITE_*` only, baked in at build
 time). See [`.env.example`](./.env.example), [`web/.env.example`](./web/.env.example), and the env
 tables in [DEPLOY.md](./DEPLOY.md).
+
+## CI/CD pipeline
+
+> **Status: not automated yet.** There is no `.github/workflows/` in this repo — every gate below runs
+> locally today. The diagram is the release path as it exists, drawn so it can be lifted into GitHub
+> Actions as-is. Dashed boxes are the steps still done by hand.
+
+```mermaid
+flowchart TD
+  push(["push / pull request"]) --> install["npm ci<br/>(one workspaces install)"]
+  install --> shared["npm run build:shared<br/>@fallow/shared → dist/"]
+
+  subgraph verify["Verify — must all pass"]
+    shared --> types["npm run typecheck<br/>shared · backend · contributor · example-buyer"]
+    shared --> fmtcheck["npm run check -w shared<br/>money-formatting asserts"]
+    shared --> webbuild["npm run build -w web<br/>Vite production build"]
+    contract["contract: stellar contract build<br/>(wasm32v1-none)"]
+  end
+
+  types --> gate{"all green?"}
+  fmtcheck --> gate
+  webbuild --> gate
+  contract --> gate
+
+  gate -->|no| fail(["fail the run — nothing ships"])
+  gate -->|yes| artifacts["Artifacts:<br/>web/dist · backend image · fallow_ledger.wasm"]
+
+  subgraph deploy["Deploy — on main / tag"]
+    artifacts --> img["docker compose build backend<br/>push image to registry"]
+    artifacts --> spa["upload web/dist<br/>Vercel / Netlify / Cloudflare / nginx"]
+    artifacts --> wasm["stellar contract deploy<br/>→ CONTRACT_ID"]
+  end
+
+  img --> server["Backend host<br/>DATABASE_URL · PLATFORM_PAYTO · PLATFORM_PRIVATE_KEY"]
+  spa --> cdn["Static host<br/>VITE_REGISTRY_URL baked in at build"]
+  wasm --> chain["Stellar testnet"]
+
+  server --> smoke["Smoke: GET /health, GET /explorer"]
+  cdn --> smoke
+  chain --> smoke
+  smoke --> agents["Contributor agents reconnect<br/>(own machines, pull-based)"]
+
+  classDef manual stroke-dasharray: 5 5;
+  class contract,img,spa,wasm,smoke manual;
+```
+
+Notes on why it's shaped this way:
+
+- **`build:shared` gates everything.** Both the backend and the web app import `@fallow/shared`, so a
+  stale `dist/` fails the typecheck rather than shipping a mismatch.
+- **Contributor agents are never deployed by the pipeline.** They run on contributors' own machines and
+  reconnect to the registry over WebSocket, so a backend deploy just drops their sockets — the node
+  re-registers on its next heartbeat.
+- **`VITE_REGISTRY_URL` is baked in at build time**, so the web app has to be rebuilt (not just
+  re-uploaded) when the backend URL changes.
+- **Contract deploys are deliberately manual.** A redeploy mints a new `CONTRACT_ID` that every service
+  has to be pointed at, so it should never fire off a merge.
 
 ## Demo script (the money shot)
 

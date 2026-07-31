@@ -1,12 +1,12 @@
 # Graph Report - .  (2026-07-31)
 
 ## Corpus Check
-- Corpus is ~42,472 words - fits in a single context window. You may not need a graph.
+- Corpus is ~42,486 words - fits in a single context window. You may not need a graph.
 
 ## Summary
 - 574 nodes · 845 edges · 57 communities (35 shown, 22 thin omitted)
 - Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 30 edges (avg confidence: 0.86)
-- Token cost: 64,069 input · 0 output
+- Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
 - [[_COMMUNITY_Project Docs & Deployment|Project Docs & Deployment]]
@@ -96,9 +96,9 @@
 ## Hyperedges (group relationships)
 - **verify-dapp Verification Pipeline** — verify_dapp_skill_verify_dapp, verify_dapp_skill_crowdfund_contract, verify_dapp_skill_live_rpc_read, verify_dapp_skill_wallet_manual_testing [EXTRACTED 1.00]
 - **Backend, contributor, and web as three independently deployable pieces** — readme_backend, readme_contributor, readme_web [EXTRACTED 1.00]
+- **Fallow npm-Workspaces Monorepo Pieces** — readme_backend_registry, readme_contributor_daemon, readme_web_app, readme_example_buyer, readme_shared_package [EXTRACTED 1.00]
 - **Soroban Ledger Contract Function Surface** — whitepaper_contract_constructor, whitepaper_contract_topup, whitepaper_contract_payout, whitepaper_contract_get_platform, whitepaper_ledger_contract [EXTRACTED 1.00]
 - **USD-to-Stroops Billing and Metering Flow** — whitepaper_usdtostroops, whitepaper_stroopsperhour, whitepaper_proratedcost, whitepaper_watchdog, whitepaper_bill_once_design, whitepaper_platform_fee_split, whitepaper_debitwallet_clamp [EXTRACTED 1.00]
-- **Fallow npm-Workspaces Monorepo Pieces** — readme_backend_registry, readme_contributor_daemon, readme_web_app, readme_example_buyer, readme_shared_package [EXTRACTED 1.00]
 
 ## Communities (57 total, 22 thin omitted)
 
@@ -239,10 +239,10 @@ Cohesion: 0.50
 Nodes (4): buyer service (docker-compose, one-shot), contributor service (docker-compose), Docker socket mount (sibling container launch), REGISTRY_URL
 
 ## Ambiguous Edges - Review These
-- `Multi-Armed Classical Figure Gathering Rays` → `Possible Mythological Wind/Messenger Deity (winged cap)`  [AMBIGUOUS]
-  web/public/hero-art.jpg · relation: conceptually_related_to
 - `Nonce-Signed Session Token` → `Renter Withdrawal Path (withdraw)`  [AMBIGUOUS]
   WHITEPAPER.md · relation: conceptually_related_to
+- `Multi-Armed Classical Figure Gathering Rays` → `Possible Mythological Wind/Messenger Deity (winged cap)`  [AMBIGUOUS]
+  web/public/hero-art.jpg · relation: conceptually_related_to
 
 ## Knowledge Gaps
 - **248 isolated node(s):** `name`, `version`, `private`, `type`, `dev` (+243 more)
@@ -252,9 +252,9 @@ Nodes (4): buyer service (docker-compose, one-shot), contributor service (docker
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **What is the exact relationship between `Multi-Armed Classical Figure Gathering Rays` and `Possible Mythological Wind/Messenger Deity (winged cap)`?**
-  _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
 - **What is the exact relationship between `Nonce-Signed Session Token` and `Renter Withdrawal Path (withdraw)`?**
+  _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
+- **What is the exact relationship between `Multi-Armed Classical Figure Gathering Rays` and `Possible Mythological Wind/Messenger Deity (winged cap)`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
 - **Why does `proratedCost()` connect `Dashboard & Balance Chart` to `Lease Billing & Payout`, `Shared Protocol Types`?**
   _High betweenness centrality (0.080) - this node is a cross-community bridge._
