@@ -35,8 +35,9 @@ No per-action signing. No x402. You pay for the time you actually used.
 11. [Feedback Iteration Tracker](#11-feedback-iteration-tracker)
 12. [On-Chain Info](#12-on-chain-info)
 13. [Screenshots](#13-screenshots)
-14. [Pitch Deck & Presentation](#14-pitch-deck--presentation)
-15. [Future Enhancements](#15-future-enhancements)
+14. [Demo Video](#14-demo-video)
+15. [Pitch Deck & Presentation](#15-pitch-deck--presentation)
+16. [Future Enhancements](#16-future-enhancements)
 
 ---
 
@@ -396,7 +397,12 @@ One npm-workspaces monorepo. Each folder is a self-contained piece you can `cd` 
 
 ## 11. Feedback Iteration Tracker
 
-Every item below came from a reviewer using the app, and every one shipped. Commits link to the change.
+Feedback was collected through a public form, pooled into a response sheet, and worked off as the
+tracker below. Every item came from a reviewer using the app, and every one shipped — commits link to
+the change.
+
+- 📝 **[Feedback form](https://forms.gle/yU8juBU5RUzbsmBT8)** — used the app? Tell me what broke.
+- 📊 **[Response sheet](https://docs.google.com/spreadsheets/d/1mlUP0u1ITqySQtyb6J7G1X5ezect1I9dqMzJ2EOErhg/edit?usp=sharing)** — every raw response, unedited.
 
 | # | Feedback | Commit |
 |---|---|---|
@@ -448,16 +454,26 @@ wraps, and the action buttons reflow to fit a phone width:
 
 **Web analytics on the deployed app** (`fallow.007575.xyz`) — 606 pageviews from 205 unique visitors in a 24-hour window:
 
-<img src="https://raw.githubusercontent.com/HimanshuM685/Fallow/main/screenshots/WebAnalytics.png" alt="Netlify Web Analytics for fallow.007575.xyz: 606 total pageviews, 205 unique visitors" width="100%">
+<img src="./screenshots/WebAnalytics.png" alt="Netlify Web Analytics for fallow.007575.xyz: 606 total pageviews, 205 unique visitors, 30 MB bandwidth over 24 hours, with a pageviews-over-time chart" width="100%">
 
-## 14. Pitch Deck & Presentation
+## 14. Demo Video
+
+A full walkthrough — sign in, top up, rent a node, SSH into the sandbox, and release it.
+
+<a href="https://www.youtube.com/watch?v=4WjiuCSbI_c">
+  <img src="https://i.ytimg.com/vi/4WjiuCSbI_c/hqdefault.jpg" alt="Fallow demo video" width="480">
+</a>
+
+▶️ **[Watch on YouTube](https://www.youtube.com/watch?v=4WjiuCSbI_c)**
+
+## 15. Pitch Deck & Presentation
 
 - 📊 **[Technical pitch deck & future roadmap](https://drive.google.com/file/d/1p0R7P4XE_koQu7b1wOVTJR2nqOdfSIHr/view?usp=sharing)** — the problem, the architecture, and where this goes next, in slide form.
 - 📄 **[WHITEPAPER.md](./WHITEPAPER.md)** — trust model, exact billing math, the custodial tradeoff and
   what removing it would take, the ledger contract, and the roadmap in prose.
 - 🚀 **[DEPLOY.md](./DEPLOY.md)** — setup, account prep, and production deployment.
 
-## 15. Future Enhancements
+## 16. Future Enhancements
 
 Proposed, not built — the intended trajectory, not a commitment. Full reasoning in
 [WHITEPAPER.md §6](./WHITEPAPER.md).
