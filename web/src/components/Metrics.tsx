@@ -72,7 +72,7 @@ function TimeSeriesChart({
   }
 
   const W = 760;
-  const H = 220;
+  const H = 110; // half-height, matching BalanceChart
   const pad = { l: 10, r: 10, t: 16, b: 26 };
   const vMax = Math.max(...points.map((p) => p.value));
   const vMin = 0;

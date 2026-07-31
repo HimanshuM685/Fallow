@@ -1,251 +1,268 @@
 # Graph Report - .  (2026-07-31)
 
 ## Corpus Check
-- Corpus is ~38,453 words - fits in a single context window. You may not need a graph.
+- Corpus is ~42,472 words - fits in a single context window. You may not need a graph.
 
 ## Summary
-- 531 nodes · 725 edges · 59 communities (31 shown, 28 thin omitted)
-- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 30 edges (avg confidence: 0.84)
-- Token cost: 0 input · 65,143 output
+- 574 nodes · 845 edges · 57 communities (35 shown, 22 thin omitted)
+- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 30 edges (avg confidence: 0.86)
+- Token cost: 64,069 input · 0 output
 
 ## Community Hubs (Navigation)
-- [[_COMMUNITY_Backend Auth & Payout|Backend Auth & Payout]]
-- [[_COMMUNITY_Web Static Pages (AboutArchBalance)|Web Static Pages (About/Arch/Balance)]]
-- [[_COMMUNITY_Shared Message & Type Contracts|Shared Message & Type Contracts]]
-- [[_COMMUNITY_Backend Dependencies|Backend Dependencies]]
-- [[_COMMUNITY_Contributor Docker Sandbox|Contributor Docker Sandbox]]
-- [[_COMMUNITY_Web Dependencies|Web Dependencies]]
-- [[_COMMUNITY_Ledger Contract Deployment Docs|Ledger Contract Deployment Docs]]
-- [[_COMMUNITY_Contributor Dependencies|Contributor Dependencies]]
-- [[_COMMUNITY_Web TypeScript Config|Web TypeScript Config]]
-- [[_COMMUNITY_Root Package Config|Root Package Config]]
-- [[_COMMUNITY_Web App Shell & Wallet Context|Web App Shell & Wallet Context]]
-- [[_COMMUNITY_Metrics & Leaderboard UI|Metrics & Leaderboard UI]]
-- [[_COMMUNITY_Example-Buyer Dependencies|Example-Buyer Dependencies]]
+- [[_COMMUNITY_Project Docs & Deployment|Project Docs & Deployment]]
+- [[_COMMUNITY_Dashboard & Balance Chart|Dashboard & Balance Chart]]
+- [[_COMMUNITY_Landing & Static Pages|Landing & Static Pages]]
+- [[_COMMUNITY_Backend Package Manifest|Backend Package Manifest]]
+- [[_COMMUNITY_Contributor Sandbox Runtime|Contributor Sandbox Runtime]]
+- [[_COMMUNITY_Shared Protocol Types|Shared Protocol Types]]
+- [[_COMMUNITY_Web Package Manifest|Web Package Manifest]]
 - [[_COMMUNITY_Web API Client|Web API Client]]
-- [[_COMMUNITY_Shared TS Base Config|Shared TS Base Config]]
-- [[_COMMUNITY_Ledger Contract (Rust)|Ledger Contract (Rust)]]
-- [[_COMMUNITY_Shared Package Config|Shared Package Config]]
-- [[_COMMUNITY_Web Rental UI (ContributeLease)|Web Rental UI (Contribute/Lease)]]
+- [[_COMMUNITY_Contributor Package Manifest|Contributor Package Manifest]]
+- [[_COMMUNITY_Node Registry & Heartbeats|Node Registry & Heartbeats]]
+- [[_COMMUNITY_Web TypeScript Config|Web TypeScript Config]]
+- [[_COMMUNITY_Root Workspace Scripts|Root Workspace Scripts]]
+- [[_COMMUNITY_Auth Tokens & Nonces|Auth Tokens & Nonces]]
+- [[_COMMUNITY_Lease Billing & Payout|Lease Billing & Payout]]
+- [[_COMMUNITY_Metrics & Leaderboards UI|Metrics & Leaderboards UI]]
+- [[_COMMUNITY_Example-Buyer Manifest|Example-Buyer Manifest]]
+- [[_COMMUNITY_Base TypeScript Config|Base TypeScript Config]]
+- [[_COMMUNITY_Soroban Ledger Contract|Soroban Ledger Contract]]
+- [[_COMMUNITY_Shared Package Manifest|Shared Package Manifest]]
 - [[_COMMUNITY_Autonomous Buyer Agent|Autonomous Buyer Agent]]
-- [[_COMMUNITY_Backend TS Config|Backend TS Config]]
-- [[_COMMUNITY_Contributor TS Config|Contributor TS Config]]
-- [[_COMMUNITY_Example-Buyer TS Config|Example-Buyer TS Config]]
-- [[_COMMUNITY_Backend Top-up Settlement|Backend Top-up Settlement]]
+- [[_COMMUNITY_Wallet Database Layer|Wallet Database Layer]]
+- [[_COMMUNITY_Metrics SQL Queries|Metrics SQL Queries]]
+- [[_COMMUNITY_Package TS Config A|Package TS Config A]]
+- [[_COMMUNITY_Package TS Config B|Package TS Config B]]
+- [[_COMMUNITY_Package TS Config C|Package TS Config C]]
+- [[_COMMUNITY_Backend Entrypoint & Bootstrap|Backend Entrypoint & Bootstrap]]
+- [[_COMMUNITY_Stellar Wallet Verification|Stellar Wallet Verification]]
 - [[_COMMUNITY_Hero Art Illustration|Hero Art Illustration]]
-- [[_COMMUNITY_Web Wallet Sign-in & Types|Web Wallet Sign-in & Types]]
-- [[_COMMUNITY_Shared TS Config|Shared TS Config]]
-- [[_COMMUNITY_Stellar Challenge Submission Notes|Stellar Challenge Submission Notes]]
-- [[_COMMUNITY_Contributor Runtime Config|Contributor Runtime Config]]
+- [[_COMMUNITY_Web Wallet Login Client|Web Wallet Login Client]]
+- [[_COMMUNITY_Contract TS Config|Contract TS Config]]
+- [[_COMMUNITY_Challenge Submission Notes|Challenge Submission Notes]]
+- [[_COMMUNITY_Explore Marketplace UI|Explore Marketplace UI]]
+- [[_COMMUNITY_Contract Deployment Setup|Contract Deployment Setup]]
+- [[_COMMUNITY_Contributor Config|Contributor Config]]
 - [[_COMMUNITY_Docker Compose Services|Docker Compose Services]]
-- [[_COMMUNITY_Backend Runtime Config|Backend Runtime Config]]
-- [[_COMMUNITY_Stellar Network Constants|Stellar Network Constants]]
-- [[_COMMUNITY_Web SPA Deployment Rationale|Web SPA Deployment Rationale]]
+- [[_COMMUNITY_Backend Config|Backend Config]]
+- [[_COMMUNITY_Fallow Brand Assets|Fallow Brand Assets]]
+- [[_COMMUNITY_Container Entrypoint Script|Container Entrypoint Script]]
+- [[_COMMUNITY_Keygen Script|Keygen Script]]
 - [[_COMMUNITY_Deployed Contract ID|Deployed Contract ID]]
-- [[_COMMUNITY_Topup Endpoint & Contract Fn|Topup Endpoint & Contract Fn]]
-- [[_COMMUNITY_Autonomous Agent Deployment|Autonomous Agent Deployment]]
-- [[_COMMUNITY_Contributor Agent Deployment|Contributor Agent Deployment]]
-- [[_COMMUNITY_Deploy Guide Overview|Deploy Guide Overview]]
-- [[_COMMUNITY_Fallow Brand & Favicon|Fallow Brand & Favicon]]
-- [[_COMMUNITY_Sandbox Entrypoint Script|Sandbox Entrypoint Script]]
-- [[_COMMUNITY_Contributor Keygen|Contributor Keygen]]
-- [[_COMMUNITY_Contract get_platform() View|Contract get_platform() View]]
+- [[_COMMUNITY_get_platform Contract Read|get_platform Contract Read]]
+- [[_COMMUNITY_Native XLM Asset Constant|Native XLM Asset Constant]]
+- [[_COMMUNITY_payout Contract Function|payout Contract Function]]
+- [[_COMMUNITY_Platform Custodial Address|Platform Custodial Address]]
+- [[_COMMUNITY_topup Contract Function|topup Contract Function]]
+- [[_COMMUNITY_Contributor Agent Deploy|Contributor Agent Deploy]]
+- [[_COMMUNITY_Stellar Keygen Command|Stellar Keygen Command]]
+- [[_COMMUNITY_Stellar Network Passphrase|Stellar Network Passphrase]]
 - [[_COMMUNITY_Production Checklist|Production Checklist]]
-- [[_COMMUNITY_Docker Compose Backend Service|Docker Compose Backend Service]]
+- [[_COMMUNITY_Static SPA Deployment|Static SPA Deployment]]
+- [[_COMMUNITY_Backend Compose Service|Backend Compose Service]]
 - [[_COMMUNITY_Web Not Dockerized Note|Web Not Dockerized Note]]
-- [[_COMMUNITY_Explorer Endpoint|Explorer Endpoint]]
-- [[_COMMUNITY_Friendbot Faucet|Friendbot Faucet]]
-- [[_COMMUNITY_Neon Off-chain Ledger|Neon Off-chain Ledger]]
-- [[_COMMUNITY_Platform Signing Key|Platform Signing Key]]
-- [[_COMMUNITY_Rent Endpoint|Rent Endpoint]]
-- [[_COMMUNITY_Shared Package Purpose|Shared Package Purpose]]
-- [[_COMMUNITY_Soroban Platform|Soroban Platform]]
-- [[_COMMUNITY_Stellar Wallets Kit|Stellar Wallets Kit]]
-- [[_COMMUNITY_Wallet Session Auth|Wallet Session Auth]]
-- [[_COMMUNITY_XLMUSD Price Config|XLM/USD Price Config]]
-- [[_COMMUNITY_Web Fonts|Web Fonts]]
+- [[_COMMUNITY_Google Fonts Loading|Google Fonts Loading]]
 - [[_COMMUNITY_Web Entry Script|Web Entry Script]]
-- [[_COMMUNITY_Web Root Mount|Web Root Mount]]
-- [[_COMMUNITY_Web Page Title|Web Page Title]]
+- [[_COMMUNITY_Root Mount Div|Root Mount Div]]
+- [[_COMMUNITY_Page Title Branding|Page Title Branding]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `apiError()` - 16 edges
-2. `compilerOptions` - 15 edges
-3. `compilerOptions` - 13 edges
-4. `startSandbox()` - 10 edges
-5. `formatXlm()` - 10 edges
-6. `scripts` - 9 edges
-7. `WalletSummary` - 9 edges
-8. `endLeaseAndBill()` - 8 edges
-9. `ActiveLease` - 8 edges
-10. `Env` - 6 edges
+1. `formatXlmShort()` - 16 edges
+2. `apiError()` - 16 edges
+3. `formatXlm()` - 15 edges
+4. `compilerOptions` - 15 edges
+5. `compilerOptions` - 13 edges
+6. `WalletSummary` - 11 edges
+7. `startSandbox()` - 10 edges
+8. `ActiveLease` - 10 edges
+9. `scripts` - 9 edges
+10. `endLeaseAndBill()` - 8 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `DEPLOY.md Known limitations section` --semantically_similar_to--> `Custodial model rationale: top-ups pool at platform address, off-chain Neon ledger, on-chain payout at lease end`  [INFERRED] [semantically similar]
+- `DEPLOY.md Known limitations section` --semantically_similar_to--> `Custodial Model Limitation`  [INFERRED] [semantically similar]
   DEPLOY.md → README.md
-- `DEPLOY.md Known limitations section` --semantically_similar_to--> `Billing rationale: usage calculated continuously but charged once at lease end, prorated`  [INFERRED] [semantically similar]
-  DEPLOY.md → README.md
-- `DEPLOY.md Known limitations section` --semantically_similar_to--> `In-memory nodes/leases rationale: keeps Postgres out of the heartbeat/watchdog hot path`  [INFERRED] [semantically similar]
-  DEPLOY.md → README.md
-- `DEPLOY.md Known limitations section` --semantically_similar_to--> `SSH auth rationale: per-lease wallet-address password on a throwaway root container, fine for ephemeral compute`  [INFERRED] [semantically similar]
-  DEPLOY.md → README.md
-- `endLeaseAndBill()` --calls--> `proratedCost()`  [INFERRED]
-  backend/src/leases.ts → shared/src/index.ts
+- `Balance Clamped to Zero (debitWallet)` --semantically_similar_to--> `Prepaid Off-Chain Balance`  [INFERRED] [semantically similar]
+  WHITEPAPER.md → README.md
+- `Container Trust Model (§2)` --semantically_similar_to--> `Ephemeral Docker Sandbox Trust Model`  [INFERRED] [semantically similar]
+  WHITEPAPER.md → README.md
+- `Contributor / Registry / Consumer Architecture` --semantically_similar_to--> `backend/ Registry and API`  [INFERRED] [semantically similar]
+  WHITEPAPER.md → README.md
+- `Soroban Ledger Contract (§5)` --semantically_similar_to--> `Fallow Ledger Contract (README)`  [INFERRED] [semantically similar]
+  WHITEPAPER.md → README.md
 
 ## Import Cycles
 - None detected.
 
 ## Hyperedges (group relationships)
 - **verify-dapp Verification Pipeline** — verify_dapp_skill_verify_dapp, verify_dapp_skill_crowdfund_contract, verify_dapp_skill_live_rpc_read, verify_dapp_skill_wallet_manual_testing [EXTRACTED 1.00]
-- **Prepaid top-up to ledger-contract relay to off-chain Neon balance to on-chain payout** — readme_platform_payto, readme_neon_postgres, contract_readme_topup_function, contract_readme_payout_function, readme_wallet_session_auth [INFERRED 0.85]
 - **Backend, contributor, and web as three independently deployable pieces** — readme_backend, readme_contributor, readme_web [EXTRACTED 1.00]
-- **Ephemeral Docker sandbox, bore tunnel, and password SSH forming the contributor trust boundary** — readme_docker_sandbox, readme_bore_tunnel, readme_ssh_auth [INFERRED 0.85]
+- **Soroban Ledger Contract Function Surface** — whitepaper_contract_constructor, whitepaper_contract_topup, whitepaper_contract_payout, whitepaper_contract_get_platform, whitepaper_ledger_contract [EXTRACTED 1.00]
+- **USD-to-Stroops Billing and Metering Flow** — whitepaper_usdtostroops, whitepaper_stroopsperhour, whitepaper_proratedcost, whitepaper_watchdog, whitepaper_bill_once_design, whitepaper_platform_fee_split, whitepaper_debitwallet_clamp [EXTRACTED 1.00]
+- **Fallow npm-Workspaces Monorepo Pieces** — readme_backend_registry, readme_contributor_daemon, readme_web_app, readme_example_buyer, readme_shared_package [EXTRACTED 1.00]
 
-## Communities (59 total, 28 thin omitted)
+## Communities (57 total, 22 thin omitted)
 
-### Community 0 - "Backend Auth & Payout"
+### Community 0 - "Project Docs & Deployment"
 Cohesion: 0.05
-Nodes (66): main(), addressFromSession(), issueLeaseToken(), issueNonce(), issueSession(), issueWalletNonce(), leaseIdFromAuthHeader(), NonceEntry (+58 more)
+Nodes (55): Autonomous consumer agent deployment, DEPLOY.md — Setup & Deployment guide, DEPLOY.md Known limitations section, Agentic Endpoints (/explorer, /rent/:nodeId), backend/ Registry and API, Bore Tunnel SSH Exposure, contributor/ Daemon, Custodial Model Limitation (+47 more)
 
-### Community 1 - "Web Static Pages (About/Arch/Balance)"
-Cohesion: 0.07
-Nodes (28): About(), ArchDiagram(), BalanceChart(), Props, Pt, Dashboard(), Props, Docs() (+20 more)
+### Community 1 - "Dashboard & Balance Chart"
+Cohesion: 0.08
+Nodes (36): BalanceChart(), Props, Pt, Dashboard(), Props, xlmStat(), Explore(), Props (+28 more)
 
-### Community 2 - "Shared Message & Type Contracts"
-Cohesion: 0.07
-Nodes (28): ActiveComputePoint, AgentHelloMsg, ContainerFailedMsg, ContainerReadyMsg, DestroyContainerMsg, ExplorerNode, HeartbeatMsg, HelloAckMsg (+20 more)
+### Community 2 - "Landing & Static Pages"
+Cohesion: 0.09
+Nodes (20): About(), ArchDiagram(), Docs(), HashHero(), HashHeroProps, ROWS, ContributorLeaderboard(), Leaderboard() (+12 more)
 
-### Community 3 - "Backend Dependencies"
+### Community 3 - "Backend Package Manifest"
 Cohesion: 0.07
 Nodes (26): dependencies, cors, dotenv, express, @fallow/shared, jsonwebtoken, nanoid, pg (+18 more)
 
-### Community 4 - "Contributor Docker Sandbox"
+### Community 4 - "Contributor Sandbox Runtime"
 Cohesion: 0.15
 Nodes (22): main(), containerName(), dockerNcpu(), ensureImage(), execFileP, getFreePort(), runInSandbox(), SandboxEndpoint (+14 more)
 
-### Community 5 - "Web Dependencies"
+### Community 5 - "Shared Protocol Types"
+Cohesion: 0.09
+Nodes (22): AgentHelloMsg, ContainerFailedMsg, ContainerReadyMsg, DestroyContainerMsg, HeartbeatMsg, HelloAckMsg, Job, JobResultMsg (+14 more)
+
+### Community 6 - "Web Package Manifest"
 Cohesion: 0.09
 Nodes (22): dependencies, @creit.tech/stellar-wallets-kit, react, react-dom, react-router-dom, @stellar/stellar-sdk, devDependencies, @fallow/shared (+14 more)
 
-### Community 6 - "Ledger Contract Deployment Docs"
-Cohesion: 0.11
-Nodes (19): Fallow ledger contract (fallow_ledger, Soroban), payout(lease_id, contributor, user, amount) contract function, Platform (custodial) address, Backend/registry production deployment (Docker/PaaS/VPS), npm run keygen (Stellar key generation), DEPLOY.md Known limitations section, Registry environment variables table, SOROBAN_RPC_URL (Soroban RPC endpoint) (+11 more)
+### Community 7 - "Web API Client"
+Cohesion: 0.16
+Nodes (18): Contribute(), addressQuery(), apiError(), fetchActiveCompute(), fetchContributorLeaderboard(), fetchLeaderboard(), fetchMyNodes(), fetchUserGrowth() (+10 more)
 
-### Community 7 - "Contributor Dependencies"
+### Community 8 - "Contributor Package Manifest"
 Cohesion: 0.11
 Nodes (18): dependencies, dotenv, @fallow/shared, nanoid, socket.io-client, @stellar/stellar-sdk, tsx, devDependencies (+10 more)
 
-### Community 8 - "Web TypeScript Config"
+### Community 9 - "Node Registry & Heartbeats"
+Cohesion: 0.13
+Nodes (17): verifyAgentHello(), isOnline(), getNode(), listNodesByOwner(), listOnlineNodes(), markOffline(), nodes, touchHeartbeat() (+9 more)
+
+### Community 10 - "Web TypeScript Config"
 Cohesion: 0.11
 Nodes (17): compilerOptions, esModuleInterop, isolatedModules, jsx, lib, module, moduleResolution, noEmit (+9 more)
 
-### Community 9 - "Root Package Config"
+### Community 11 - "Root Workspace Scripts"
 Cohesion: 0.12
 Nodes (16): description, engines, node, name, private, scripts, backend, build:backend (+8 more)
 
-### Community 10 - "Web App Shell & Wallet Context"
-Cohesion: 0.23
-Nodes (12): Props, WalletBar(), App(), useWallet(), WalletContext, WalletContextValue, WalletProvider(), connectWallet() (+4 more)
+### Community 12 - "Auth Tokens & Nonces"
+Cohesion: 0.20
+Nodes (15): addressFromSession(), issueLeaseToken(), issueNonce(), issueSession(), issueWalletNonce(), leaseIdFromAuthHeader(), NonceEntry, nonces (+7 more)
 
-### Community 11 - "Metrics & Leaderboard UI"
-Cohesion: 0.14
-Nodes (9): CONTRIBUTOR_SORTS, fmtDay(), Metrics(), Pt, SORTS, TimeSeriesChart(), ContributorSort, LeaderboardEntry (+1 more)
+### Community 13 - "Lease Billing & Payout"
+Cohesion: 0.18
+Nodes (14): debitWallet(), activateLease(), createLease(), endLeaseAndBill(), leases, leasesForNode(), payoutContributor(), setLeaseStatus() (+6 more)
 
-### Community 12 - "Example-Buyer Dependencies"
+### Community 14 - "Metrics & Leaderboards UI"
+Cohesion: 0.16
+Nodes (12): CONTRIBUTOR_SORTS, fmtDay(), formatEntryValue(), LeaderRow(), Pt, short(), SORTS, TimeSeriesChart() (+4 more)
+
+### Community 15 - "Example-Buyer Manifest"
 Cohesion: 0.13
 Nodes (14): dependencies, dotenv, @fallow/shared, @stellar/stellar-sdk, tsx, devDependencies, @types/node, typescript (+6 more)
 
-### Community 13 - "Web API Client"
-Cohesion: 0.27
-Nodes (13): apiError(), fetchActiveCompute(), fetchContributorLeaderboard(), fetchExplorer(), fetchLeaderboard(), fetchLease(), fetchMyNodes(), fetchPlatform() (+5 more)
-
-### Community 14 - "Shared TS Base Config"
+### Community 16 - "Base TypeScript Config"
 Cohesion: 0.14
 Nodes (13): compilerOptions, composite, declaration, esModuleInterop, forceConsistentCasingInFileNames, lib, module, moduleResolution (+5 more)
 
-### Community 15 - "Ledger Contract (Rust)"
+### Community 17 - "Soroban Ledger Contract"
 Cohesion: 0.33
 Nodes (8): Address, Env, DataKey, FallowLedger, native_token(), platform(), String, TokenClient
 
-### Community 16 - "Shared Package Config"
-Cohesion: 0.20
-Nodes (10): default, exports, main, name, private, scripts, build, type (+2 more)
+### Community 18 - "Shared Package Manifest"
+Cohesion: 0.18
+Nodes (11): default, exports, main, name, private, scripts, build, check (+3 more)
 
-### Community 17 - "Web Rental UI (Contribute/Lease)"
-Cohesion: 0.27
-Nodes (7): Contribute(), fmtCountdown(), LeasePanel(), Props, writeClipboard(), ComputeNode, LeaseStatus
-
-### Community 18 - "Autonomous Buyer Agent"
+### Community 19 - "Autonomous Buyer Agent"
 Cohesion: 0.24
 Nodes (9): main(), balanceOf(), LEASE_MINUTES, LedgerClient, MIN_RAM_MB, postJson(), repoRoot, TOPUP_XLM (+1 more)
 
-### Community 19 - "Backend TS Config"
+### Community 20 - "Wallet Database Layer"
+Cohesion: 0.29
+Nodes (9): creditWallet(), getBalance(), getWallet(), pool, q(), recordPayout(), Row, WalletRow (+1 more)
+
+### Community 21 - "Metrics SQL Queries"
+Cohesion: 0.29
+Nodes (9): activeCompute(), CONTRIBUTOR_BASIS, contributorLeaderboard(), leaderboard(), rankOf(), topN(), USER_BASIS, userGrowth() (+1 more)
+
+### Community 22 - "Package TS Config A"
 Cohesion: 0.25
 Nodes (7): compilerOptions, outDir, rootDir, types, extends, include, references
 
-### Community 20 - "Contributor TS Config"
+### Community 23 - "Package TS Config B"
 Cohesion: 0.25
 Nodes (7): compilerOptions, outDir, rootDir, types, extends, include, references
 
-### Community 21 - "Example-Buyer TS Config"
+### Community 24 - "Package TS Config C"
 Cohesion: 0.25
 Nodes (7): compilerOptions, outDir, rootDir, types, extends, include, references
 
-### Community 22 - "Backend Top-up Settlement"
+### Community 25 - "Backend Entrypoint & Bootstrap"
+Cohesion: 0.43
+Nodes (6): main(), initDb(), app, startWatchdog(), router, initWs()
+
+### Community 26 - "Stellar Wallet Verification"
 Cohesion: 0.43
 Nodes (6): decode(), SettledTopUp, settleTopUp(), soroban, sorobanErrorMessage(), verifyLoginSignature()
 
-### Community 23 - "Hero Art Illustration"
+### Community 27 - "Hero Art Illustration"
 Cohesion: 0.38
 Nodes (7): Blue-on-Black Duotone Engraving Style, Gathering Many Streams Into One Point (crowdfunding metaphor), Hero Art Illustration (hero-art.jpg), Serves as Landing-Page Hero Visual for Fallow Web App, Multi-Armed Classical Figure Gathering Rays, Radiating Line Bundles / Starburst Motif, Possible Mythological Wind/Messenger Deity (winged cap)
 
-### Community 24 - "Web Wallet Sign-in & Types"
+### Community 28 - "Web Wallet Login Client"
 Cohesion: 0.29
 Nodes (6): PlatformInfo, WalletLoginResponse, WalletNonceResponse, LedgerClient, loginWithWallet(), SignXdr
 
-### Community 25 - "Shared TS Config"
+### Community 29 - "Contract TS Config"
 Cohesion: 0.33
 Nodes (5): compilerOptions, outDir, rootDir, extends, include
 
-### Community 26 - "Stellar Challenge Submission Notes"
+### Community 30 - "Challenge Submission Notes"
 Cohesion: 0.50
 Nodes (5): Stellar Frontend Challenge (Level 1 - White Belt) Submission, Crowdfund Soroban Contract (deployed on Testnet), Live Soroban RPC Read Check (get_campaign_count simulation), verify-dapp Verification Skill, Manual Wallet-Flow Testing Requirement
 
-### Community 28 - "Docker Compose Services"
+### Community 31 - "Explore Marketplace UI"
+Cohesion: 0.40
+Nodes (4): SortBy, fetchExplorer(), rentNode(), ExplorerNode
+
+### Community 32 - "Contract Deployment Setup"
+Cohesion: 0.40
+Nodes (5): Fallow ledger contract (fallow_ledger, Soroban), Backend/registry production deployment (Docker/PaaS/VPS), Registry environment variables table, SOROBAN_RPC_URL (Soroban RPC endpoint), stellar CLI (contract build/deploy tooling)
+
+### Community 34 - "Docker Compose Services"
 Cohesion: 0.50
 Nodes (4): buyer service (docker-compose, one-shot), contributor service (docker-compose), Docker socket mount (sibling container launch), REGISTRY_URL
-
-### Community 30 - "Stellar Network Constants"
-Cohesion: 0.67
-Nodes (3): NATIVE_SAC (native XLM Stellar Asset Contract id constant), NETWORK_PASSPHRASE (Stellar network passphrase), Stellar (blockchain network)
-
-### Community 31 - "Web SPA Deployment Rationale"
-Cohesion: 0.67
-Nodes (3): Web app (static SPA) deployment, Vite SPA choice rationale: client-only wallet stack avoids SSR/hydration friction, web/ (Vite + React frontend)
 
 ## Ambiguous Edges - Review These
 - `Multi-Armed Classical Figure Gathering Rays` → `Possible Mythological Wind/Messenger Deity (winged cap)`  [AMBIGUOUS]
   web/public/hero-art.jpg · relation: conceptually_related_to
+- `Nonce-Signed Session Token` → `Renter Withdrawal Path (withdraw)`  [AMBIGUOUS]
+  WHITEPAPER.md · relation: conceptually_related_to
 
 ## Knowledge Gaps
-- **251 isolated node(s):** `name`, `version`, `private`, `type`, `dev` (+246 more)
+- **248 isolated node(s):** `name`, `version`, `private`, `type`, `dev` (+243 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **28 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **22 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **What is the exact relationship between `Multi-Armed Classical Figure Gathering Rays` and `Possible Mythological Wind/Messenger Deity (winged cap)`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
-- **Why does `proratedCost()` connect `Backend Auth & Payout` to `Shared Message & Type Contracts`?**
-  _High betweenness centrality (0.079) - this node is a cross-community bridge._
-- **Why does `WalletSummary` connect `Web Static Pages (About/Arch/Balance)` to `Shared Message & Type Contracts`, `Web API Client`?**
-  _High betweenness centrality (0.035) - this node is a cross-community bridge._
+- **What is the exact relationship between `Nonce-Signed Session Token` and `Renter Withdrawal Path (withdraw)`?**
+  _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
+- **Why does `proratedCost()` connect `Dashboard & Balance Chart` to `Lease Billing & Payout`, `Shared Protocol Types`?**
+  _High betweenness centrality (0.080) - this node is a cross-community bridge._
+- **Why does `endLeaseAndBill()` connect `Lease Billing & Payout` to `Dashboard & Balance Chart`, `Auth Tokens & Nonces`, `Node Registry & Heartbeats`?**
+  _High betweenness centrality (0.080) - this node is a cross-community bridge._
+- **Why does `formatXlm()` connect `Dashboard & Balance Chart` to `Autonomous Buyer Agent`, `Shared Protocol Types`, `Metrics & Leaderboards UI`?**
+  _High betweenness centrality (0.024) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `apiError()` (e.g. with `loginWithWallet()` and `topUp()`) actually correct?**
   _`apiError()` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `name`, `version`, `private` to the rest of the system?**
-  _254 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `Backend Auth & Payout` be split into smaller, more focused modules?**
-  _Cohesion score 0.051228070175438595 - nodes in this community are weakly interconnected._
-- **Should `Web Static Pages (About/Arch/Balance)` be split into smaller, more focused modules?**
-  _Cohesion score 0.06717687074829932 - nodes in this community are weakly interconnected._
+  _251 weakly-connected nodes found - possible documentation gaps or missing edges._

@@ -46,7 +46,7 @@ export function BalanceChart({ topups, charges, currentBalance }: Props) {
 
   // ── geometry ──────────────────────────────────────────────────────────
   const W = 760;
-  const H = 220;
+  const H = 110; // half-height: two charts fit on one screen without scrolling
   const pad = { l: 10, r: 10, t: 16, b: 26 };
   const tMin = pts[0].t;
   const tMax = pts[pts.length - 1].t;

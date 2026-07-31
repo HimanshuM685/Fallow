@@ -45,9 +45,9 @@
     "semantic_hash": "b3f9f872ccc5fb1552d2f67a5e71f57e"
   },
   "/Users/fusion/Code/GitRepos/Fallow/backend/src/routes.ts": {
-    "mtime": 1785488005.2562406,
-    "ast_hash": "9d005a264a19228213ac087c637ba082",
-    "semantic_hash": "9d005a264a19228213ac087c637ba082"
+    "mtime": 1785509555.0418289,
+    "ast_hash": "8abaac452b3aac03e687e5978412734b",
+    "semantic_hash": "8abaac452b3aac03e687e5978412734b"
   },
   "/Users/fusion/Code/GitRepos/Fallow/backend/src/wallet.ts": {
     "mtime": 1785447959.1814098,
@@ -130,14 +130,14 @@
     "semantic_hash": "03f14b6cf4cb2d2e9c7c0aa196ec16ea"
   },
   "/Users/fusion/Code/GitRepos/Fallow/shared/package.json": {
-    "mtime": 1785428973.8222754,
-    "ast_hash": "ebe564e282ddc373f05b5ace7074bf3d",
-    "semantic_hash": "ebe564e282ddc373f05b5ace7074bf3d"
+    "mtime": 1785510334.4283195,
+    "ast_hash": "b3f2d83fa8ca5f03b90e99412fc5c701",
+    "semantic_hash": "b3f2d83fa8ca5f03b90e99412fc5c701"
   },
   "/Users/fusion/Code/GitRepos/Fallow/shared/src/index.ts": {
-    "mtime": 1785487939.1055253,
-    "ast_hash": "b0804b54cd387dc4724d5bf5c8366190",
-    "semantic_hash": "b0804b54cd387dc4724d5bf5c8366190"
+    "mtime": 1785510213.4111207,
+    "ast_hash": "c9369999cc2d09b00676cab26af90f55",
+    "semantic_hash": "c9369999cc2d09b00676cab26af90f55"
   },
   "/Users/fusion/Code/GitRepos/Fallow/shared/tsconfig.json": {
     "mtime": 1783718315.530864,
@@ -155,14 +155,14 @@
     "semantic_hash": "0a0edeacd3f7c7326d097e3bce71ec6e"
   },
   "/Users/fusion/Code/GitRepos/Fallow/web/src/App.tsx": {
-    "mtime": 1785487845.9844744,
-    "ast_hash": "99e99dca346b0da428bdfb0122be1741",
-    "semantic_hash": "99e99dca346b0da428bdfb0122be1741"
+    "mtime": 1785509843.7545962,
+    "ast_hash": "776568d2b5326dda584dd6e8ecd17d52",
+    "semantic_hash": "776568d2b5326dda584dd6e8ecd17d52"
   },
   "/Users/fusion/Code/GitRepos/Fallow/web/src/api.ts": {
-    "mtime": 1785488030.546956,
-    "ast_hash": "73b9a59ea5f52a43b7b0f0cb282c71a1",
-    "semantic_hash": "73b9a59ea5f52a43b7b0f0cb282c71a1"
+    "mtime": 1785509572.4542727,
+    "ast_hash": "49d5ae5750f974127695dd91a604117e",
+    "semantic_hash": "49d5ae5750f974127695dd91a604117e"
   },
   "/Users/fusion/Code/GitRepos/Fallow/web/src/clipboard.ts": {
     "mtime": 1783718315.5351222,
@@ -180,9 +180,9 @@
     "semantic_hash": "38f14356077a13043cb363ead9f68f42"
   },
   "/Users/fusion/Code/GitRepos/Fallow/web/src/components/BalanceChart.tsx": {
-    "mtime": 1784390390.168374,
-    "ast_hash": "e4d2893efe01379171514bc945ae2fe0",
-    "semantic_hash": "e4d2893efe01379171514bc945ae2fe0"
+    "mtime": 1785510241.7729177,
+    "ast_hash": "ea75ee95363d3b51a564c23e84cac60e",
+    "semantic_hash": "ea75ee95363d3b51a564c23e84cac60e"
   },
   "/Users/fusion/Code/GitRepos/Fallow/web/src/components/Contribute.tsx": {
     "mtime": 1784390390.1772385,
@@ -190,9 +190,9 @@
     "semantic_hash": "9bbd5ddd89f8c4645965c98955c2a56b"
   },
   "/Users/fusion/Code/GitRepos/Fallow/web/src/components/Dashboard.tsx": {
-    "mtime": 1785487930.5551817,
-    "ast_hash": "b7d67fbd1775d4073ed13160c2149ca4",
-    "semantic_hash": "b7d67fbd1775d4073ed13160c2149ca4"
+    "mtime": 1785510268.0619755,
+    "ast_hash": "d1779adc14e25fe748a8e0225a7e074b",
+    "semantic_hash": "d1779adc14e25fe748a8e0225a7e074b"
   },
   "/Users/fusion/Code/GitRepos/Fallow/web/src/components/Docs.tsx": {
     "mtime": 1785448083.8474712,
@@ -200,9 +200,9 @@
     "semantic_hash": "d16a80b33fc85c4668fb04240890c9ef"
   },
   "/Users/fusion/Code/GitRepos/Fallow/web/src/components/Explore.tsx": {
-    "mtime": 1784390390.1811287,
-    "ast_hash": "68a426a35636c097c7e55a72b4c3ddec",
-    "semantic_hash": "68a426a35636c097c7e55a72b4c3ddec"
+    "mtime": 1785510241.7739823,
+    "ast_hash": "909f27cc71843e8b417e44d7ba549a0f",
+    "semantic_hash": "909f27cc71843e8b417e44d7ba549a0f"
   },
   "/Users/fusion/Code/GitRepos/Fallow/web/src/components/HashHero.tsx": {
     "mtime": 1784390390.1615326,
@@ -210,9 +210,9 @@
     "semantic_hash": "2f27b74d5026ea77afe9bc82983209aa"
   },
   "/Users/fusion/Code/GitRepos/Fallow/web/src/components/LeasePanel.tsx": {
-    "mtime": 1784390390.1871185,
-    "ast_hash": "c7e44cb7f5855d846cd619e042f4352a",
-    "semantic_hash": "c7e44cb7f5855d846cd619e042f4352a"
+    "mtime": 1785510251.8091538,
+    "ast_hash": "4e6ca5f2067ac2dc2553229ab20d852b",
+    "semantic_hash": "4e6ca5f2067ac2dc2553229ab20d852b"
   },
   "/Users/fusion/Code/GitRepos/Fallow/web/src/components/Marketplace.tsx": {
     "mtime": 1784390390.158792,
@@ -220,14 +220,14 @@
     "semantic_hash": "4c057fac28f57a4745b121d5bac5dbdb"
   },
   "/Users/fusion/Code/GitRepos/Fallow/web/src/components/WalletBar.tsx": {
-    "mtime": 1783718315.538029,
-    "ast_hash": "c06c79c673621c87401c2e343d667880",
-    "semantic_hash": "c06c79c673621c87401c2e343d667880"
+    "mtime": 1785510241.7736514,
+    "ast_hash": "578a91e114483ac666407b8af1f18f38",
+    "semantic_hash": "578a91e114483ac666407b8af1f18f38"
   },
   "/Users/fusion/Code/GitRepos/Fallow/web/src/components/WalletPanel.tsx": {
-    "mtime": 1785431272.464687,
-    "ast_hash": "6a78ff6618619b9aadb397aeab82c20e",
-    "semantic_hash": "6a78ff6618619b9aadb397aeab82c20e"
+    "mtime": 1785510241.7733228,
+    "ast_hash": "1d7b3cd4cc3a2c291598fc5f0f2d0e31",
+    "semantic_hash": "1d7b3cd4cc3a2c291598fc5f0f2d0e31"
   },
   "/Users/fusion/Code/GitRepos/Fallow/web/src/main.tsx": {
     "mtime": 1783718315.5384705,
@@ -245,9 +245,9 @@
     "semantic_hash": "8e8cd5287fb01fb9a3fa1d5c02232669"
   },
   "/Users/fusion/Code/GitRepos/Fallow/web/src/wallet.ts": {
-    "mtime": 1785448813.2208462,
-    "ast_hash": "fc2429b247a93bdf1766e9a736695e41",
-    "semantic_hash": "fc2429b247a93bdf1766e9a736695e41"
+    "mtime": 1785501324.837677,
+    "ast_hash": "22720c509afc9c7531a0d7a64b13c43e",
+    "semantic_hash": "22720c509afc9c7531a0d7a64b13c43e"
   },
   "/Users/fusion/Code/GitRepos/Fallow/web/tsconfig.json": {
     "mtime": 1784390390.1110961,
@@ -275,9 +275,9 @@
     "semantic_hash": "001b09005ca3bdc3ec648045fb362857"
   },
   "/Users/fusion/Code/GitRepos/Fallow/README.md": {
-    "mtime": 1785450298.9990315,
-    "ast_hash": "a91c38150da967b2629dc2482a82ab49",
-    "semantic_hash": "a91c38150da967b2629dc2482a82ab49"
+    "mtime": 1785510722.693028,
+    "ast_hash": "93cd51fc63d16ace7c77ff5f8f38f6c2",
+    "semantic_hash": "93cd51fc63d16ace7c77ff5f8f38f6c2"
   },
   "/Users/fusion/Code/GitRepos/Fallow/docker-compose.yml": {
     "mtime": 1784390390.099224,
@@ -300,9 +300,9 @@
     "semantic_hash": "3067bab342d3f0f408b7dc0df87c24ef"
   },
   "/Users/fusion/Code/GitRepos/Fallow/backend/src/metrics.ts": {
-    "mtime": 1785487965.3236487,
-    "ast_hash": "db90ffc798aa9a242b33b13f2051a3ce",
-    "semantic_hash": "db90ffc798aa9a242b33b13f2051a3ce"
+    "mtime": 1785509547.697923,
+    "ast_hash": "ed5cc0531cf2f4e45b0814a536d5fa4e",
+    "semantic_hash": "ed5cc0531cf2f4e45b0814a536d5fa4e"
   },
   "/Users/fusion/Code/GitRepos/Fallow/contract/src/lib.rs": {
     "mtime": 1785447677.1784046,
@@ -310,13 +310,28 @@
     "semantic_hash": "eb16a115db0149363555993a20c80abe"
   },
   "/Users/fusion/Code/GitRepos/Fallow/web/src/components/Metrics.tsx": {
-    "mtime": 1785488093.3317616,
-    "ast_hash": "085e208c726ad8deca835a27f0bae664",
-    "semantic_hash": "085e208c726ad8deca835a27f0bae664"
+    "mtime": 1785510317.0583713,
+    "ast_hash": "12f7c073325426f3c9fe85fb88b6dfaf",
+    "semantic_hash": "12f7c073325426f3c9fe85fb88b6dfaf"
   },
   "/Users/fusion/Code/GitRepos/Fallow/contract/README.md": {
     "mtime": 1785447740.5576234,
     "ast_hash": "4f0bef43cd87c93dcfa31f93ef15e1c7",
     "semantic_hash": "4f0bef43cd87c93dcfa31f93ef15e1c7"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/shared/src/format.check.ts": {
+    "mtime": 1785510348.5955553,
+    "ast_hash": "706b3419d1ceedc8cb11e33fb12615fa",
+    "semantic_hash": "706b3419d1ceedc8cb11e33fb12615fa"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/web/src/components/TopUpControl.tsx": {
+    "mtime": 1785501758.950049,
+    "ast_hash": "7b4f0a64d6af7de2ae71a027759c7528",
+    "semantic_hash": "7b4f0a64d6af7de2ae71a027759c7528"
+  },
+  "/Users/fusion/Code/GitRepos/Fallow/WHITEPAPER.md": {
+    "mtime": 1785503674.387988,
+    "ast_hash": "b6c3551ec56c1b37153886e3162d3c26",
+    "semantic_hash": "b6c3551ec56c1b37153886e3162d3c26"
   }
 }
