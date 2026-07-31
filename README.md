@@ -9,6 +9,10 @@ hour, prorated** — usage is tracked as it runs and **charged once when the lea
 balance is exhausted, which stops the session). The contributor is **paid on-chain** to their own
 address when the lease ends, minus a small platform fee. No per-action signing, no x402.
 
+> **Evaluating this project?** [WHITEPAPER.md](./WHITEPAPER.md) is the full writeup — trust model,
+> exact billing math, the custodial tradeoff (and what removing it would take), the ledger
+> contract, and a roadmap. This README stays focused on running the thing.
+
 ## The trust model (why this is safe to contribute to)
 
 A contributor gives *compute*, never filesystem or account access. The safety boundary isn't a
