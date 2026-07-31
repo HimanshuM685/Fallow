@@ -175,7 +175,7 @@ export interface ActiveComputePoint {
 export type LeaderboardSort = "topup" | "leasetime" | "leasespan";
 
 /** Contributor-leaderboard ranking basis (GET /leaderboard/contributors?sort=...). */
-export type ContributorSort = "leasetime" | "buyers";
+export type ContributorSort = "leasetime" | "servecount";
 
 /** One ranked row on the leaderboard. `value`'s unit depends on `sort`: stroops
  *  for "topup", a lease count for "leasetime", seconds for "leasespan". */

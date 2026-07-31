@@ -264,18 +264,19 @@ function Leaderboard() {
 
 const CONTRIBUTOR_SORTS: { key: ContributorSort; label: string }[] = [
   { key: "leasetime", label: "Time served" },
-  { key: "buyers", label: "Buyers served" },
+  { key: "servecount", label: "Times served" },
 ];
 
 function formatContributorValue(sort: ContributorSort, value: number): string {
-  if (sort === "buyers") return value === 1 ? "1 buyer" : `${value} buyers`;
+  if (sort === "servecount") return value === 1 ? "1 lease" : `${value} leases`;
   // leasetime — total lifetime compute time served, in seconds.
   const h = Math.floor(value / 3600);
   const m = Math.floor((value % 3600) / 60);
   return h > 0 ? `${h}h ${m}m` : `${m}m`;
 }
 
-/** Ranked list of top contributors, by time served or distinct buyers served. */
+/** Ranked list of top contributors, by time served or total leases served —
+ *  gives contributors a reason to keep their node online past a one-off demo. */
 function ContributorLeaderboard() {
   const [sort, setSort] = useState<ContributorSort>("leasetime");
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);

@@ -80,14 +80,15 @@ export async function leaderboard(sort: LeaderboardSort): Promise<LeaderboardEnt
 
 /**
  * Top 20 contributors (by pay_to address) ranked by one of two bases:
- *   leasetime — total lifetime compute time they've served, across all
- *               leases (seconds)
- *   buyers    — number of distinct renters they've served (lifetime)
+ *   leasetime  — total lifetime compute time they've served, across all
+ *                leases (seconds)
+ *   servecount — total number of leases they've served, lifetime (integer
+ *                count — repeat renters count each time, not just once)
  */
 export async function contributorLeaderboard(sort: ContributorSort): Promise<LeaderboardEntry[]> {
-  if (sort === "buyers") {
+  if (sort === "servecount") {
     const { rows } = await pool.query<{ address: string; value: number }>(
-      `SELECT pay_to AS address, COUNT(DISTINCT address)::bigint AS value
+      `SELECT pay_to AS address, COUNT(*)::bigint AS value
        FROM charges WHERE pay_to <> '' GROUP BY pay_to ORDER BY value DESC LIMIT $1`,
       [LEADERBOARD_LIMIT],
     );

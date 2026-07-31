@@ -123,7 +123,7 @@ router.get("/leaderboard", async (req: Request, res: Response) => {
   }
 });
 
-const CONTRIBUTOR_SORTS: ContributorSort[] = ["leasetime", "buyers"];
+const CONTRIBUTOR_SORTS: ContributorSort[] = ["leasetime", "servecount"];
 
 router.get("/leaderboard/contributors", async (req: Request, res: Response) => {
   const sort = String(req.query.sort ?? "leasetime") as ContributorSort;
