@@ -177,18 +177,18 @@ export function App() {
           FALLOW<span className="wm-tld">.XLM</span>
         </span>
         <div className="mast-right">
-          {!isLanding && (
-            <WalletBar
-              signedIn={!!session}
-              canSignIn={!!activeAddress}
-              signingIn={signingIn}
-              onSignIn={signIn}
-              wallet={wallet}
-              token={session?.token ?? null}
-              onWalletChanged={onWalletChanged}
-              onError={setError}
-            />
-          )}
+          {/* On the landing page too — you need a wallet before anything works,
+              so don't make people find that out by clicking through first. */}
+          <WalletBar
+            signedIn={!!session}
+            canSignIn={!!activeAddress}
+            signingIn={signingIn}
+            onSignIn={signIn}
+            wallet={wallet}
+            token={session?.token ?? null}
+            onWalletChanged={onWalletChanged}
+            onError={setError}
+          />
         </div>
       </header>
 
