@@ -870,6 +870,7 @@ main { display: block; }
   letter-spacing: 0.02em;
 }
 .timer[data-expiring="true"] { animation: blink 1s steps(1) infinite; }
+.timer-block { text-align: right; }
 .lease-actions { display: flex; gap: 10px; }
 .lease-panel .muted { opacity: 0.7; }
 

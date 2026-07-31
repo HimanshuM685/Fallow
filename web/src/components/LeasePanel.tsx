@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { LeaseStatus } from "@fallow/shared";
+import { formatXlm, proratedCost, type LeaseStatus } from "@fallow/shared";
 import { type ActiveLease, fetchLease, releaseLease } from "../api";
 import { writeClipboard } from "../clipboard";
 
@@ -21,6 +21,9 @@ function fmtCountdown(ms: number): string {
 export function LeasePanel({ lease, onRelease }: Props) {
   const [now, setNow] = useState(Date.now());
   const [expiresAt, setExpiresAt] = useState(lease.expiresAt);
+  // The billable window opened when the sandbox came up, i.e. right about now —
+  // the poll replaces this with the server's own startedAt.
+  const [startedAt, setStartedAt] = useState(Date.now());
   const [status, setStatus] = useState<LeaseStatus>("active");
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
@@ -47,6 +50,7 @@ export function LeasePanel({ lease, onRelease }: Props) {
           if (!alive) return;
           setExpiresAt(l.expiresAt);
           setStatus(l.status);
+          if (l.startedAt > 0) setStartedAt(l.startedAt);
         })
         .catch(() => {});
     let timer: ReturnType<typeof setInterval> | undefined;
@@ -70,6 +74,12 @@ export function LeasePanel({ lease, onRelease }: Props) {
   }, [lease.leaseId, lease.leaseToken, ended]);
 
   const remainingMs = Math.max(0, expiresAt - now);
+  // Same math the backend bills with at release, so the ticking figure and the
+  // final charge agree. `now` stops ticking once the lease ends, so this freezes.
+  const spentStroops = proratedCost(
+    lease.rateStroopsPerHour,
+    Math.max(0, Math.round((now - startedAt) / 1000)),
+  );
 
   function copy(label: string, value: string) {
     void writeClipboard(value).then((ok) => {
@@ -104,8 +114,13 @@ export function LeasePanel({ lease, onRelease }: Props) {
             lease {lease.leaseId} · {(lease.rateStroopsPerHour / 1e7).toFixed(4)} XLM/hr
           </div>
         </div>
-        <div className="timer" data-expiring={remainingMs < 60_000} title="time left at current balance">
-          {fmtCountdown(remainingMs)}
+        <div className="timer-block">
+          <div className="timer" data-expiring={remainingMs < 60_000} title="time left at current balance">
+            {fmtCountdown(remainingMs)}
+          </div>
+          <div className="muted small" title="usage so far — charged when you release">
+            {formatXlm(spentStroops)} spent so far
+          </div>
         </div>
         <div className="lease-actions">
           <button className="btn ghost" disabled={busy || ended} onClick={release}>

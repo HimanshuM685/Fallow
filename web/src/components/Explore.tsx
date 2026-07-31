@@ -79,6 +79,15 @@ export function Explore({ session, balanceStroops, onLeased }: Props) {
     return `≈ ${Math.floor((balanceStroops / r) * 60)} min on your balance`;
   };
 
+  /** Rough cost of an hour on this node — capped at the balance, since the lease
+   *  ends when the wallet runs dry and you can never be billed past it. */
+  const estimateLabel = (usdPerHour: number) => {
+    const r = rateStroops(usdPerHour);
+    if (!r || !session) return null;
+    const capped = balanceStroops < r;
+    return `est. ${formatXlm(Math.min(r, balanceStroops))} for 1 hr${capped ? " (your whole balance)" : ""}`;
+  };
+
   async function rent(node: ExplorerNode) {
     if (!session) return;
     if (balanceStroops <= 0) {
@@ -174,6 +183,9 @@ export function Explore({ session, balanceStroops, onLeased }: Props) {
               <li>{n.gpu ?? "no GPU"}</li>
             </ul>
             <div className="price">{priceLabel(n.pricePerHourUsd)}</div>
+            {estimateLabel(n.pricePerHourUsd) && (
+              <div className="muted small">{estimateLabel(n.pricePerHourUsd)}</div>
+            )}
             {minutesLabel(n.pricePerHourUsd) && (
               <div className="muted small">{minutesLabel(n.pricePerHourUsd)}</div>
             )}
